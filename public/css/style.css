@@ -1,0 +1,28 @@
+.wrapper{
+    background-color: rgba(4, 40, 68, 0.85);
+}
+
+/* body{
+    /* background-image: url("https://asset.kompas.com/crop/0x58:1000x725/750x500/data/photo/2018/11/21/2397393533.jpg");
+    background-size: cover;  */
+/* } */ */
+
+.login {
+    border-radius: 2px 2px 5px 5px;
+    padding: 10px 20px 20px 20px;
+    width: 90%;
+    max-width: 320px;
+    background: #ffffff;
+    position: relative;
+    padding-bottom: 80px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);
+}
+
+.main-sidebar > a > p {
+    white-space: normal; /* Set teks agar dapat mencapai dua baris */
+    display: inline-block; /* Memastikan teks akan berada di satu baris jika lebar layar cukup lebar */
+    width: 100%; /* Mengisi lebar dari container */
+    text-align: left; /* Mengatur teks menjadi rata kiri */
+}
+
+

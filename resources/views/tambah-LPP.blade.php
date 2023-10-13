@@ -1,0 +1,81 @@
+@extends('layouts.main')
+
+@section('container')
+<div class="container">
+    <div class="card">
+        <div class="card-header bg-secondary"></div>
+        <div class="card-body">
+            <form action="/kelola-LPP/store" method="post">
+                @csrf
+                <div class="mb-3">
+                    <label for="to" class="form-label">To</label>
+                    <select class="form-select" name="to" id="to">
+                        <option selected></option>
+                        @foreach ($suppliers as $sup)
+                        <option value="{{ $sup->nama_supplier }}">{{ $sup->nama_supplier }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="attention" class="form-label">Attention</label>
+                    <input type="text" class="form-control" name="attention" id="attention">
+                </div> 
+                <div class="mb-3">
+                    <label for="cc" class="form-label">CC</label>
+                    <input type="text" class="form-control" name="cc" id="cc">
+                </div>
+                <div class="mb-3">
+                    <label for="model" class="form-label">Model</label>
+                    <select class="form-select" name="model" id="model">
+                        <option selected></option>
+                        @foreach ($model_kategori as $mk)
+                        <option value="{{ $mk->id_kategori }}">{{ $mk->nama_kategori }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="part_name" class="form-label">Part Name</label>
+                    <select class="form-select" name="part_name" id="part_name">
+                        <option selected></option>
+                        @foreach($part as $p)
+                        <option value="{{ $p->nama_part }}">{{ $p->nama_part }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="part_code" class="form-label">Part Code</label>
+                <select class="form-select" name="part_code" id="part_code">
+                        <option selected></option>
+                        @foreach($part as $p)
+                        <option value="{{ $p->kode_part }}">{{ $p->kode_part }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="quantity" class="form-label">Quantity</label>
+                    <input type="text" class="form-control" name="quantity" id="quantity">
+                </div>
+                <div class="mb-3">
+                    <label for="problem_description" class="form-label">Problem Description</label>
+                    <textarea class="form-control" id="problem_description" rows="5" name="problem_description"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="found_area" class="form-label">Found Area</label>
+                    <select class="form-select" name="found_area" id="found_area">
+                        <option selected></option>
+                        <option value="On Customer">On Customer</option>
+                        <option value="On Factory">On Factory</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="request" class="form-label">Request</label>
+                    <textarea class="form-control" id="request" rows="5" name="request"></textarea>
+                </div> 
+                
+                <button type="submit" class="btn btn-primary">Tambah</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@endsection
