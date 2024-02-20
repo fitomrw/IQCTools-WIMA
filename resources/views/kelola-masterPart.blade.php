@@ -25,6 +25,7 @@
             <th scope="col">Kode Part</th>
             <th scope="col">Kategori</th>
             <th scope="col">Supplier</th>
+            <th scope="col">Gambar</th>
             <th scope="col">Aksi</th>
           </tr>
         </thead>
@@ -36,6 +37,7 @@
             <td>{{ $p->kode_part }}</td>
             <td>{{ $p->kategori_part->nama_kategori }}</td>
             <td>{{ $p->supplier->nama_supplier }}</td>
+            <td>{{ $p->gambar_part }}</td>
             <td><a class="btn btn-warning" href="/kelola-masterPart/edit/{{ $p->kode_part }}" role="button">Edit</a>
               <form action="/kelola-masterPart/destroy/{{ $p->kode_part }}" method="post" class="d-inline">
                 <a class="btn btn-danger" href="/kelola-masterPart/destroy/{{ $p->kode_part }}" role="button">Delete</a>

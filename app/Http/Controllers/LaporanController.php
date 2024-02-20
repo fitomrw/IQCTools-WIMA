@@ -39,7 +39,77 @@ class LaporanController extends Controller
         ]);
     }
 
+    public function getPartInfo($model)
+    {
+        $partInfo = Part::where('kategori_id', $model)->get();
+        // dd($partInfo);
+        return response()->json($partInfo);
+    }
+
     public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'to' => 'required',
+            'attention' => 'required',
+            'cc' => 'required',
+            'part_name' => 'required',
+            'part_code' => 'required',
+            'model' => 'required',
+            'quantity' => 'required',
+            'problem_description' => 'required',
+            'found_area' => 'required',
+            'request' => 'required',
+            'gambar_lpp' => 'required|image|mimes:jpeg,png,jpg,gif',
+        ]);
+        // dd($validatedData);
+        $currentDateTime = now()->format('YmdHis');
+        $filename = $currentDateTime . '.' . $request->file('gambar_lpp')->getClientOriginalExtension();
+        // dd($validatedData['to'], $filename);
+        Laporan::create([
+            'to' => $validatedData['to'],
+            'attention' => $validatedData['attention'],
+            'cc' => $validatedData['cc'],
+            'part_name' => $validatedData['part_name'],
+            'part_code' => $validatedData['part_code'],
+            'model' => $validatedData['model'],
+            'quantity' => $validatedData['quantity'],
+            'problem_description' => $validatedData['problem_description'],
+            'found_area' => $validatedData['found_area'],
+            'request' => $validatedData['request'],
+            'gambar_lpp' => $filename,
+        ]);
+        
+        $request->file('gambar_lpp')->move(public_path('img/img_lpp'), $filename);
+        return redirect('/kelola-LPP')->with('success', 'Laporan LPP Berhasil Dibuat!');
+    }
+
+    public function show ($id)
+    {
+        $showLaporan = Laporan::find($id);
+
+        return view('show-LPP', [
+            "title" => "Laporan Penyimpangan Part",
+            "showLaporan" => $showLaporan
+        ]);
+    }
+
+    public function edit($id)
+    {
+        $edit_laporan = Laporan::find($id);
+
+        $model_kategori = kategoriPart::all();
+
+        $part = Part::all();
+
+        return view('edit-LPP', [
+            "title" => "Edit Laporan Penyimpangan Part",
+            "model_kategori" => $model_kategori,
+            "part" => $part,
+            "edit_laporan" => $edit_laporan
+        ]);
+    }
+
+    public function update($id, Request $request)
     {
         $validatedData = $request->validate([
             'to' => ['required'],
@@ -53,48 +123,26 @@ class LaporanController extends Controller
             'found_area' => ['required'],
             'request' => ['required']            
         ]);
-        // dd($validatedData);
 
-        Laporan::create($validatedData);
-        
-        return redirect('/kelola-LPP')->with('success', 'Laporan LPP Berhasil Dibuat!');
-    }
-
-    public function edit($id)
-    {
-        $edit_laporan = Laporan::find($id);
-
-        $model_kategori = kategoriPart::all();
-
-        $part = Part::all();
-
-        return view('edit-LPP', [
-            "title" => "Buat Laporan Penyimpangan Part",
-            "model_kategori" => $model_kategori,
-            "part" => $part,
-            "edit_laporan" => $edit_laporan
-        ]);
-    }
-
-    public function update($id, Request $request)
-    {
-        $validatedData = $request->validate([
-            'to' => ['required'],
-            'attention' => ['required'],
-            'cc' => ['required'],
-            // 'part_name' => ['required'],
-            'part_code' => ['required'],
-            'model' => ['required'],            
-            'quantity' => ['required'],           
-            'problem_description' => ['required'],            
-            // 'found_area' => ['required'],
-            'request' => ['required']            
-        ]);
-
-        // dd($validatedData);
+        $currentDateTime = now()->format('YmdHis');
+        $filename = $currentDateTime . '.' . $request->file('gambar_lpp')->getClientOriginalExtension();
 
         Laporan::where('id', $id)
-                ->update($validatedData);
+                ->update([
+                    'to' => $validatedData['to'],
+                    'attention' => $validatedData['attention'],
+                    'cc' => $validatedData['cc'],
+                    'part_name' => $validatedData['part_name'],
+                    'part_code' => $validatedData['part_code'],
+                    'model' => $validatedData['model'],
+                    'quantity' => $validatedData['quantity'],
+                    'problem_description' => $validatedData['problem_description'],
+                    'found_area' => $validatedData['found_area'],
+                    'request' => $validatedData['request'],
+                    'gambar_lpp' => $filename,
+                ]);
+        
+        $request->file('gambar_lpp')->move(public_path('img/img_lpp'), $filename);
         
         return redirect('/kelola-LPP')->with('success', 'Laporan LPP Berhasil Diubah!');
     }

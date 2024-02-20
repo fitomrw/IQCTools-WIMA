@@ -1,5 +1,5 @@
   <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+  <aside class="main-sidebar sidebar-dark-primary elevation-4 " style="overflow: hidden">
     <!-- Brand Logo -->
     <div class="row">
         <div class="col-sm-3">    
@@ -13,7 +13,7 @@
 
 
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" style="overflow: hidden">
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
@@ -42,6 +42,11 @@
                   <p>- Data Master Supplier</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="/kelola-masterStandar" class="nav-link">
+                  <p>- Data Master Standar</p>
+                </a>
+              </li>
             </ul>
           </li>
           @endif
@@ -54,18 +59,23 @@
           </li>
           @endif
 
-          @if (auth()->user()->jabatan=="Staff QC") 
+          @if (auth()->user()->jabatan=="Kepala Seksi QC") 
           <li class="nav-item">
-            <a href="/kelola-pengecekan" class="nav-link">
-                <p>Pengecekan</p>
+            <a href="/verifikasi-pengecekan" class="nav-link">
+                <p>Verifikasi Pengecekan</p>
             </a>
           </li>
           @endif
           
           @if (auth()->user()->jabatan=="Staff QC")    
-          <li class="nav-item">
+          {{-- <li class="nav-item">
             <a href="/riwayatPengecekan" class="nav-link">
                 <p>Riwayat Pengecekan</p>
+            </a>
+          </li> --}}
+          <li class="nav-item">
+            <a href="/riwayatPengecekan" class="nav-link">
+                <p>Pengecekan</p>
             </a>
           </li>
           @endif
@@ -81,7 +91,7 @@
           @if (auth()->user()->jabatan=="Staff QA")    
           <li class="nav-item">
             <a href="/kelola-LPP/verifLaporan" class="nav-link">
-                <p>Verifikasi Laporan</p>
+                <p>Verifikasi Laporan <br> Penyimpangan Part</p>
             </a>
           </li>
           @endif
@@ -92,8 +102,20 @@
                 <p>Kelola User</p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="/kelola-masterStandarPart" class="nav-link">
+                <p>Kelola Standar Per Part</p>
+            </a>
+          </li>
           @endif
 
+          @if (auth()->user()->jabatan == "Admin QC")    
+          <li class="nav-item">
+            <a href="/kelola-standarMIL" class="nav-link">
+              <p>Kelola Data Standar MIL 105 <br>STD E</p>
+            </a>
+          </li>
+          @endif
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

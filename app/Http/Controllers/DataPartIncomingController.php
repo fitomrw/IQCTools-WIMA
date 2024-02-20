@@ -8,6 +8,10 @@ use App\Models\kategoriPart;
 use App\Models\Supplier;
 use App\Http\Requests\StoredataPartIncomingRequest;
 use App\Http\Requests\UpdatedataPartIncomingRequest;
+use App\Models\CatatanCekModel;
+use App\Models\StandarPerPartModel;
+use GuzzleHttp\Psr7\Request;
+use PhpParser\Node\Stmt\Foreach_;
 
 class DataPartIncomingController extends Controller
 {
@@ -24,12 +28,38 @@ class DataPartIncomingController extends Controller
             'dataPartIncomings' => dataPartIncoming::orderBy('created_at', 'desc')->get()
         ]);
     }
+
+    public function verifikasiPengecekan()
+    {
+        return view('verifikasiPengecekan', [
+            "title" => "Verifikasi Pengecekan",
+            "image" => "/img/wima_logo.png",
+            'dataPartIncomings' => dataPartIncoming::orderBy('created_at', 'desc')->get()
+        ]);
+    }
+
+    public function verifPengecekanShow($id)
+    {
+        return view('verifDetailPengecekan', [
+            "title" => "Verifikasi Pengecekan",
+            "image" => "/img/wima_logo.png",
+        ]);
+    }
 // php 
     public function getKodePart($kategori_id)
     {
         $kode_part = Part::where('kategori_id', $kategori_id)->get();
         return response()->json($kode_part);
     }
+
+    // public function getSupplier($kategori_id)
+    // {
+    //     $supplierPart = Part::where('kategori_id', $kategori_id)->get();
+    //     if($supplierPart){
+    //         $supPart = $supplierPart->nama_supplier;
+    //         return response()->json($supplierPart);
+    //     }
+    // }
 
     /**
      * Show the form for creating a new resource.
@@ -38,6 +68,7 @@ class DataPartIncomingController extends Controller
      */
     public function create()
     {
+        // dd($request);
         $kategori_part = kategoriPart::all();
         // $parts = Part::all();
         
@@ -64,7 +95,8 @@ class DataPartIncomingController extends Controller
      */
     public function store(StoredataPartIncomingRequest $request)
     {
-        // dd($request);
+        // dd($request); 
+        
         $validatedData = $request->validate([
             'kategori_id' => ['required'],
             'kode_part' => ['required'],
@@ -72,16 +104,23 @@ class DataPartIncomingController extends Controller
             'supplier_id' => ['required'],
             'supply_date' => ['required'],
             'jumlah_kirim' => ['required'],
-            'jumlah_cek' => ['required'],
-            'checksheet_supplier' => ['required']
+            'aql_number' => ['required'],
+            'inspection_level' => ['required']
         ]);
-        // if ( $validatedData['checksheet_supplier'] == 'on') {
-        //     $validatedData['checksheet_supplier'] = 'Ada';
-        // } else{
-        //     $validatedData['checksheet_supplier'] = 'Tidak Ada';
-        // }
-        // dd( $validatedData['checksheet_supplier']);
+        
         dataPartIncoming::create($validatedData);
+        $data = dataPartIncoming::all();
+        $dataTerbaru = $data->last();
+        $standarPart = StandarPerPartModel::where('kode_part', $dataTerbaru->kode_part)->get();
+        // dd($standarPart);
+        foreach ($standarPart as $key ) {
+            CatatanCekModel::create([
+                'id_part_supply' => $dataTerbaru->id_part_supply,
+                'id_standar_part' => $key->id_standar_part,
+                // 'status_pengecekan' => $key->status_pengecekan
+            ]);
+        }
+        // dd($test);
 
         // $request->session()->with('success', 'Data Berhasil! Ditambahkan!');
 
@@ -147,20 +186,10 @@ class DataPartIncomingController extends Controller
             'supplier_id' => ['required'],
             'supply_date' => ['required'],
             'jumlah_kirim' => ['required'],
-            'jumlah_cek' => ['required'],
-            'checksheet_supplier' => ['required']
+            'aql_number' => ['required'],
+            'inspection_level' => ['required']
         ]);
 
-        
-        // $findDataPartIncoming->kategori_id = $request->input('kategori_id');
-        // $findDataPartIncoming->kode_part = $request->input('kode_part');
-        // // $findDataPartIncoming->part->nama_part = $request->input('nama_part');
-        // $findDataPartIncoming->supply_date = $request->input('supply_date');
-        // $findDataPartIncoming->supplier_id = $request->input('supplier_id');
-        // $findDataPartIncoming->jumlah_kirim = $request->input('jumlah_kirim');
-        // $findDataPartIncoming->jumlah_cek = $request->input('jumlah_cek');
-        // $findDataPartIncoming->checksheet_supplier = $request->input('checksheet_supplier');
-        // // $findDataPartIncoming->save();
 
 
         dataPartIncoming::where('id_part_supply', $findDataPartIncoming->id_part_supply) 
@@ -177,9 +206,11 @@ class DataPartIncomingController extends Controller
      * @param  \App\Models\dataPartIncoming  $dataPartIncoming
      * @return \Illuminate\Http\Response
      */
-    public function destroy(dataPartIncoming $dataPartIncoming)
+    public function destroy(dataPartIncoming $dataPartIncoming, $id_part_supply)
     {
-        dataPartIncoming::destroy($dataPartIncoming->id_part_supply);
+        $delPartIn = dataPartIncoming::find($id_part_supply);
+        $delPartIn->delete();
+
 
         return redirect('/dataPartIncoming');
 

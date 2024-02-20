@@ -25,7 +25,9 @@ return new class extends Migration
             $table->string('quantity');
             $table->string('problem_description');
             $table->string('request');
+            $table->string('found_area');
             $table->integer('status')->default(0);
+            $table->string('gambar_lpp');
             $table->timestamps();
         });
     }

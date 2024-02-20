@@ -1,11 +1,11 @@
 @extends('layouts.main')
 
 @section('container')
-<div class="container">
+<div class="container-fluid">
     <div class="card">
         <div class="card-header bg-secondary"></div>
         <div class="card-body">
-            <form action="/kelola-LPP/store" method="post">
+            <form action="/kelola-LPP/store" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
                     <label for="to" class="form-label">To</label>
@@ -37,23 +37,25 @@
                     <label for="part_name" class="form-label">Part Name</label>
                     <select class="form-select" name="part_name" id="part_name">
                         <option selected></option>
-                        @foreach($part as $p)
+                        <option value=""></option>
+                        {{-- @foreach($part as $p)
                         <option value="{{ $p->nama_part }}">{{ $p->nama_part }}</option>
-                        @endforeach
+                        @endforeach --}}
                     </select>
                 </div>
                 <div class="mb-3">
                     <label for="part_code" class="form-label">Part Code</label>
                 <select class="form-select" name="part_code" id="part_code">
                         <option selected></option>
-                        @foreach($part as $p)
+                        <option value=""></option>
+                        {{-- @foreach($part as $p)
                         <option value="{{ $p->kode_part }}">{{ $p->kode_part }}</option>
-                        @endforeach
+                        @endforeach --}}
                     </select>
                 </div>
                 <div class="mb-3">
                     <label for="quantity" class="form-label">Quantity</label>
-                    <input type="text" class="form-control" name="quantity" id="quantity">
+                    <input type="number" class="form-control" name="quantity" id="quantity">
                 </div>
                 <div class="mb-3">
                     <label for="problem_description" class="form-label">Problem Description</label>
@@ -71,11 +73,37 @@
                     <label for="request" class="form-label">Request</label>
                     <textarea class="form-control" id="request" rows="5" name="request"></textarea>
                 </div> 
-                
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Input Gambar</label>
+                    <input class="form-control" type="file" id="formFile" name="gambar_lpp" required>
+                </div>
                 <button type="submit" class="btn btn-primary">Tambah</button>
             </div>
         </div>
     </form>
 </div>
+
+<script>
+    $(document).ready(function(){
+        $('#model').change(function() {
+            var modelPart = $(this).val();
+            $.ajax({
+                url:'/kelola-LPP/getPartInfo/' + modelPart,
+                type: 'GET',
+                datatype: 'json',
+                success: function(response) {
+                    var partName = '<option value=""></option>';
+                    var partCode = '<option value=""></option>';
+                $.each(response, function (key, value){
+                    partName += '<option value="'+ value.nama_part +'">'+ value.nama_part +'</option>';
+                    partCode += '<option value="'+ value.kode_part +'">'+ value.kode_part +'</option>';
+                });
+                $('#part_name').html(partName);
+                $('#part_code').html(partCode);
+                }
+            })
+        })
+    })
+</script>
 
 @endsection

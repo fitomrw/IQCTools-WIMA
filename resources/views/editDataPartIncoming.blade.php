@@ -61,73 +61,72 @@
                         </select>
                     </div>
             </div>
-            <div class="col lg-5 d-inline-block mt-50">
-                <div class="form-group w-50">
-                    <label for="nama_part">Nama Part</label>
-                    <select class="form-control @error ('nama_part') is-invalid @enderror" id="nama_part" name="nama_part" required>
-                    <option selected></option>
-                    <option value=""></option>
+            
+            <div class="form-group w-50">
+                <label for="nama_part">Nama Part</label>
+                <select class="form-control @error ('nama_part') is-invalid @enderror" id="nama_part" name="nama_part" required>
+                <option selected></option>
+                <option value=""></option>
+                </select>
+
+                @error ('nama_part')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+
+            </div>
+
+        <div class="form-group w-40">
+            <label for="jumlah_kirim">Jumlah Barang Masuk</label>
+            <input type="text" class="form-control @error ('jumlah_kirim') is-invalid @enderror" id="jumlah_kirim" name="jumlah_kirim" placeholder="Jumlah Barang Masuk" value="{{ old('jumlah_kirim', $dataPartIncoming->jumlah_kirim) }}">
+
+            @error ('jumlah_kirim')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
+
+            <strong>Inspection Level</strong>
+            <div class="form-check w-50 dropdownInspectionLevel">
+                <label class="form-check-label" for="inspection_level">
+                    <select class="form-select" name="inspection_level">
+                        <option selected></option>
+                        <option value="S-I" {{ ($dataPartIncoming->inspection_level == "S-I") ? 'selected' : ''}}>S-I</option>
+                        <option value="S-II" {{ ($dataPartIncoming->inspection_level == "S-II") ? 'selected' : ''}}>S-II</option>
+                        <option value="S-III" {{ ($dataPartIncoming->inspection_level == "S-III") ? 'selected' : ''}}>S-III</option>
+                        <option value="S-IV" {{ ($dataPartIncoming->inspection_level == "S-IV") ? 'selected' : ''}}>S-IV</option>
+                        <option value="G-I" {{ ($dataPartIncoming->inspection_level == "G-I") ? 'selected' : ''}}>G-I</option>
+                        <option value="G-II" {{ ($dataPartIncoming->inspection_level == "G-II") ? 'selected' : ''}}>G-II</option>
+                        <option value="G-III" {{ ($dataPartIncoming->inspection_level == "G-III") ? 'selected' : ''}}>G-III</option>
                     </select>
-    
-                    @error ('nama_part')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
-    
-                </div>
-
-            <div class="form-group w-50">
-                <label for="jumlah_kirim">Jumlah Barang Masuk</label>
-                <input type="text" class="form-control @error ('jumlah_kirim') is-invalid @enderror" id="jumlah_kirim" name="jumlah_kirim" placeholder="Jumlah Barang Masuk" value="{{ old('jumlah_kirim', $dataPartIncoming->jumlah_kirim) }}">
-
-                @error ('jumlah_kirim')
-                    <div class="invalid-feedback">
-                        {{ $message }}
-                    </div>
-                @enderror
-
-            </div>
-
-            <div class="form-group w-50">
-                <label for="jumlah_cek">Jumlah Yang Ingin Di Cek</label>   
-                <input type="text" class="form-control @error ('jumlah_cek') is-invalid @enderror" id="jumlah_cek" name="jumlah_cek" placeholder="Jumlah Yang Ingin Di Cek" required value="{{ old('jumlah_cek', $dataPartIncoming->jumlah_cek)  }}">
-
-                @error ('jumlah_cek')
-                    <div class="invalid-feedback">
-                        {{ $message }}
-                    </div>
-                @enderror
-
-            </div>
-
-            <strong>Checksheet Supplier</strong>
-
-            <div class="form-check w-50">
-                <label class="form-check-label"></label>
-                <select class="form-select" name="checksheet_supplier">
-                    <option selected></option>
-                    <option value="Ada" {{ ($dataPartIncoming->checksheet_supplier == "Ada") ? 'selected' : ''}}>Ada </option>
-                    <option value="Tidak Ada" {{ ($dataPartIncoming->checksheet_supplier == "Tidak Ada") ? 'selected' : ''}}>Tidak Ada</option>
-                  </select>
-                </div>
-                {{-- <input class="form-check-input" type="radio" name="checksheet_supplier" id="checksheet_supplier" value="{{ ($dataPartIncoming == 'Ada') ? 'checked' : '' }}" >  --}}
-                
-            {{-- <div class="form-check mb-3">
-                <input class="form-check-input" type="radio" name="checksheet_supplier" id="checksheet_supplier" value="{{ ($dataPartIncoming == 'Tidak Ada') ? 'checked' : '' }}">
-                <label class="form-check-label" for="checksheet_supplier">
-                   Tidak Ada
                 </label>
             </div>
-            <
-            </div> --}}
-            <button type="submit" class="btn btn-primary">Edit</button>
-        </div>
+
+            <strong>AQL Number (in %)</strong>
+
+            <div class="form-check w-100">
+                <label class="form-check-label" for="aql_number">
+                    <select class="form-select" name="aql_number">
+                        <option selected></option>
+                        <option value="0.065" {{ ($dataPartIncoming->aql_number == "0.065") ? 'selected' : ''}}>0.065</option>
+                        <option value="0.1" {{ ($dataPartIncoming->aql_number == "0.065") ? 'selected' : ''}}>0.1</option>
+                        <option value="0.15" {{ ($dataPartIncoming->aql_number == "0.15") ? 'selected' : ''}}>0.15</option>
+                        <option value="0.25" {{ ($dataPartIncoming->aql_number == "0.25") ? 'selected' : ''}}>0.25</option>
+                        <option value="0.4" {{ ($dataPartIncoming->aql_number == "0.4") ? 'selected' : ''}}>0.4</option>
+                        <option value="1" {{ ($dataPartIncoming->aql_number == "1") ? 'selected' : ''}}>1</option>
+                        <option value="1.5" {{ ($dataPartIncoming->aql_number == "1.5") ? 'selected' : ''}}>1.5</option>
+                        <option value="2.5" {{ ($dataPartIncoming->aql_number == "2.5") ? 'selected' : ''}}>2.5</option>
+                        <option value="4" {{ ($dataPartIncoming->aql_number == "4") ? 'selected' : ''}}>4</option>
+                        <option value="6.5" {{ ($dataPartIncoming->aql_number == "6.5") ? 'selected' : ''}}>6.5</option>
+                    </select>
+                </label>
+            </div>
+        <button type="submit" class="btn btn-primary mt-4">Edit</button>
         </form>
     </div>
-</div>
+
         
-    </div>
     <script>
         let event_ = new Event('change')
         $(document).ready(function() {

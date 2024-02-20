@@ -2,92 +2,109 @@
 
 @section('container')
 
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-        <!-- Small boxes (Stat box) -->
-        <div class="row">
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-info">
-              <div class="inner">
-                <h3>150</h3>
-                <p>New Orders</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-bag"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+{{-- Cards --}}
+<div class="row row-cols-md-3 row-cols-2 gx-1 justify-content-center mx-auto">
+    <div class="col">
+        <div class="card bg-primary" style="width: 18rem; height: 10rem;">
+            <div class="card-body text-center">
+                <h5 class="fs-5">Part Incoming</h5>
+                <div class="container bg-success rounded-3">
+                    <a href="/dataPartIncoming" class="text-warning">Go</a>
+                </div>
             </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-success">
-              <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
-
-                <p>Bounce Rate</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-stats-bars"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-warning">
-              <div class="inner">
-                <h3>44</h3>
-
-                <p>User Registrations</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-person-add"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-danger">
-              <div class="inner">
-                <h3>65</h3>
-
-                <p>Unique Visitors</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-pie-graph"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
         </div>
-        <!-- /.row -->
-        <!-- Main row -->
-        <div class="row">
-          <!-- Left col
-          <section class="col-lg-7 connectedSortable"> -->
-                <!-- /. tools -->
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body pt-0">
-                <!--The calendar -->
-                <div id="calendar" style="width: 100%"></div>
-              </div>
-              <!-- /.card-body -->
+    </div>
+
+    <div class="col">
+        <div class="card bg-primary" style="width: 18rem; height: 10rem;">
+            <div class="card-body text-center">
+                <h5 class="fs-5">Pengecekan</h5>
+                <div class="container bg-success rounded-3">
+                    <a href="/riwayatPengecekan" class="card-text text-warning">Go</a>
+                </div>
             </div>
-            <!-- /.card -->
-          </section>
-          <!-- right col -->
         </div>
-        <!-- /.row (main row) -->
-      </div><!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
+    </div>
+
+    <div class="col">
+        <div class="card bg-primary" style="width: 18rem; height: 10rem;">
+            <div class="card-body text-center">
+                <h5 class="fs-5">Laporan Penyimpangan Part</h5>
+                <div class="container bg-success rounded-3">
+                    <a href="kelola-LPP" class="card-text text-warning">Go</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card bg-primary" style="width: 18rem; height: 10rem;">
+            <div class="card-body text-center">
+                <h5 class="fs-5">Kelola Data Master</h5>
+                <div class="container bg-success rounded-3">
+                    <a href="/kelolaDataMaster" class="card-text text-warning">Go</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card bg-primary" style="width: 18rem; height: 10rem;">
+            <div class="card-body text-center">
+                <h5 class="fs-5">Kelola User</h5>
+                <div class="container bg-success rounded-3">
+                    <a href="/register" class="card-text text-warning">Go</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card bg-primary" style="width: 18rem; height: 10rem;">
+            <div class="card-body text-center">
+                <h5 class="fs-5">Kelola Standar Per Part</h5>
+                <div class="container bg-success rounded-3">
+                    <a href="/kelola-masterStandarPart" class="card-text text-warning">Go</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card bg-primary" style="width: 18rem; height: 10rem;">
+            <div class="card-body text-center">
+                <h5 class="fs-5">Kelola Data Standar MIL 105 STD E</h5>
+                <div class="container bg-success rounded-3">
+                    <a href="/kelola-standarMIL" class="card-text text-warning">Go</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card bg-primary" style="width: 18rem; height: 10rem;">
+            <div class="card-body text-center">
+                <h5 class="fs-5">Verifikasi Pengecekan</h5>
+                <div class="container bg-success rounded-3">
+                    <a href="/verifikasi-pengecekan" class="card-text text-warning">Go</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card bg-primary" style="width: 18rem; height: 10rem;">
+            <div class="card-body text-center">
+                <h5 class="fs-5">Verifikasi LPP</h5>
+                <div class="container bg-success rounded-3">
+                    <a href="/kelola-LPP/verifLaporan" class="card-text text-warning">Go</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
 
 @endsection

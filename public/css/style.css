@@ -1,6 +1,6 @@
-.wrapper{
+/* .wrapper{
     background-color: rgba(4, 40, 68, 0.85);
-}
+} */
 
 /* body{
     /* background-image: url("https://asset.kompas.com/crop/0x58:1000x725/750x500/data/photo/2018/11/21/2397393533.jpg");
@@ -25,4 +25,6 @@
     text-align: left; /* Mengatur teks menjadi rata kiri */
 }
 
-
+.dropdownInspectionLevel{
+    margin-left: 0px;
+}

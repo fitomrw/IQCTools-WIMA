@@ -3,7 +3,7 @@
 @section('container')
 <div class="container-fluid">
     <div class="row">
-        <form action="/kelola-masterPart/update/{{ $k_part->kode_part }}" method="post">
+        <form action="/kelola-masterPart/update/{{ $k_part->kode_part }}" method="post" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="col-lg-5 d-inline-block ml-2">
@@ -26,9 +26,7 @@
                     </div>
                 @enderror
                 </select>
-            </div>
 
-            <div class="col-lg-5 d-inline-block ml-2">
                 <label for="kode_part" class="form-label">Kode Part</label>
                 <div class="form-text mt-1">Masukkan Kode Part</div>
                 <input type="text" class="form-control @error ('kode_part') is-invalid @enderror" name="kode_part" id="kode_part" value="{{ $k_part->kode_part }}">
@@ -47,9 +45,41 @@
                         {{ $supply->nama_supplier }}</option>
                     @endforeach
                 </select>
+                <div class="mt-2" id="gantiGambar">
+                    <label for="formFile" class="form-label">Input Gambar</label>
+                    <input class="form-control" type="file" id="formFile" name="gambar_part" >
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary mt-3 ml-3 d-block">Simpan</button>
+            <div class="col-lg-5 d-inline-block ml-2">
+                <img src="/img/img_part/{{ $k_part->gambar_part }}" class="img-fluid">
+                <button id="buttonGambar" type="button" class="btn btn-primary mt-3 ml-3 d-block" onclick="ubahGambar()">Ubah Gambar</button>
+                {{-- <button id="gkJadi" type="button" class="btn btn-danger mt-3 ml-3 d-block" onclick="GkJadiUbahGambar()">Batal Ganti</button> --}}
+            </div>
+            <div class="col-lg-5 d-inline-block ml-2">
+                {{-- <img src="/img/img_part/{{ $k_part->gambar_part }}" class="img-fluid"> --}}
+                <button type="submit" class="btn btn-primary mt-3 ml-3 d-block">Simpan</button>
+            </div>
+           
         </form>
     </div>
 </div>
+<script>
+    let ganti = document.getElementById('gantiGambar');
+    let tombolGanti = document.getElementById('buttonGambar');
+    // let tombolGkJadiGanti = document.getElementById('gkJadi');
+    ganti.hidden = true;
+    // tombolGkJadiGanti.hidden = true;
+    tombolGanti.hidden = false;
+    function ubahGambar() {
+        ganti.hidden = false;
+        // tombolGkJadiGanti.hidden = false;
+        tombolGanti.hidden = true;
+    }
+
+    function GkJadiUbahGambar() {
+        ganti.hidden = true;
+        // tombolGkJadiGanti.hidden = true;
+        tombolGanti.hidden = false;
+    }
+</script>
 @endsection

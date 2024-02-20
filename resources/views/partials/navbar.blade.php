@@ -22,9 +22,9 @@
       </div>
     </form> --}}
 
-    <ul class="navbar-nav ml-auto">
+    <ul class="navbar-nav ml-auto container-fluid">
     @auth
-    <li class="nav-item dropdown">
+    <li class="nav-item dropdown ms-auto">
       <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         Welcome, {{ auth()->user()->name }}
       </a>

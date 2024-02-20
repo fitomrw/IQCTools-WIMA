@@ -3,7 +3,7 @@
 @section('container')
 <div class="container-fluid">
     <div class="row">
-        <form action="/kelola-masterPart/store" method="post">
+        <form action="/kelola-masterPart/store" method="post" enctype="multipart/form-data">
             @csrf
             <div class="col-lg-5 d-inline-block ml-2">
                 <label for="kategori_id" class="form-label">Kategori Part</label>
@@ -15,8 +15,8 @@
                     @endforeach
                 </select>
                 
-                <label for="nama_part" class="form-label mt-2">Nama Part</label>
-                <div class="form-text mt-1">Masukkan Nama Part</div>
+                <label for="nama_part" class="form-label">Nama Part</label>
+                <div class="form-text">Masukkan Nama Part</div>
                 <input type="text" class="form-control @error ('nama_part') is-invalid @enderror" name="nama_part" id="nama_part">
                 @error ('nama_part')
                     <div class="invalid-feedback">
@@ -24,6 +24,10 @@
                     </div>
                 @enderror
                 </select>
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Input Gambar</label>
+                    <input class="form-control" type="file" id="formFile" name="gambar_part" required>
+                </div>
             </div>
 
             <div class="col-lg-5 d-inline-block ml-2">
@@ -44,6 +48,7 @@
                     <option value={{ $supply->id_supplier }}>{{ $supply->nama_supplier }}</option>
                     @endforeach
                 </select>
+               
             </div>
             <button type="submit" class="btn btn-primary mt-3 ml-3 d-block">Simpan</button>
         </form>

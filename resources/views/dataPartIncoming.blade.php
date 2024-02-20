@@ -26,7 +26,7 @@
                 <th scope="col">Kategori Part</th>
                 <th scope="col">Supplier</th>
                 <th scope="col">Jumlah Barang Masuk</th>
-                <th scope="col">Jumlah Pengecekan</th>
+                <th scope="col">Inspection Level</th>
                 <th scope="col">Aksi</th>
             </tr>
         </thead>
@@ -40,7 +40,7 @@
                 <td>{{ $data_barang->part->kategori_part->nama_kategori }}</td>
                 <td>{{ $data_barang->part->supplier->nama_supplier }}</td>
                 <td>{{ $data_barang->jumlah_kirim }}</td>
-                <td>{{ $data_barang->jumlah_cek }}</td>
+                <td>{{ $data_barang->inspection_level}}</td>
                 <td>
                         <div class="btn-group btn-group-sm">
                             <a href="/dataPartIncoming/{{ $data_barang->id_part_supply }}/edit" class="btn btn-info"><i class="fas fa-eye"></i></a>

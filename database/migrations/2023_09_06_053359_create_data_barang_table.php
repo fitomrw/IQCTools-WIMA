@@ -21,10 +21,14 @@ return new class extends Migration
             $table->foreign('kode_part')->references('kode_part')->on('part')->onDelete('cascade');
             $table->unsignedBigInteger('supplier_id');
             $table->foreign('supplier_id')->references('id_supplier')->on('supplier')->onDelete('cascade');
-            $table->string('checksheet_supplier');
-            $table->dateTime('supply_date', $precision = 0);
+            // $table->string('checksheet_supplier')->default('Ada');
+            $table->date('supply_date');
+            $table->string('aql_number');
+            $table->string('inspection_level');
             $table->mediumInteger('jumlah_kirim');
-            $table->mediumInteger('jumlah_cek');
+            // $table->mediumInteger('jumlah_cek')->default(1);
+            $table->boolean('status_pengecekan')->default(0);
+            // $table->date('tanggal_periksa')->nullable();
             $table->timestamps();
         });
     }

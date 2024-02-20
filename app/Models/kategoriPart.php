@@ -27,7 +27,7 @@ class kategoriPart extends Model
 
     public function dataPartIncoming()
     {
-        return $this->hasMany(Laporan::class);
+        return $this->hasMany(dataPartIncoming::class);
     }
 
 }

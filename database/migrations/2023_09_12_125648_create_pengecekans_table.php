@@ -13,18 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tbl_pengecekan', function (Blueprint $table) {
-            $table->id('id_pengecekan');
-            $table->string('kode_part');
-            $table->foreign('kode_part')->references('kode_part')->on('part')->onDelete('cascade');
-            $table->string('nama_part');
-            $table->dateTime('supply_date', $precision = 0);
-            $table->string('titik_check');
-            $table->string('check_standard');
-            $table->string('tool');
-            $table->string('part_status');
-            $table->timestamps();
-        });
+        // Schema::create('tbl_pengecekan', function (Blueprint $table) {
+        //     $table->id('id_pengecekan');
+        //     $table->unsignedBigInteger('id_part_in');
+        //     $table->foreign('id_part_in')->references('id_part_in')->on('tbl_part_in')->onDelete('cascade');
+        //     $table->string('part_status');
+        //     $table->timestamps();
+        // });
     }
 
     /**

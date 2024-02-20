@@ -22,7 +22,7 @@ class Supplier extends Model
 
     public function dataPartIncoming()
     {
-        return $this->hasMany(Part::class);
+        return $this->hasMany(dataPartIncoming::class);
     }
 
 }

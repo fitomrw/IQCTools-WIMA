@@ -2,15 +2,15 @@
 
 @section ('container')
     <div class="container-fluid">
-        <form action = "/dataPartIncoming" method="POST">
+        <form id="formDataPartIncoming" action = "/dataPartIncoming" method="POST" >
         @csrf
         <div class="row">
         <div class="col lg-5 d-inline-block ml-2">
             <div class="form-group w-50">
             <label for="supply_date">Tanggal Supply</label>
-            <input type="date" id="supply_date" name="supply_date" class="d-block">
+            <input type="date" id="supply_date" name="supply_date" class="d-block" required>
             </div>
-                <form action="/dataPartIncoming/getBarang" method="get"><div class="form-group w-50">
+                {{-- <form action="/dataPartIncoming" method="get"><div class="form-group w-50"> --}}
                     <label for="kategori_id">Kategori Part</label>
                     <select class="form-control @error ('kategori_id') is-invalid @enderror" id="kategori_id" name="kategori_id" autofocus required>
                     <option selected></option>
@@ -25,7 +25,8 @@
                         </div>
                     @enderror
 
-                </div></form>
+                </div>
+            {{-- </form> --}}
                 
 
 
@@ -33,8 +34,8 @@
                         <label for="supplier_id">Supplier</label>
                         <select class="form-control @error ('supplier_id') is-invalid @enderror" id="supplier_id" name="supplier_id" required>
                         <option selected></option>
-                        @foreach ($suppliers as $supplier)
-                        <option value="{{ $supplier->id_supplier }}">{{ $supplier->nama_supplier }}</option>
+                        @foreach ($suppliers as $supp)  
+                            <option value="{{ $supp->id_supplier }}">{{ $supp->nama_supplier }}</option>
                         @endforeach
                         </select>
 
@@ -43,8 +44,6 @@
                                 {{ $message }}
                             </div>
                         @enderror
-
-
                     </div>
 
                     <div class="form-group w-50">
@@ -83,35 +82,23 @@
 
             </div>
 
-            <div class="form-group w-50">
-                <label for="jumlah_cek">Jumlah Yang Ingin Di Cek</label>
-                <input type="text" class="form-control @error ('jumlah_cek') is-invalid @enderror" id="jumlah_cek" name="jumlah_cek" placeholder="Jumlah Yang Ingin Di Cek" required value="{{ old('jumlah_cek') }}">
+            <strong>Inspection Level</strong>
 
-                @error ('jumlah_cek')
-                    <div class="invalid-feedback">
-                        {{ $message }}
-                    </div>
-                @enderror
-
-            </div>
-
-            <strong>Checksheet Supplier</strong>
-
-            <div class="form-check m-3">
-                <label class="form-check-label" for="checksheet_supplier">
-                    <select class="form-select" name="checksheet_supplier">
+            <div class="form-check w-50 dropdownInspectionLevel">
+                <label class="form-check-label" for="inspection_level">
+                    <select class="form-select" name="inspection_level">
                         <option selected></option>
-                        <option value="Ada">Ada</option>
-                        <option value="Tidak Ada">Tidak Ada</option>
+                        <option value="S-I">S-I</option>
+                        <option value="S-II">S-II</option>
+                        <option value="S-III">S-III</option>
+                        <option value="S-IV">S-IV</option>
                     </select>
                 </label>
             </div>
-            {{-- <div class="form-check mb-3">
-                <label class="form-check-label" for="checksheet_supplier">
-                <input class="form-check-input" type="radio" name="checksheet_supplier" id="checksheet_supplier" value="Tidak Ada">
-                   Tidak Ada
-                </label>
-            </div> --}}
+
+            <input type="hidden" name="aql_number" value="1">
+
+            <input type="hidden" name="status_pengecekan" id="status_pengecekan" value="1">
             <button type="submit" class="btn btn-primary">Tambah</button>
             </div>
         </div>
@@ -129,19 +116,34 @@
                 type: 'GET',
                 datatype: 'json',
                 success: function(response) {
-                  var options = '<option value="">-- Pilih Nama Part --</option>';
+                var options = '<option value="">-- Pilih Nama Part --</option>';
                 var KodeParts = '<option value="">-- Masukkan Kode Part --</option>';
+                var suppliers = '<option value="">-- Masukkan Supplier --</option>';
                     $.each(response, function (key, value) {
                         options += '<option value="' + value.nama_part + '">' + value.nama_part + '</option>';
                         KodeParts  += '<option value="' + value.kode_part + '">' + value.kode_part + '</option>';
+                        suppliers  += '<option value="' + value.supplier_id + '">' + value. + '</option>';
 
                     });
                     // console.log(kode)
                     $('#kode_part').html(KodeParts);
                     $('#nama_part').html(options);
-                }
+                //     $('#supplier_id').html(suppliers);
+                // }
             })
           })
         })
-                            </script>
+
+        // document.getElementById("formDataPartIncoming").addEventListener("submit", function (e) {
+        //     // e.preventDefault();
+
+        //     //Take Value
+        //     let valJumlahCek = document.getElementById("jumlah_cek").value;
+
+        //     window.localStorage.setItem('jumlah_cek', valJumlahCek);
+        //     // console.log(valJumlahCek);
+
+        //     window.location.href = '/detailPengecekan/{id}/{' + encodeURIComponent(valJumlahCek) + '}';
+        // });
+    </script>
 @endsection

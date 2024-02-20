@@ -16,20 +16,17 @@
             <p><b>Quantity : </b> {{ $showVerifLaporan->quantity }}</p>
             <p><b>Problem Description : </b> {{ $showVerifLaporan->problem_description }}</p>
             <p><b>Request : </b> {{ $showVerifLaporan->request }}</p>
+            <p><b>Found Area : </b> {{ $showVerifLaporan->found_area }}</p>
+            <p><b>Illustration : </b> 
+                <br>
+                <img src="/img/img_lpp/{{ $showVerifLaporan->gambar_lpp }}" alt="illustration" style="max-width=150px;">
+            </p>
             <form action="/kelola-LPP/executeVerif/{{ $showVerifLaporan->id }}" method="post">
                 @csrf
                 <input type="hidden" name="status" id="status" value="1" id="successVerif">
-                <button type="submit" class="btn btn-success" id="buttonVerif" onclick="delDataButtonPeriksa()">Verifikasi</button>
+                <button type="submit" class="btn btn-success" id="buttonVerif">Verifikasi</button>
             </form>
         </div>
     </div>
 </div>
-
-<script>
-    function delDataButtonPeriksa() {
-        var buttonPeriksa = document.getElementById("successVerif").value;
-        localStorage.setItem("successVerif", successVerif);
-        window.location.href = "verif-LPP.blade.php";
-    }
-</script>
 @endsection

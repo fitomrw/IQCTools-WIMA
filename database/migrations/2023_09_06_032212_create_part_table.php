@@ -17,6 +17,7 @@ return new class extends Migration
             // $table->id();
             $table->string('kode_part')->primary();
             $table->string('nama_part');
+            $table->string('gambar_part');
             $table->unsignedBigInteger('kategori_id');
             $table->foreign('kategori_id')->references('id_kategori')->on('kategori_part')->onDelete('cascade');
             $table->unsignedBigInteger('supplier_id');
