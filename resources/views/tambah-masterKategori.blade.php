@@ -17,7 +17,7 @@
                 @enderror
             </div>
             <div class="d-block">
-                <button type="submit" class="btn btn-primary mt-3 ml-3">Simpan</button>
+                <button type="submit" class="btn btn-primary mt-3 ml-3">Tambah</button>
             </div>
         </form>
     </div>

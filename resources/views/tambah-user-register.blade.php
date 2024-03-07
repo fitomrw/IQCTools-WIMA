@@ -14,10 +14,10 @@
 
             <form action="/register/store" method="post">
                 @csrf
-                <h2 class="text-center mb-3">Silahkan Registrasi</h3>
                 <div class="form-group">
                     <label for="name">Nama Lengkap</label>
-                    <input type="text" class="form-control @error ('name') is-invalid @enderror" id="name" name="name" placeholder="Masukkan Nama Lengkap" value="{{ old('name') }}" required>
+                    <div class="form-text mt-1">Masukkan Nama Lengkap</div>
+                    <input type="text" class="form-control @error ('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required>
                     
                     @error ('name')
                     <div class="invalid-feedback">
@@ -29,6 +29,7 @@
 
                 <div class="form-group">
                     <label for="jabatan">Jabatan</label>
+                    <div class="form-text mt-1">Masukkan Jabatan</div>
                     <select class="form-control @error ('jabatan') is-invalid @enderror" id="jabatan" name="jabatan" value="{{ old('jabatan') }}" required> 
                         <option></option>
                         <option value="Staff QC">Staff QC</option>
@@ -47,7 +48,8 @@
 
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" class="form-control @error ('username') is-invalid @enderror" id="username" name="username" placeholder="Masukkan Username"  value="{{ old('name') }}" required>
+                    <div class="form-text mt-1">Masukkan Username</div>
+                    <input type="text" class="form-control @error ('username') is-invalid @enderror" id="username" name="username" value="{{ old('name') }}" required>
                     @error ('username')
                     <div class="invalid-feedback">
                         {{ $message }}
@@ -59,7 +61,8 @@
 
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" class="form-control @error ('email') is-invalid @enderror" id="email" name="email" sd placeholder="Masukkan Email" value="{{ old('email') }}" required>
+                    <div class="form-text mt-1">Masukkan Email</div>
+                    <input type="email" class="form-control @error ('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" required>
                     @error ('email')
                     <div class="invalid-feedback">
                         {{ $message }}
@@ -71,7 +74,8 @@
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control @error ('password') is-invalid @enderror" id="password" name="password" placeholder="Masukkan Password" value="{{ old('password') }}" required>
+                    <div class="form-text mt-1">Masukkan Password</div>
+                    <input type="password" class="form-control @error ('password') is-invalid @enderror" id="password" name="password" value="{{ old('password') }}" required>
                     @error ('password')
                     <div class="invalid-feedback">
                         {{ $message }}

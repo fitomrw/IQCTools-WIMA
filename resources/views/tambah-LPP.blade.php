@@ -77,6 +77,8 @@
                     <label for="formFile" class="form-label">Input Gambar</label>
                     <input class="form-control" type="file" id="formFile" name="gambar_lpp" required>
                 </div>
+
+                <input type="hidden" name="pic_person" value="{{ auth()->user()->id}}">
                 <button type="submit" class="btn btn-primary">Tambah</button>
             </div>
         </div>

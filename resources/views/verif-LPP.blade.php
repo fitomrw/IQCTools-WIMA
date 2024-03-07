@@ -10,7 +10,6 @@
           <th scope="col" class="text-center">Kode Part</th>
           <th scope="col" class="text-center">Nama Part</th>
           <th scope="col" class="text-center">Status</th>
-          <th scope="col" class="text-center">Tindak Lanjut</th>
           <th scope="col" class="text-center">Aksi</th>
         </tr>
       </thead>
@@ -26,7 +25,6 @@
             {{ ($verif->status == 0) ? 'Belum Verifikasi' : 'Sudah Verifikasi' }}
             </label>
           </td>
-          <td class="text-center"></td>
           <td class="text-center">
             <form action="/kelola-LPP/verifLaporanShow/{{ $verif->id }}" method="post" class="d-block">
               <a class="btn btn-warning" href="/kelola-LPP/verifLaporanShow/{{ $verif->id }}" role="button">Periksa</a>

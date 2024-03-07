@@ -8,7 +8,8 @@ use App\Models\StandarPerPartModel;
 use App\Models\Pengecekan;
 use App\Models\standarMIL;
 use Yajra\DataTables\DataTables;
-
+use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 
 class PengecekanController extends Controller
@@ -31,29 +32,30 @@ class PengecekanController extends Controller
     public function riwayatPengecekan()
     {
         $data = dataPartIncoming::all();
+
         return view('riwayatPengecekan', [
             "title" => "Pengecekan",
             "image" => "img/wima_logo.png"
         ], compact('data'));
     }
 
-    // public function cekPerPoint(Request $request)
-    // {
-    //     $updateData = CatatanCekModel::where('id', $request->key2)->first();
-    //     $updateData->update([
-    //         'status' => $request->key1,
-    //         'checksheet' => 'checked'
-    //     ]); 
-    // }
+    public function cekPerPoint(Request $request)
+    {
+        $updateData = CatatanCekModel::where('id', $request->key2)->first();
+        $updateData->update([
+            'status' => $request->key1,
+            'checksheet' => 'checked'
+        ]); 
+    }
 
-    // public function submitPengecekan(Request $request, $id)
-    // {
-    //    $updateData = dataPartIncoming::where('id_part_supply', $id)->get();
-    //    $updateData->update([
-    //         'tanggal_pengecekan' => $request->tanggal_periksa,
-    //     ]); 
-    //     return redirect('/riwayatPengecekan');
-    // }
+    public function submitPengecekan(Request $request, $id)
+    {
+       $updateData = dataPartIncoming::where('id_part_supply', $id)->first();
+       $updateData->update([
+            'tanggal_pengecekan' => $request->tanggal_periksa,
+        ]); 
+        return redirect('/riwayatPengecekan');
+    }
 
     // public function dataPengecekan(Request $request)
     // {
@@ -73,31 +75,43 @@ class PengecekanController extends Controller
     //     //        "image" => "img/wima_logo.png"
     //     // ]);
     // }
-    public function detailPengecekan($id, $kode_part)
+    public function detailPengecekan($id)
     {
-        $dataPartIn = dataPartIncoming::where('id_part_supply', $id  && 'kode_part', $kode_part)->first();
+        $dataPartIn = dataPartIncoming::where('id_part_supply', $id)->first();
+        $tanggalSekarang = Carbon::now()->toDateString();
+        // dd($dataPartIn);
 
-        $standarPerPart = StandarPerPartModel::where('kode_part', $kode_part)->get();
+        // $standarPerPart = StandarPerPartModel::where('kode_part', $kode_part)->get();
         // dd($standarPerPart);
         // dd( $dataPartIn);
         
-        // $listCek = CatatanCekModel::where('id_part_supply', $id)->get();  
-        // // dd($listCek);
-        // $cekDimensi = null;
-        // $cekVisual = null;
-        // $cekFunction = null;
+        // $listCek = CatatanCekModel::where('id_part_supply', $id)->get();
+        
+        $urutanSample = $dataPartIn->jumlah_sample;
+        $listCek = CatatanCekModel::where('id_part_supply', $id)->get();
+
+        // dd($urutanSample);
+        $paginatedData = $listCek->all();
+        // $paginate = $paginatedData->paginate($urutanSample);
+        // dd($urutanSample);
+        $cekDimensi = [];
+        $cekVisual = [];
+        $cekFunction = [];
 
         
-        // foreach ($listCek as $key ) {
-        //     // dd($key->standarPart->standar);
-        //     if ($key->standarPart->standar->jenis_standar == 'VISUAL') {
-        //         $cekVisual[] = $key;
-        //     } elseif ($key->standarPart->standar->jenis_standar == 'DIMENSI') {
-        //         $cekDimensi[] = $key;
-        //     } elseif ($key->standarPart->standar->jenis_standar == 'FUNCTION') {
-        //         $cekFunction[] = $key;
-        //     }
-        // }  
+        foreach ($listCek as $key ) {
+            // dd($key->standarPart->standar);
+            if ($key->standarPart->standar->jenis_standar == 'VISUAL') {
+            $cekVisual[] = $key;
+            } elseif ($key->standarPart->standar->jenis_standar == 'DIMENSI') {
+                $cekDimensi[] = $key;
+            } elseif ($key->standarPart->standar->jenis_standar == 'FUNCTION') {
+                $cekFunction[] = $key;
+            }
+        }  
+
+        // dd($id);    
+        
         
         $s4Levels = $dataPartIn->inspection_level == 'S-IV';
         $s3Levels = $dataPartIn->inspection_level == 'S-III';
@@ -110,138 +124,148 @@ class PengecekanController extends Controller
         return view('detailPengecekan', [
             "title" => "Detail Pengecekan",
             "image" => "img/wima_logo.png"
-        ], compact('dataPartIn','standarPerPart','jumlahTabel'));
+        ], compact('dataPartIn','jumlahTabel', 'cekVisual', 'cekDimensi', 'cekFunction', 'paginatedData', 'tanggalSekarang'));
    
     }
 
-    protected function calculateJumlahTabel($s4Levels, $s3Levels, $s2Levels, $s1Levels, $dataPartIn, $aqlNumber1)
+    public function calculateJumlahTabel($s4Levels, $s3Levels, $s2Levels, $s1Levels, $dataPartIn, $aqlNumber1)
     {
+        // dd('test');
         //Inspection Levels = "S-IV", AQL Number = 1 (Default WIMA)
-        if ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim < 8 && $s4Levels && $aqlNumber1){
+        if ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s4Levels && $aqlNumber1){
+    //    dd('test1');
             return 2;
-        } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim < 15 && $s4Levels  && $aqlNumber1){
+        } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s4Levels  && $aqlNumber1){
+            // dd('test2');
             return 2;
-        } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim < 25 && $s4Levels  && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s4Levels  && $aqlNumber1){
+            // dd('test3');
             return 3;
-        } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim < 50 && $s4Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s4Levels && $aqlNumber1){
+            // dd('test4');
             return 5;
-        } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim < 90 && $s4Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim <= 90 && $s4Levels && $aqlNumber1){
+            // dd('test5');
             return 5;
-        } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim < 150 && $s4Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim <= 150 && $s4Levels && $aqlNumber1){
+            // dd('test6');        
             return 8;
-        } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim < 280 && $s4Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim <= 280 && $s4Levels && $aqlNumber1){
+            // dd('test7');
             return 13;
-        } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim < 500 && $s4Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim <= 500 && $s4Levels && $aqlNumber1){
+            // dd('test8');
             return 13;
-        } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim < 1200 && $s4Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim <= 1200 && $s4Levels && $aqlNumber1){
+            // dd('test9');
             return 20;
-        } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim < 3200 && $s4Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim <= 3200 && $s4Levels && $aqlNumber1){
             return 32;
-        } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim < 10000 && $s4Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim <= 10000 && $s4Levels && $aqlNumber1){
             return 32;
-        } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim < 35000 && $s4Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim <= 35000 && $s4Levels && $aqlNumber1){
             return 50;
-        } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim < 150000 && $s4Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim <= 150000 && $s4Levels && $aqlNumber1){
             return 80;
-        } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim < 500000 && $s4Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim <= 500000 && $s4Levels && $aqlNumber1){
             return 80;
-        }elseif($dataPartIn->jumlah_kirim >= 500001 && $dataPartIn->jumlah_kirim < INF  && $s4Levels && $aqlNumber1){
+        }elseif($dataPartIn->jumlah_kirim >= 500001 && $dataPartIn->jumlah_kirim <= INF  && $s4Levels && $aqlNumber1){
             return 125;
 
         //Inspection Levels = "S-III", AQL Number = 1
-        }elseif($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim < 8 && $s3Levels && $aqlNumber1){
+        }elseif($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s3Levels && $aqlNumber1){
             return 2;
-        } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim < 15 && $s3Levels  && $aqlNumber1){
+        } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s3Levels  && $aqlNumber1){
             return 2;
-        } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim < 25 && $s3Levels  && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s3Levels  && $aqlNumber1){
             return 3;
-        } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim < 50 && $s3Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s3Levels && $aqlNumber1){
             return 3;
-        } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim < 90 && $s3Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim <= 90 && $s3Levels && $aqlNumber1){
             return 5;
-        } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim < 150 && $s3Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim <= 150 && $s3Levels && $aqlNumber1){
             return 5;
-        } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim < 280 && $s3Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim <= 280 && $s3Levels && $aqlNumber1){
             return 8;
-        } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim < 500 && $s3Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim <= 500 && $s3Levels && $aqlNumber1){
             return 8;
-        } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim < 1200 && $s3Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim <= 1200 && $s3Levels && $aqlNumber1){
             return 13;
-        } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim < 3200 && $s3Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim <= 3200 && $s3Levels && $aqlNumber1){
             return 13;
-        } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim < 10000 && $s3Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim <= 10000 && $s3Levels && $aqlNumber1){
             return 20;
-        } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim < 35000 && $s3Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim <= 35000 && $s3Levels && $aqlNumber1){
             return 20;
-        } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim < 150000 && $s3Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim <= 150000 && $s3Levels && $aqlNumber1){
             return 32;
-        } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim < 500000 && $s3Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim <= 500000 && $s3Levels && $aqlNumber1){
             return 32;
-        }elseif($dataPartIn->jumlah_kirim >= 500001 && $dataPartIn->jumlah_kirim < INF  && $s3Levels && $aqlNumber1){
+        }elseif($dataPartIn->jumlah_kirim >= 500001 && $dataPartIn->jumlah_kirim <= INF  && $s3Levels && $aqlNumber1){
             return 50;
         
-        //Inspection Levels = "S-II", AQL Number = 0.65
-        }elseif ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim < 8 && $s2Levels && $aqlNumber1){
+        //Inspection Levels = "S-II", AQL Number = 1
+        }elseif ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s2Levels && $aqlNumber1){
+        return 2;
+        } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s2Levels  && $aqlNumber1){
             return 2;
-        } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim < 15 && $s2Levels  && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s2Levels  && $aqlNumber1){
             return 2;
-        } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim < 25 && $s2Levels  && $aqlNumber1){
-            return 2;
-        } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim < 50 && $s2Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s2Levels && $aqlNumber1){
             return 3;
-        } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim < 90 && $s2Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim <= 90 && $s2Levels && $aqlNumber1){
             return 3;
-        } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim < 150 && $s2Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim <= 150 && $s2Levels && $aqlNumber1){
             return 3;
-        } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim < 280 && $s2Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim <= 280 && $s2Levels && $aqlNumber1){
             return 5;
-        } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim < 500 && $s2Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim <= 500 && $s2Levels && $aqlNumber1){
             return 5;
-        } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim < 1200 && $s2Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim <= 1200 && $s2Levels && $aqlNumber1){
             return 5;
-        } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim < 3200 && $s2Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim <= 3200 && $s2Levels && $aqlNumber1){
             return 8;
-        } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim < 10000 && $s2Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim <= 10000 && $s2Levels && $aqlNumber1){
             return 8;
-        } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim < 35000 && $s2Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim <= 35000 && $s2Levels && $aqlNumber1){
             return 8;
-        } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim < 150000 && $s2Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim <= 150000 && $s2Levels && $aqlNumber1){
             return 13;
-        } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim < 500000 && $s2Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim <= 500000 && $s2Levels && $aqlNumber1){
             return 13;
-        } elseif($dataPartIn->jumlah_kirim >= 500001 && $dataPartIn->jumlah_kirim < INF  && $s2Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 500001 && $dataPartIn->jumlah_kirim <= INF  && $s2Levels && $aqlNumber1){
             return 13;
 
         //Inspection Levels = "S-I" AQL Number = 1
-        }elseif ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim < 8 && $s1Levels && $aqlNumber1){
+        }elseif ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s1Levels && $aqlNumber1){
             return 2;
-        } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim < 15 && $s1Levels  && $aqlNumber1){
+        } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s1Levels  && $aqlNumber1){
             return 2;
-        } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim < 25 && $s1Levels  && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s1Levels  && $aqlNumber1){
             return 2;
-        } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim < 50 && $s1Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s1Levels && $aqlNumber1){
             return 2;
-        } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim < 90 && $s1Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim <= 90 && $s1Levels && $aqlNumber1){
             return 3;
-        } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim < 150 && $s1Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim <= 150 && $s1Levels && $aqlNumber1){
             return 3;
-        } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim < 280 && $s1Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim <= 280 && $s1Levels && $aqlNumber1){
             return 3;
-        } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim < 500 && $s1Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim <= 500 && $s1Levels && $aqlNumber1){
             return 3;
-        } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim < 1200 && $s1Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim <= 1200 && $s1Levels && $aqlNumber1){
             return 5;
-        } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim < 3200 && $s1Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim <= 3200 && $s1Levels && $aqlNumber1){
             return 5;
-        } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim < 10000 && $s1Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim <= 10000 && $s1Levels && $aqlNumber1){
             return 5;
-        } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim < 35000 && $s1Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim <= 35000 && $s1Levels && $aqlNumber1){
             return 5;
-        } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim < 150000 && $s1Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim <= 150000 && $s1Levels && $aqlNumber1){
             return 8;
-        } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim < 500000 && $s1Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim <= 500000 && $s1Levels && $aqlNumber1){
             return 8;
-        } elseif($dataPartIn->jumlah_kirim >= 500001 && $dataPartIn->jumlah_kirim < INF  && $s1Levels && $aqlNumber1){
+        } elseif($dataPartIn->jumlah_kirim >= 500001 && $dataPartIn->jumlah_kirim <= INF  && $s1Levels && $aqlNumber1){
             return 8;
         }
 

@@ -79,6 +79,6 @@ class RegisterController extends Controller
         $deleteUser = User::find($id);
         $deleteUser->delete();
 
-        return redirect('/register')->with("danger", 'Data user berhasil dihapus!');
+        return redirect('/register')->with("deleteNotify", 'Data user berhasil dihapus!');
     }
 }

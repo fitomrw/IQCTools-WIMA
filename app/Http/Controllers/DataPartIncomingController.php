@@ -10,8 +10,10 @@ use App\Http\Requests\StoredataPartIncomingRequest;
 use App\Http\Requests\UpdatedataPartIncomingRequest;
 use App\Models\CatatanCekModel;
 use App\Models\StandarPerPartModel;
+use App\Http\Controllers\PengecekanController;
 use GuzzleHttp\Psr7\Request;
 use PhpParser\Node\Stmt\Foreach_;
+use Illuminate\Support\Carbon;
 
 class DataPartIncomingController extends Controller
 {
@@ -68,23 +70,16 @@ class DataPartIncomingController extends Controller
      */
     public function create()
     {
-        // dd($request);
         $kategori_part = kategoriPart::all();
-        // $parts = Part::all();
-        
         $suppliers = Supplier::all();
-        // dd($parts);
         
-
         return view('tambahDataPartIncoming', [
             "title" => "Tambah Data Part Incoming",
             "image" => "{{ url('/img/wima_logo.png') }}",
             "kategori_part" =>  $kategori_part,
-            "suppliers" => $suppliers   
+            "suppliers" => $suppliers,
+            "tanggalSekarang" => $tanggalSekarang  
         ]);
-
-
-        
     }
 
     /**
@@ -105,26 +100,39 @@ class DataPartIncomingController extends Controller
             'supply_date' => ['required'],
             'jumlah_kirim' => ['required'],
             'aql_number' => ['required'],
-            'inspection_level' => ['required']
+            'inspection_level' => ['required'],
+            // 'jumlah_sample' => ['required']
         ]);
         
         dataPartIncoming::create($validatedData);
         $data = dataPartIncoming::all();
         $dataTerbaru = $data->last();
         $standarPart = StandarPerPartModel::where('kode_part', $dataTerbaru->kode_part)->get();
-        // dd($standarPart);
-        foreach ($standarPart as $key ) {
-            CatatanCekModel::create([
-                'id_part_supply' => $dataTerbaru->id_part_supply,
-                'id_standar_part' => $key->id_standar_part,
-                // 'status_pengecekan' => $key->status_pengecekan
-            ]);
+
+        $s4Levels = $dataTerbaru->inspection_level == 'S-IV';
+        $s3Levels = $dataTerbaru->inspection_level == 'S-III';
+        $s2Levels = $dataTerbaru->inspection_level == 'S-II';
+        $s1Levels = $dataTerbaru->inspection_level == 'S-I';
+        $aqlNumber1 = $dataTerbaru->aql_number == 1;
+        
+        $cat = new PengecekanController;
+        $test = $cat->calculateJumlahTabel($s4Levels, $s3Levels, $s2Levels, $s1Levels, $dataTerbaru, $aqlNumber1);
+
+        // $dataTerbaru->update([
+        //     "jumlah_sample" => $test
+        // ]);
+
+        for ($i=1; $i <= $test ; $i++) { 
+            foreach ($standarPart as $key ) {
+                CatatanCekModel::create([
+                    'id_part_supply' => $dataTerbaru->id_part_supply,
+                    'id_standar_part' => $key->id_standar_part,
+                    'urutan_sample' => $i
+                ]);
+            }
         }
-        // dd($test);
 
-        // $request->session()->with('success', 'Data Berhasil! Ditambahkan!');
-
-        return redirect('/dataPartIncoming');
+        return redirect('/dataPartIncoming')->with('notify', 'Data Part Incoming Berhasil Ditambahkan!');
     }
 
     /**
@@ -197,7 +205,7 @@ class DataPartIncomingController extends Controller
 
         // $request->session()->with('success', 'Data Berhasil! Ditambahkan!');
 
-        return redirect('/dataPartIncoming');
+        return redirect('/dataPartIncoming')->with('notify', 'Data Part Incoming Berhasil Diubah!');
     }
 
     /**
@@ -206,13 +214,20 @@ class DataPartIncomingController extends Controller
      * @param  \App\Models\dataPartIncoming  $dataPartIncoming
      * @return \Illuminate\Http\Response
      */
-    public function destroy(dataPartIncoming $dataPartIncoming, $id_part_supply)
+    // public function destroy(dataPartIncoming $dataPartIncoming)
+    // {
+    //     $dataPartIncoming->delete();
+
+    //     return redirect('/dataPartIncoming');
+
+    // }
+
+    public function delete($id_part_supply)
     {
-        $delPartIn = dataPartIncoming::find($id_part_supply);
-        $delPartIn->delete();
+        $deletePartIncoming = dataPartIncoming::find($id_part_supply);
+        $deletePartIncoming->delete();
 
-
-        return redirect('/dataPartIncoming');
+        return redirect('/dataPartIncoming')->with('deleteNotify', 'Data Part Incoming Berhasil Dihapus!');
 
     }
 

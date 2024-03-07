@@ -8,7 +8,7 @@ use App\Models\kategoriPart;
 use App\Models\Supplier;
 use App\Models\StandarModel;
 use App\Models\StandarPerPartModel;
-
+use PhpParser\PrettyPrinter\Standard;
 
 class PartController extends Controller
 {
@@ -148,11 +148,34 @@ class PartController extends Controller
 
     public function editStandar ($id_standar)
     {
-        $editStandar = StandarModel::all();
+        $editStandar = StandarModel::find($id_standar);
+
         return view ('edit-masterStandar', [
             "title" => "Edit Data Master Standar",
             "editStandar" => $editStandar
         ]);
+    }
+
+    public function updateStandar($id_standar, Request $request)
+    {
+        $validatedData = $request->validate([
+            'jenis_standar' => ['required'],
+            'alat' => ['required'],
+            'uraian' => ['required'],
+        ]);
+
+        StandarModel::where('id_standar', $id_standar)
+                    ->update($validatedData);
+
+        return redirect('/kelola-masterStandar')->with('success', 'Data Standar Berhasil Diubah!');
+    }
+
+    public function deleteStandar($id_standar)
+    {
+        $delStandar = StandarModel::find($id_standar);
+        $delStandar->delete();
+
+        return redirect('/kelola-masterStandar')->with('delete', 'Data Berhasil Di Hapus!');
     }
 
      //<<<< Pengaturan Standar Per Part >>>//
@@ -197,6 +220,13 @@ class PartController extends Controller
         ]);
     
          return redirect('/kelola-masterStandarPart/edit/'.$part)->with('success', 'Data Standar Per Part Berhasil Ditambahkan!');
+     }
+     public function deletePengaturanStandar($id_standar_part, $part)
+     {
+        $delStandarPerPart = StandarPerPartModel::find($id_standar_part);
+        $delStandarPerPart->delete();
+
+        return redirect ('/kelola-masterStandarPart/edit/'.$part)->with('danger', 'Data Standar Per Part Berhasil Dihapus!');
      }
 
 }

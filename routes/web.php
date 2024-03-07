@@ -87,13 +87,16 @@ Route::middleware(['auth', 'CekJabatan:Admin QC'])->group(function () {
     Route::get('/kelola-masterStandar', [PartController::class, 'indexStandar']);
     Route::get('/kelola-masterStandar/create', [PartController::class, 'createStandar']);
     Route::post('/kelola-masterStandar/store', [PartController::class, 'storeStandar']);
-    Route::get('/kelola-masterStandar/edit/{id}', [PartController::class, 'editStandar']);
+    Route::get('/kelola-masterStandar/edit/{id_standar}', [PartController::class, 'editStandar']);
+    Route::post('/kelola-masterStandar/update/{id_standar}', [PartController::class, 'updateStandar']);
+    Route::get('/kelola-masterStandar/delete/{id_standar}', [PartController::class, 'deleteStandar']);
 
     //Master Standar Per Part
     Route::get('/kelola-masterStandarPart', [PartController::class, 'indexPengaturanStandar']);
     Route::get('/kelola-masterStandarPart/edit/{part}', [PartController::class, 'editStandarPart']);
     Route::get('/kelola-masterStandarPart/getJenisStandarPart/{jenis_standar}', [PartController::class, 'getJenisStandarPart']);
     Route::post('/tambahStandarPart/{part}', [PartController::class, 'storePengaturanStandar']);
+    Route::get('/kelola-masterStandarPart/delete/{id_standar_part}', [PartController::class, 'deletePengaturanStandar']);
 
     //Master Data MIL STD 105 E
     Route::get('/kelola-standarMIL', [PengecekanController::class, 'indexMIL']);
@@ -107,7 +110,7 @@ Route::middleware(['auth', 'CekJabatan:Admin QC'])->group(function () {
 //data part incoming
 Route::middleware(['auth','CekJabatan:Staff QC'])->group(function () {
     Route::resource('/dataPartIncoming', DataPartIncomingController::class);
-    // Route::get('/dataPartIncoming/{id_part_supply}', DataPartIncomingController::class, 'destroy');
+    Route::get('/dataPartIncoming/delete/{id_part_supply}', [DataPartIncomingController::class, 'delete']);
     Route::get('/dataPartIncoming/getBarang/{kategori_id}', [DataPartIncomingController::class, 'getKodePart']);
     Route::get('/dataPartIncoming/getSupplier/{kategori_id}', [DataPartIncomingController::class, 'getSupplier']);
     Route::get('/dataPartIncoming/getBarangEdit/{kategori_id}', [DataPartIncomingController::class, 'getKodePartEdit']);
@@ -136,6 +139,7 @@ Route::middleware(['auth','CekJabatan:Staff QC'])->group(function () {
     Route::get('/kelola-LPP/getPartInfo/{model}', [LaporanController::class, 'getPartInfo']);
     Route::post('/kelola-LPP/store', [LaporanController::class, 'store']);
     Route::get('/kelola-LPP/laporanShow/{id}', [LaporanController::class, 'show']);
+    Route::get('/kelola-LPP/getPartInfoEdit/{model}', [LaporanController::class, 'getPartInfoEdit']);
     Route::get('/kelola-LPP/edit/{id}', [LaporanController::class, 'edit']);
     Route::put('/kelola-LPP/update/{id}', [LaporanController::class, 'update']);
     Route::get('/kelola-LPP/destroy/{id}', [LaporanController::class, 'destroy']);

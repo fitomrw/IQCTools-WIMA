@@ -26,6 +26,8 @@ return new class extends Migration
             $table->string('problem_description');
             $table->string('request');
             $table->string('found_area');
+            $table->unsignedBigInteger('pic_person');
+            $table->foreign('pic_person')->references('id')->on('users')->onDelete('cascade');
             $table->integer('status')->default(0);
             $table->string('gambar_lpp');
             $table->timestamps();

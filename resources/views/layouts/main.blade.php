@@ -79,16 +79,6 @@
 </div>
 <!-- ./wrapper -->
 
-<!--jQuery External-->
-<!-- <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script> -->
-<!-- jQuery -->
-{{-- <script src="/template/plugins/jquery/jquery.min.js"></script> --}}
-<!-- jQuery UI 1.11.4 -->
-<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-{{-- <script>
-  $.widget.bridge('uibutton', $.ui.button)
-</script> --}}
-
 
 <!-- Bootstrap 4 -->
 <!-- <script src="{{ url('/template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script> -->

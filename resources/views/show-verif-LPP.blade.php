@@ -19,7 +19,7 @@
             <p><b>Found Area : </b> {{ $showVerifLaporan->found_area }}</p>
             <p><b>Illustration : </b> 
                 <br>
-                <img src="/img/img_lpp/{{ $showVerifLaporan->gambar_lpp }}" alt="illustration" style="max-width=150px;">
+                <img src="/img/img_lpp/{{ $showVerifLaporan->gambar_lpp }}" alt="illustration" style="max-width:300px">
             </p>
             <form action="/kelola-LPP/executeVerif/{{ $showVerifLaporan->id }}" method="post">
                 @csrf

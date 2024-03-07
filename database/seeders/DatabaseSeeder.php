@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Supplier;
 use App\Models\kategoriPart;
+use App\Models\StandarModel;
 use App\Models\Part;
 use App\Models\standarMIL;
 
@@ -59,6 +60,38 @@ class DatabaseSeeder extends Seeder
             'email' => 'staffqa@gmail.com',
             'password' => Hash::make('staffqa')
         ]);
+
+        User::create([
+            'name' => 'Muhammad Khurais',
+            'username' => 'khurais',
+            'jabatan' => 'Admin QC',
+            'email' => 'khuraismuhammad@gmail.com',
+            'password' => Hash::make('khurais')
+        ]);
+
+        User::create([
+            'name' => 'Herry Setiawan',
+            'username' => 'herry',
+            'jabatan' => 'Staff QC',
+            'email' => 'herry.setiawan@gmail.com',
+            'password' => Hash::make('herry')
+        ]);
+
+        User::create([
+            'name' => 'Agus Sopandi',
+            'username' => 'agussopandi',
+            'jabatan' => 'Kepala Seksi QC',
+            'email' => 'agussopandi@gmail.com',
+            'password' => Hash::make('agussopandi')
+        ]);
+
+        User::create([
+            'name' => 'Eriyan Dwi Putra',
+            'username' => 'eriyan',
+            'jabatan' => 'Staff QA',
+            'email' => 'eriyandp@gmail.com',
+            'password' => Hash::make('eriyan')
+        ]);
         
         Supplier::create([
             'nama_supplier' => 'Artomoro Precision',
@@ -95,6 +128,20 @@ class DatabaseSeeder extends Seeder
             'alamat' => 'Tangerang',
         ]);
 
+        Supplier::create([
+            'nama_supplier' => 'Nandya Karya Perkasa',
+            'no_telepon' => '021 82499447',
+            'email' => 'marketing@nandya-karya-perkasa.com',
+            'alamat' => 'Jl. KH Umar Kp. Rawailat RT/RW. 003/009, Dayeuh, Kec. Cileungsi, Kab. Bogor, Jawa Barat 16820 - Indonesia',
+        ]);
+
+        Supplier::create([
+            'nama_supplier' => 'Mitsuba',
+            'no_telepon' => '021 5908020',
+            'email' => 'marketing@mitsuba.com',
+            'alamat' => 'Jl. Prabu Siliwangi No.88, RT.001/RW.004, Keroncong, Kec. Jatiuwung, Kota Tangerang, Banten 15134',
+        ]);
+
         kategoriPart::create([
             'nama_kategori' => 'Plastic Part'
         ]);
@@ -115,78 +162,54 @@ class DatabaseSeeder extends Seeder
             'nama_kategori' => 'Bolt & Nut'
         ]);
 
-        Part::create([
-            'kode_part' => 'D11501',
-            'nama_part' => 'Hinge Cushion',
-            'gambar_part' => 'D1150120240131055536.PNG',
-            'kategori_id' => '2',
-            'supplier_id' => '3'
+        StandarModel::create([
+            'jenis_standar' => 'VISUAL',
+            'alat' => 'VISUAL/MATA',
+            'uraian' => 'Permukaan Produk'
         ]);
 
-        // standarMIL::create([
-        //     'min_sample' => ''
-        //     'max_sample' => ''
-        //     'size_code' => ''
-        //     'sample_size' => ''
-        // ]);
+        StandarModel::create([
+            'jenis_standar' => 'VISUAL',
+            'alat' => 'VISUAL/MATA',
+            'uraian' => 'Cacat'
+        ]);
 
-        // standarMIL::create([
-        //     'min_sample' => ''
-        //     'max_sample' => ''
-        //     'size_code' => ''
-        //     'sample_size' => ''
-        // ]);
+        StandarModel::create([
+            'jenis_standar' => 'FUNCTION',
+            'alat' => 'SOUND LEVEL METER',
+            'uraian' => 'Sound Level at 2 Meter'
+        ]);
 
-        // standarMIL::create([
-        //     'min_sample' => ''
-        //     'max_sample' => ''
-        //     'size_code' => ''
-        //     'sample_size' => ''
-        // ]);
+        StandarModel::create([
+            'jenis_standar' => 'FUNCTION',
+            'alat' => 'CHECKER DAN TELINGA',
+            'uraian' => 'Kualitas Suara'
+        ]);
 
-        // standarMIL::create([
-        //     'min_sample' => ''
-        //     'max_sample' => ''
-        //     'size_code' => ''
-        //     'sample_size' => ''
-        // ]);
+        StandarModel::create([
+            'jenis_standar' => 'DIMENSI',
+            'alat' => 'CALIPER',
+            'uraian' => 'Lebar'
+        ]);
 
-        // standarMIL::create([
-        //     'min_sample' => ''
-        //     'max_sample' => ''
-        //     'size_code' => ''
-        //     'sample_size' => ''
-        // ]);
+        StandarModel::create([
+            'jenis_standar' => 'DIMENSI',
+            'alat' => 'CALIPER',
+            'uraian' => 'Thickness'
+        ]);
 
-        // standarMIL::create([
-        //     'min_sample' => ''
-        //     'max_sample' => ''
-        //     'size_code' => ''
-        //     'sample_size' => ''
-        // ]);
+        StandarModel::create([
+            'jenis_standar' => 'DIMENSI',
+            'alat' => 'CALIPER',
+            'uraian' => 'Diameter'
+        ]);
+
+        StandarModel::create([
+            'jenis_standar' => 'FUNCTION',
+            'alat' => 'TANGAN',
+            'uraian' => 'Button Footrest'
+        ]);
         
-        // standarMIL::create([
-        //     'min_sample' => ''
-        //     'max_sample' => ''
-        //     'size_code' => ''
-        //     'sample_size' => ''
-        // ]);
-
-        // standarMIL::create([
-        //     'min_sample' => ''
-        //     'max_sample' => ''
-        //     'size_code' => ''
-        //     'sample_size' => ''
-        // ]);
-
-        // standarMIL::create([
-        //     'min_sample' => ''
-        //     'max_sample' => ''
-        //     'size_code' => ''
-        //     'sample_size' => ''
-        // ]);
-
-            
         
     }
 }

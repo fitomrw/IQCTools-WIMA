@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('aql_number');
             $table->string('inspection_level');
             $table->mediumInteger('jumlah_kirim');
+            // $table->mediumInteger('jumlah_sample');
             // $table->mediumInteger('jumlah_cek')->default(1);
             $table->boolean('status_pengecekan')->default(0);
             // $table->date('tanggal_periksa')->nullable();

@@ -109,13 +109,13 @@
           </li>
           @endif
 
-          @if (auth()->user()->jabatan == "Admin QC")    
+          {{-- @if (auth()->user()->jabatan == "Admin QC")    
           <li class="nav-item">
             <a href="/kelola-standarMIL" class="nav-link">
               <p>Kelola Data Standar MIL 105 <br>STD E</p>
             </a>
           </li>
-          @endif
+          @endif --}}
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

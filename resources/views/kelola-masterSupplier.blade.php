@@ -2,14 +2,19 @@
 
 @section ('container')
 <div class="container-fluid">
+  @if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+  @elseif (session('deleteNotify'))
+    <div class="alert alert-success">
+      {{ session('deleteNotify') }}
+    </div>
+  @endif
+
   <a href="/kelola-masterSupplier/create">
     <button type="button" class="btn btn-primary d-block mb-3">Tambah Data Supplier</button>
   </a>
-    @if (session('success'))
-      <div class="alert alert-success">
-          {{ session('success') }}
-      </div>
-    @endif
       <table class="table">
           <thead>
             <tr>

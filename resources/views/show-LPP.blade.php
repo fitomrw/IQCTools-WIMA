@@ -19,7 +19,7 @@
             <p><b>Found Area : </b> {{ $showLaporan->found_area }}</p>
             <p><b>Illustration : </b> 
                 <br>
-                <img src="/img/img_lpp/{{ $showLaporan->gambar_lpp }}" alt="illustration" max-width="150px" class="mt-3">
+                <img src="/img/img_lpp/{{ $showLaporan->gambar_lpp }}" alt="illustration" style="max-width:300px" class="mt-3">
             </p>
         </div>
     </div>

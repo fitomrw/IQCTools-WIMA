@@ -61,7 +61,7 @@ class SupplierController extends Controller
         Supplier::where('id_supplier', $id_supplier)
                 ->update($validatedData);
 
-        return redirect('/kelola-masterSupplier')->with('success', 'Data Supplier Berhasil Ditambahkan!');
+        return redirect('/kelola-masterSupplier')->with('success', 'Data Supplier Berhasil Diubah!');
     }
 
     public function destroy($id_supplier)
@@ -69,6 +69,6 @@ class SupplierController extends Controller
         $suppDelete = Supplier::find($id_supplier);
         $suppDelete->delete();
 
-        return redirect('/kelola-masterSupplier')->with('danger', 'Data Supplier Dihapus!');
+        return redirect('/kelola-masterSupplier')->with('deleteNotify', 'Data Supplier Dihapus!');
     }
 }

@@ -59,6 +59,7 @@ class LaporanController extends Controller
             'problem_description' => 'required',
             'found_area' => 'required',
             'request' => 'required',
+            'pic_person'=> 'required',
             'gambar_lpp' => 'required|image|mimes:jpeg,png,jpg,gif',
         ]);
         // dd($validatedData);
@@ -76,6 +77,7 @@ class LaporanController extends Controller
             'problem_description' => $validatedData['problem_description'],
             'found_area' => $validatedData['found_area'],
             'request' => $validatedData['request'],
+            'pic_person' => $validatedData['pic_person'],
             'gambar_lpp' => $filename,
         ]);
         
@@ -109,6 +111,13 @@ class LaporanController extends Controller
         ]);
     }
 
+    public function getPartInfoEdit($model)
+    {
+        $partInfoEdit = Part::where('kategori_id', $model)->get();
+        // dd($partInfo);
+        return response()->json($partInfoEdit);
+    }
+
     public function update($id, Request $request)
     {
         $validatedData = $request->validate([
@@ -121,7 +130,8 @@ class LaporanController extends Controller
             'quantity' => ['required'],           
             'problem_description' => ['required'],            
             'found_area' => ['required'],
-            'request' => ['required']            
+            'request' => ['required'],
+            'pic_person'=> ['required'],            
         ]);
 
         $currentDateTime = now()->format('YmdHis');
@@ -139,6 +149,7 @@ class LaporanController extends Controller
                     'problem_description' => $validatedData['problem_description'],
                     'found_area' => $validatedData['found_area'],
                     'request' => $validatedData['request'],
+                    'pic_person' => $validatedData['pic_person'],
                     'gambar_lpp' => $filename,
                 ]);
         

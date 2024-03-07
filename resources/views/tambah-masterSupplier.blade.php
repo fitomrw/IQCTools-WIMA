@@ -36,6 +36,7 @@
                     @enderror
 
                     <label for="alamat" class="form-label mt-2">Alamat Supplier</label>
+                    <div class="form-text mt-1">Masukkan Alamat Supplier</div>
                     <textarea class="form-control @error ('alamat') is-invalid @enderror" id="alamat" name="alamat" rows="3" value="{{ old('nama_supplier') }}"></textarea>                   
                     @error ('alamat')
                     <div class="invalid-feedback">
@@ -45,7 +46,7 @@
                 </div>
 
                 <div class="d-block">
-                    <button type="submit" class="btn btn-primary mt-3 ml-2">Simpan</button>
+                    <button type="submit" class="btn btn-primary mt-3 ml-2">Tambah</button>
                 </div>
                 
         </form>

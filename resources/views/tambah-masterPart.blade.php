@@ -16,7 +16,7 @@
                 </select>
                 
                 <label for="nama_part" class="form-label">Nama Part</label>
-                <div class="form-text">Masukkan Nama Part</div>
+                <div class="form-text mt-1">Masukkan Nama Part</div>
                 <input type="text" class="form-control @error ('nama_part') is-invalid @enderror" name="nama_part" id="nama_part">
                 @error ('nama_part')
                     <div class="invalid-feedback">
@@ -26,6 +26,7 @@
                 </select>
                 <div class="mb-3">
                     <label for="formFile" class="form-label">Input Gambar</label>
+                    <div class="form-text mt-1">Masukkan Gambar Part</div>
                     <input class="form-control" type="file" id="formFile" name="gambar_part" required>
                 </div>
             </div>
@@ -50,7 +51,7 @@
                 </select>
                
             </div>
-            <button type="submit" class="btn btn-primary mt-3 ml-3 d-block">Simpan</button>
+            <button type="submit" class="btn btn-primary mt-3 ml-3 d-block">Tambah</button>
         </form>
     </div>
 </div>
