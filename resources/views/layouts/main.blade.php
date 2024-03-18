@@ -36,7 +36,8 @@
   <link rel="stylesheet" href="/css/style.css">
   {{-- Favicon --}}
   <link rel="shortcut icon" href="/img/wima_favicon.ico" type="image/x-icon">
-
+  <!--ChartJS-->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   {{-- Datatable --}}
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>

@@ -47,186 +47,15 @@
                 </div>
             </div>
             <div class="row mt-2">
-                {{-- @for ($i = 1; $i < $paginatedData; $i++) --}}
-                <div class="col-12 table-responsive">
-                    <table id="tabelUtamaDetailPengecekan" class="table table-bordered mt-3" style="overflow-x:auto;">
-                        <thead>
-                            <tr>
-                                <th class="text-center border-3" colspan="7" style="background-color: darkgrey">
-                                    VISUAL</th>
-                            </tr>
-                            <tr>
-                                <th class="text-center" rowspan="2">NO</th>
-                                <th class="text-center" rowspan="2">URAIAN</th>
-                                <th class="text-center" rowspan="1" colspan="2">STANDAR</th>
-                                <th class="text-center" rowspan="2">ALAT</th>
-                                <th class="text-center" rowspan="1" colspan="2">KESIMPULAN</th>
-                            </tr>
-                            <tr>
-                                <th class="text-center">Spesifikasi</th>
-                                <th class="text-center">Toleransi</th>
-                                <th class="text-center">OK</th>
-                                <th class="text-center">NG</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                                $no1 = 1;
-                            @endphp
-                            @foreach ($cekVisual as $item)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->standarPart->standar->uraian }}</td>
-                                    <td colspan="2" class="text-center">{{ $item->standarPart->rincian_standar }}
-                                    </td>
-
-                                    <td>{{ $item->standarPart->standar->alat }}</td>
-                                    @if ($item->status == null)
-                                        <td class="text-center"><input type="radio" class="btn-check"
-                                                name="options-outlined{{ $item->id }}"
-                                                id="success-outlined{{ $item->id }} " autocomplete="off"
-                                                onclick="submitCek('OK',{{ $item->id }})">
-                                            <label class="btn btn-outline-success"
-                                                for="success-outlined{{ $item->id }} ">OK</label>
-                                        </td>
-                                        <td class="text-center"><input type="radio" class="btn-check"
-                                                name="options-outlined{{ $item->id }}"
-                                                id="danger-outlined{{ $item->id }}"
-                                                onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
-                                            <label class="btn btn-outline-danger"
-                                                for="danger-outlined{{ $item->id }}">NG</label>
-                                        </td>
-                                    @elseif($item->status == 'OK')
-                                        <td class="text-center"><input type="radio" class="btn-check"
-                                                name="options-outlined{{ $item->id }}"
-                                                id="success-outlined{{ $item->id }} " autocomplete="off" checked
-                                                onclick="submitCek('OK',{{ $item->id }})">
-                                            <label class="btn btn-outline-success"
-                                                for="success-outlined{{ $item->id }} ">OK</label>
-                                        </td>
-                                        <td class="text-center"><input type="radio" class="btn-check"
-                                                name="options-outlined{{ $item->id }}"
-                                                id="danger-outlined{{ $item->id }}"
-                                                onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
-                                            <label class="btn btn-outline-danger"
-                                                for="danger-outlined{{ $item->id }}">NG</label>
-                                        </td>
-                                    @elseif($item->status == 'NG')
-                                        <td class="text-center"><input type="radio" class="btn-check"
-                                                name="options-outlined{{ $item->id }}"
-                                                id="success-outlined{{ $item->id }} " autocomplete="off"
-                                                onclick="submitCek('OK',{{ $item->id }})">
-                                            <label class="btn btn-outline-success"
-                                                for="success-outlined{{ $item->id }} ">OK</label>
-                                        </td>
-                                        <td class="text-center"><input type="radio" class="btn-check"
-                                                name="options-outlined{{ $item->id }}"
-                                                id="danger-outlined{{ $item->id }}" checked
-                                                onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
-                                            <label class="btn btn-outline-danger"
-                                                for="danger-outlined{{ $item->id }}">NG</label>
-                                        </td>
-                                    @endif
-                                </tr>
-                                @php
-                                    $no1++;
-                                @endphp
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col-12">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th class="text-center border-3" colspan="7" style="background-color: darkgrey">
-                                    DIMENSI</th>
-                            </tr>
-                            <tr>
-                                <th class="text-center" rowspan="2">NO</th>
-                                <th class="text-center" rowspan="2">URAIAN</th>
-                                <th class="text-center" rowspan="1" colspan="2">STANDAR</th>
-                                <th class="text-center" rowspan="2">ALAT</th>
-                                <th class="text-center" rowspan="1" colspan="2">KESIMPULAN</th>
-                            </tr>
-                            <tr>
-                                <th class="text-center">Spesifikasi</th>
-                                <th class="text-center">Toleransi</th>
-                                <th class="text-center">OK</th>
-                                <th class="text-center">NG</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($cekDimensi as $item)
-                                {{-- @dd($cekDimensi) --}}
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->standarPart->standar->uraian }}</td>
-                                    <td colspan="2" class="text-center">{{ $item->standarPart->rincian_standar }}
-                                    </td>
-                                    <td>{{ $item->standarPart->standar->alat }}</td>
-                                    @if ($item->status == null)
-                                        <td class="text-center"><input type="radio" class="btn-check"
-                                                name="options-outlined{{ $item->id }}"
-                                                id="success-outlined{{ $item->id }} " autocomplete="off"
-                                                onclick="submitCek('OK',{{ $item->id }})">
-                                            <label class="btn btn-outline-success"
-                                                for="success-outlined{{ $item->id }} ">OK</label>
-                                        </td>
-                                        <td class="text-center"><input type="radio" class="btn-check"
-                                                name="options-outlined{{ $item->id }}"
-                                                id="danger-outlined{{ $item->id }}"
-                                                onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
-                                            <label class="btn btn-outline-danger"
-                                                for="danger-outlined{{ $item->id }}">NG</label>
-                                        </td>
-                                    @elseif($item->status == 'OK')
-                                        <td class="text-center"><input type="radio" class="btn-check"
-                                                name="options-outlined{{ $item->id }}"
-                                                id="success-outlined{{ $item->id }} " autocomplete="off" checked
-                                                onclick="submitCek('OK',{{ $item->id }})">
-                                            <label class="btn btn-outline-success"
-                                                for="success-outlined{{ $item->id }} ">OK</label>
-                                        </td>
-                                        <td class="text-center"><input type="radio" class="btn-check"
-                                                name="options-outlined{{ $item->id }}"
-                                                id="danger-outlined{{ $item->id }}"
-                                                onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
-                                            <label class="btn btn-outline-danger"
-                                                for="danger-outlined{{ $item->id }}">NG</label>
-                                        </td>
-                                    @elseif($item->status == 'NG')
-                                        <td class="text-center"><input type="radio" class="btn-check"
-                                                name="options-outlined{{ $item->id }}"
-                                                id="success-outlined{{ $item->id }} " autocomplete="off"
-                                                onclick="submitCek('OK',{{ $item->id }})">
-                                            <label class="btn btn-outline-success"
-                                                for="success-outlined{{ $item->id }} ">OK</label>
-                                        </td>
-                                        <td class="text-center"><input type="radio" class="btn-check"
-                                                name="options-outlined{{ $item->id }}"
-                                                id="danger-outlined{{ $item->id }}" checked
-                                                onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
-                                            <label class="btn btn-outline-danger"
-                                                for="danger-outlined{{ $item->id }}">NG</label>
-                                        </td>
-                                    @endif
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            @if ($cekFunction != null)
-                <div class="row mt-2">
-                    <div class="col-12">
-                        <table class="table table-bordered" style="overflow-x:auto;">
+                <h3 class="text-center"><b>PEMERIKSAAN VISUAL</b></h3>
+                @for ($i = 1; $i <= $jumlahTabel; $i++)
+                    <div class="col-12 table-responsive">
+                        <table id="tabelUtamaDetailPengecekan" class="table table-bordered mt-3" style="overflow-x:auto;">
                             <thead>
                                 <tr>
+                                    <th class="bg-warning">Sample ke-{{ $i }}</th>
                                     <th class="text-center border-3" colspan="7" style="background-color: darkgrey">
-                                        FUNCTION</th>
+                                        VISUAL</th>
                                 </tr>
                                 <tr>
                                     <th class="text-center" rowspan="2">NO</th>
@@ -243,14 +72,136 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($cekFunction as $item)
+                                @php
+                                    $no1 = 1;
+                                    // dd($cekVisual);
+                                    // Filtering the array to get elements where id is greater than 1
+                                    // $i = $i;
+                                    $data = array_filter($cekVisual, function ($item) use ($i) {
+                                        return $item['urutan_sample'] === $i; // Use strict comparison here
+                                    });
+                                    // dd($data);
+                                @endphp
+                                @foreach ($data as $item)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item->standarPart->standar->uraian }}</td>
-                                        <td colspan="2" class="text-center">{{ $item->standarPart->rincian_standar }}
+                                        <td colspan="2" class="text-center">{{ $item->standarPart->spesifikasi }}
                                         </td>
-
                                         <td>{{ $item->standarPart->standar->alat }}</td>
+                                        @if ($item->status == null)
+                                            <td class="text-center"><input type="radio" class="btn-check"
+                                                    name="options-outlined{{ $item->id }}"
+                                                    id="success-outlined{{ $item->id }} " autocomplete="off"
+                                                    onclick="submitCek('OK',{{ $item->id }})">
+                                                <label class="btn btn-outline-success"
+                                                    for="success-outlined{{ $item->id }} ">OK</label>
+                                            </td>
+                                            <td class="text-center"><input type="radio" class="btn-check"
+                                                    name="options-outlined{{ $item->id }}"
+                                                    id="danger-outlined{{ $item->id }}"
+                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
+                                                <label class="btn btn-outline-danger"
+                                                    for="danger-outlined{{ $item->id }}">NG</label>
+                                            </td>
+                                        @elseif($item->status == 'OK')
+                                            <td class="text-center"><input type="radio" class="btn-check"
+                                                    name="options-outlined{{ $item->id }}"
+                                                    id="success-outlined{{ $item->id }} " autocomplete="off" checked
+                                                    onclick="submitCek('OK',{{ $item->id }})">
+                                                <label class="btn btn-outline-success"
+                                                    for="success-outlined{{ $item->id }} ">OK</label>
+                                            </td>
+                                            <td class="text-center"><input type="radio" class="btn-check"
+                                                    name="options-outlined{{ $item->id }}"
+                                                    id="danger-outlined{{ $item->id }}"
+                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
+                                                <label class="btn btn-outline-danger"
+                                                    for="danger-outlined{{ $item->id }}">NG</label>
+                                            </td>
+                                        @elseif($item->status == 'NG')
+                                            <td class="text-center"><input type="radio" class="btn-check"
+                                                    name="options-outlined{{ $item->id }}"
+                                                    id="success-outlined{{ $item->id }} " autocomplete="off"
+                                                    onclick="submitCek('OK',{{ $item->id }})">
+                                                <label class="btn btn-outline-success"
+                                                    for="success-outlined{{ $item->id }} ">OK</label>
+                                            </td>
+                                            <td class="text-center"><input type="radio" class="btn-check"
+                                                    name="options-outlined{{ $item->id }}"
+                                                    id="danger-outlined{{ $item->id }}" checked
+                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
+                                                <label class="btn btn-outline-danger"
+                                                    for="danger-outlined{{ $item->id }}">NG</label>
+                                            </td>
+                                        @endif
+                                        {{-- <td>{{ $item->urutan_sample }}</td> --}}
+                                    </tr>
+                                    @php
+                                        $no1++;
+                                    @endphp
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endfor
+            </div>
+            <div class="row mt-2">
+                <h3 class="text-center"><b>PEMERIKSAAN DIMENSI</b></h3>
+                @for ($i = 1; $i <= $jumlahTabel; $i++)
+                    <div class="col-12 table-responsive">
+                        <table class="table table-bordered" class="table table-bordered mt-3 datatable"
+                            style="overflow-x:auto;">
+                            <thead>
+                                <tr>
+                                    <th class="bg-warning">Sample ke-{{ $i }}</th>
+                                    <th class="text-center border-3" colspan="8" style="background-color: darkgrey">
+                                        DIMENSI</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center" rowspan="3" style="width: 30px;">NO</th>
+                                    <th class="text-center" rowspan="3">URAIAN</th>
+                                    <th class="text-center" rowspan="1" colspan="3">STANDAR</th>
+                                    <th class="text-center" rowspan="3">ALAT</th>
+                                    <th class="text-center" rowspan="3" style="width: 150px;">INPUT VALUE</th>
+                                    <th class="text-center" rowspan="2" colspan="2">KESIMPULAN</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center" rowspan="2">Spesifikasi</th>
+                                    <th class="text-center" colspan="2">Toleransi</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center">Max</th>
+                                    <th class="text-center">Min</th>
+                                    <th class="text-center">OK</th>
+                                    <th class="text-center">NG</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $no1 = 1;
+                                    // dd($cekVisual);
+                                    // Filtering the array to get elements where id is greater than 1
+                                    // $i = $i;
+                                    $data = array_filter($cekDimensi, function ($item) use ($i) {
+                                        return $item['urutan_sample'] === $i; // Use strict comparison here
+                                    });
+                                    // dd($data);
+                                @endphp
+                                @foreach ($data as $item)
+                                    {{-- @dd($cekDimensi) --}}
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $item->standarPart->standar->uraian }}</td>
+                                        <td class="text-center">{{ $item->standarPart->spesifikasi }}
+                                        </td>
+                                        <td class="text-center">{{ $item->standarPart->max }}</td>
+                                        <td class="text-center">{{ $item->standarPart->min }}</td>
+                                        <td class="text-center">{{ $item->standarPart->standar->alat }}</td>
+                                        <td class="text-center">
+                                            <input type="text" name="valueDimensi" id="valueDimensi"
+                                                class="form-control w-50 mx-auto">
+                                        </td>
                                         @if ($item->status == null)
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"
@@ -301,47 +252,150 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        {{-- @endfor --}}
                     </div>
-            @endif
-    </div>
-    </div>
-    <div class="row d-flex justify-content-end mt-2">
-        <div class="col-2">
-            <form action="/detailPengecekan/{{ $dataPartIn->id_part_supply }}" method="post">
-                @csrf
-                <input type="hidden" name="status_pengecekan" value="1">
-            </form>
-            <button type="submit" class="btn btn-success">Submit</button>
-        </div>
-    </div>
-    </form>
-    {{-- {{ $paginatedData->links }} --}}
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script>
-        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                @endfor
+            </div>
+            @if ($cekFunction != null)
+                <h3 class="text-center"><b>PEMERIKSAAN FUNCTION</b></h3>
+                <div class="row mt-2">
+                    @for ($i = 1; $i <= $jumlahTabel; $i++)
+                        <div class="col-12 table-responsive">
+                            <table class="table table-bordered" style="overflow-x:auto;">
+                                <thead>
+                                    <tr>
+                                        <th class="bg-warning">Sample ke-{{ $i }}</th>
+                                        <th class="text-center border-3" colspan="7"
+                                            style="background-color: darkgrey">
+                                            FUNCTION</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center" rowspan="2">NO</th>
+                                        <th class="text-center" rowspan="2">URAIAN</th>
+                                        <th class="text-center" rowspan="1" colspan="2">STANDAR</th>
+                                        <th class="text-center" rowspan="2">ALAT</th>
+                                        <th class="text-center" rowspan="1" colspan="2">KESIMPULAN</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">Spesifikasi</th>
+                                        <th class="text-center">Toleransi</th>
+                                        <th class="text-center">OK</th>
+                                        <th class="text-center">NG</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $no1 = 1;
+                                        // dd($cekVisual);
+                                        // Filtering the array to get elements where id is greater than 1
+                                        // $i = $i;
+                                        $data = array_filter($cekFunction, function ($item) use ($i) {
+                                            return $item['urutan_sample'] === $i; // Use strict comparison here
+                                        });
+                                        // dd($data);
+                                    @endphp
+                                    @foreach ($data as $item)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $item->standarPart->standar->uraian }}</td>
+                                            <td colspan="2" class="text-center">
+                                                {{ $item->standarPart->spesifikasi }}
+                                            </td>
 
-        function submitCek(kondisi, id) {
-            var formData = {
-                _token: csrfToken,
-                key1: kondisi,
-                key2: id,
-            };
-            $.ajax({
-                type: 'POST',
-                url: '/submit-cek', // The URL of your Laravel route
-                data: formData,
-                dataType: 'json',
-                success: function(data) {
-                    // Handle the response from the server
-                    console.log('Terupdate'); // You can do something with the response
-                    // windows.load();
-                },
-                error: function(error) {
-                    // Handle any errors that occur during the AJAX request
-                    console.error(error);
-                },
+                                            <td>{{ $item->standarPart->standar->alat }}</td>
+                                            @if ($item->status == null)
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="success-outlined{{ $item->id }} " autocomplete="off"
+                                                        onclick="submitCek('OK',{{ $item->id }})">
+                                                    <label class="btn btn-outline-success"
+                                                        for="success-outlined{{ $item->id }} ">OK</label>
+                                                </td>
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="danger-outlined{{ $item->id }}"
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
+                                                    <label class="btn btn-outline-danger"
+                                                        for="danger-outlined{{ $item->id }}">NG</label>
+                                                </td>
+                                            @elseif($item->status == 'OK')
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="success-outlined{{ $item->id }} " autocomplete="off"
+                                                        checked onclick="submitCek('OK',{{ $item->id }})">
+                                                    <label class="btn btn-outline-success"
+                                                        for="success-outlined{{ $item->id }} ">OK</label>
+                                                </td>
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="danger-outlined{{ $item->id }}"
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
+                                                    <label class="btn btn-outline-danger"
+                                                        for="danger-outlined{{ $item->id }}">NG</label>
+                                                </td>
+                                            @elseif($item->status == 'NG')
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="success-outlined{{ $item->id }} " autocomplete="off"
+                                                        onclick="submitCek('OK',{{ $item->id }})">
+                                                    <label class="btn btn-outline-success"
+                                                        for="success-outlined{{ $item->id }} ">OK</label>
+                                                </td>
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="danger-outlined{{ $item->id }}" checked
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
+                                                    <label class="btn btn-outline-danger"
+                                                        for="danger-outlined{{ $item->id }}">NG</label>
+                                                </td>
+                                            @endif
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                    @endfor
+                </div>
+            @endif
+
+            <div class="row d-flex justify-content-end mt-2">
+                <div class="col-2">
+                    <form action="/submitPengecekan/{{ $dataPartIn->id_part_supply }}" method="post">
+                        @csrf
+                        <input type="hidden" name="status_pengecekan" value="1">
+                    </form>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </div>
+        </form>
+        {{-- {{ $paginatedData->links }} --}}
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <script>
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            function submitCek(kondisi, id) {
+                var formData = {
+                    _token: csrfToken,
+                    key1: kondisi,
+                    key2: id,
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: '/submit-cek', // The URL of your Laravel route
+                    data: formData,
+                    dataType: 'json',
+                    success: function(data) {
+                        // Handle the response from the server
+                        console.log('Terupdate'); // You can do something with the response
+                        // windows.load();
+                    },
+                    error: function(error) {
+                        // Handle any errors that occur during the AJAX request
+                        console.error(error);
+                    },
+                });
+            }
+
+            $(document).ready(function() {
+                $('.datatable').DataTable();
             });
-        }
-    </script>
-@endsection
+        </script>
+    @endsection

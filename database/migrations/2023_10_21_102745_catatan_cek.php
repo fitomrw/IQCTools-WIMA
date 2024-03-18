@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('checksheet')->nullable();
             $table->integer('urutan_sample')->nullable();
             $table->integer('status_pengecekan')->nullable();
+            $table->date('tanggal_cek')->nullable();
             $table->timestamps();
         });
     }

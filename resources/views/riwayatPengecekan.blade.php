@@ -25,14 +25,22 @@
                                     <td>{{ $item->kode_part }}</td>
                                     <td>{{ $item->part->nama_part }}</td>
                                     <td>{{ $item->jumlah_kirim }}</td>
-                                    @if ($item->status_pengecekan != null)
-                                        <td>Sudah Dicek</td>
-                                    @else
-                                        <td>Belum dicek</td>
+                                    @if ($item->status_pengecekan == 1)
+                                        <td>
+                                            <p class="bg-primary p-1 rounded-1 text-center"><b>Menunggu Verifikasi</b></p>
+                                        </td>
+                                    @elseif($item->status_pengecekan == 0)
+                                        <td>
+                                            <p class="bg-danger p-1 rounded-1 text-center"><b>Belum Dicek</b></p>
+                                        </td>
+                                    @elseif($item->status_pengecekan == 2)
+                                        <td>
+                                            <p class="bg-success p-1 rounded-1 text-center"><b>Sudah Verifikasi</b></p>
+                                        </td>
                                     @endif
                                     <td>{{ $item->supply_date }}</td>
                                     <td><a href="/detailPengecekan/{{ $item->id_part_supply }}/{{ $item->kode_part }}"><button
-                                     class="btn btn-info"><i class="fas fa-eye"></i></button></a></td>
+                                                class="btn btn-info"><i class="fas fa-eye"></i></button></a></td>
                                 </tr>
                             @endforeach
                         </tbody>

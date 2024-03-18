@@ -1,45 +1,61 @@
-@extends('layouts.main')
+@extends ('layouts.main')
 
 @section('container')
-<div class="container-fluid">
-  <div class="row">
-      <div class="col-12"> 
-         <div class="table-responsive">
-          <table class="table table-bordered datatable">
-              <thead>
-                  <th>No</th>
-                  <th>Kode Part</th>
-                  <th>Nama Part</th>
-                  <th>Jumlah Pengiriman</th>
-                  <th>Status</th>
-                  <th>Tanggal Pengiriman</th>
-                  <th>OK</th>
-                  <th>NG</th>
-                  <th>AKSI</th>
-              </thead>
-              <tbody>
-                  @php
-                   $no = 1;   
-                  @endphp
-                <td>{{ $no++ }}</td>
-                <td>D11501</td>
-                <td>Hinge Cushion</td>
-                <td>50</td>
-                <td>
-                    <label class="btn btn-danger">
-                        Belum Verifikasi
-                    </label>
-                </td>
-                <td>2023-10-10</td>
-                <td>5</td>
-                <td>5</td>
-                <td>
-                    <a class="btn btn-warning" href="/verifikasi-pengecekan/VerifPengecekanShow">Periksa</a>
-                </td>
-              </tbody>
-          </table>
-         </div>
-      </div>
-  </div>
-</div>
+    <div class="container-fluid">
+        @if (session('notify'))
+            <div class="alert alert-success">
+                {{ session('notify') }}
+            </div>
+        @endif
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered datatable">
+                        <thead>
+                            <th>No</th>
+                            <th>Kode Part</th>
+                            <th>Nama Part</th>
+                            <th>Jumlah Pengiriman</th>
+                            <th>Status</th>
+                            <th>Tanggal Pengiriman</th>
+                            <th>Aksi</th>
+                        </thead>
+                        <tbody>
+                            @php
+                                $no = 1;
+                            @endphp
+                            @foreach ($data as $item)
+                                <tr>
+                                    <td>{{ $no++ }}</td>
+                                    <td>{{ $item->kode_part }}</td>
+                                    <td>{{ $item->part->nama_part }}</td>
+                                    <td>{{ $item->jumlah_kirim }}</td>
+                                    @if ($item->status_pengecekan == 1)
+                                        <td>
+                                            <p class="bg-primary p-1 rounded-1 text-center"><b>Menunggu Verifikasi</b></p>
+                                        </td>
+                                    @elseif($item->status_pengecekan == 2)
+                                        <td>
+                                            <p class="bg-success p-1 rounded-1 text-center"><b>Sudah Verifikasi</b></p>
+                                        </td>
+                                    @endif
+                                    <td>{{ $item->supply_date }}</td>
+                                    <td><a
+                                            href="/verifikasi-pengecekan/verifPengecekanShow/{{ $item->id_part_supply }}/{{ $item->kode_part }}"><button
+                                                class="btn btn-info"><i class="fas fa-eye"></i></button></a></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- @push('scripts') --}}
+    <script>
+        $(document).ready(function() {
+            $('.datatable').DataTable();
+        });
+    </script>
+    {{-- @endpush --}}
 @endsection

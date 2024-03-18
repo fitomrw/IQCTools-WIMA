@@ -31,37 +31,24 @@ class DataPartIncomingController extends Controller
         ]);
     }
 
-    public function verifikasiPengecekan()
-    {
-        return view('verifikasiPengecekan', [
-            "title" => "Verifikasi Pengecekan",
-            "image" => "/img/wima_logo.png",
-            'dataPartIncomings' => dataPartIncoming::orderBy('created_at', 'desc')->get()
-        ]);
-    }
-
-    public function verifPengecekanShow($id)
-    {
-        return view('verifDetailPengecekan', [
-            "title" => "Verifikasi Pengecekan",
-            "image" => "/img/wima_logo.png",
-        ]);
-    }
-// php 
     public function getKodePart($kategori_id)
     {
         $kode_part = Part::where('kategori_id', $kategori_id)->get();
         return response()->json($kode_part);
     }
 
-    // public function getSupplier($kategori_id)
-    // {
-    //     $supplierPart = Part::where('kategori_id', $kategori_id)->get();
-    //     if($supplierPart){
-    //         $supPart = $supplierPart->nama_supplier;
-    //         return response()->json($supplierPart);
-    //     }
-    // }
+    public function getNamaPart($kode_part)
+    {
+        $nama_part = Part::where('kode_part', $kode_part)->with('supplier')->get();
+        // dd($nama_part);
+        return response()->json($nama_part);
+    }
+
+    public function getSupplier($kode_part)
+    {
+        $supplierPart = Part::where('kode_part', $kode_part)->get();
+        return response()->json($supplierPart);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -78,7 +65,6 @@ class DataPartIncomingController extends Controller
             "image" => "{{ url('/img/wima_logo.png') }}",
             "kategori_part" =>  $kategori_part,
             "suppliers" => $suppliers,
-            "tanggalSekarang" => $tanggalSekarang  
         ]);
     }
 
@@ -108,6 +94,7 @@ class DataPartIncomingController extends Controller
         $data = dataPartIncoming::all();
         $dataTerbaru = $data->last();
         $standarPart = StandarPerPartModel::where('kode_part', $dataTerbaru->kode_part)->get();
+        // dd($standarPart);
 
         $s4Levels = $dataTerbaru->inspection_level == 'S-IV';
         $s3Levels = $dataTerbaru->inspection_level == 'S-III';
@@ -117,10 +104,6 @@ class DataPartIncomingController extends Controller
         
         $cat = new PengecekanController;
         $test = $cat->calculateJumlahTabel($s4Levels, $s3Levels, $s2Levels, $s1Levels, $dataTerbaru, $aqlNumber1);
-
-        // $dataTerbaru->update([
-        //     "jumlah_sample" => $test
-        // ]);
 
         for ($i=1; $i <= $test ; $i++) { 
             foreach ($standarPart as $key ) {
@@ -203,8 +186,6 @@ class DataPartIncomingController extends Controller
         dataPartIncoming::where('id_part_supply', $findDataPartIncoming->id_part_supply) 
                         ->update($validatedData);
 
-        // $request->session()->with('success', 'Data Berhasil! Ditambahkan!');
-
         return redirect('/dataPartIncoming')->with('notify', 'Data Part Incoming Berhasil Diubah!');
     }
 
@@ -228,7 +209,6 @@ class DataPartIncomingController extends Controller
         $deletePartIncoming->delete();
 
         return redirect('/dataPartIncoming')->with('deleteNotify', 'Data Part Incoming Berhasil Dihapus!');
-
     }
 
     public function getKodePartEdit($kategori_id)

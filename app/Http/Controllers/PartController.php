@@ -201,6 +201,7 @@ class PartController extends Controller
          
         //  dd($standar, $part);
          $dataStandar = StandarModel::all();
+        //  dd($dataStandar);
          $title =  "Kelola Data Master Pengaturan Standar";
  
          return view('edit-standar-part', compact('part','standar', 'title','dataStandar'));
@@ -216,17 +217,22 @@ class PartController extends Controller
         StandarPerPartModel::create([
             'id_standar' => $request->jenis_standar,
             'kode_part' => $part,
-            'rincian_standar' => $request->rincian_standar
+            'rincian_standar' => $request->rincian_standar,
+            'spesifikasi' => $request->spesifikasi,
+            'max' => $request->max,
+            'min' => $request->min
         ]);
     
          return redirect('/kelola-masterStandarPart/edit/'.$part)->with('success', 'Data Standar Per Part Berhasil Ditambahkan!');
      }
      public function deletePengaturanStandar($id_standar_part, $part)
      {
-        $delStandarPerPart = StandarPerPartModel::find($id_standar_part);
+        $part = Part::where('kode_part',$part)->first();
+        $delStandarPerPart = StandarPerPartModel::where('id_standar_part', $id_standar_part);
         $delStandarPerPart->delete();
 
-        return redirect ('/kelola-masterStandarPart/edit/'.$part)->with('danger', 'Data Standar Per Part Berhasil Dihapus!');
+        return redirect ('/kelola-masterStandarPart/edit/'.$part->kode_part)->with('danger', 'Data Standar Per Part Berhasil Dihapus!');
+        // return redirect ('/kelola-masterStandarPart/edit/'.$id_standar_part )->with('danger', 'Data Standar Per Part Berhasil Dihapus!');
      }
 
 }

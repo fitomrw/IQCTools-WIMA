@@ -9,7 +9,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PartController;
 use App\Http\Controllers\PengecekanController;
 use App\Http\Controllers\SupplierController;
-
+use App\Models\Pengecekan;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,7 +96,7 @@ Route::middleware(['auth', 'CekJabatan:Admin QC'])->group(function () {
     Route::get('/kelola-masterStandarPart/edit/{part}', [PartController::class, 'editStandarPart']);
     Route::get('/kelola-masterStandarPart/getJenisStandarPart/{jenis_standar}', [PartController::class, 'getJenisStandarPart']);
     Route::post('/tambahStandarPart/{part}', [PartController::class, 'storePengaturanStandar']);
-    Route::get('/kelola-masterStandarPart/delete/{id_standar_part}', [PartController::class, 'deletePengaturanStandar']);
+    Route::get('/kelola-masterStandarPart/delete/{id_standar_part}/{kode_part}', [PartController::class, 'deletePengaturanStandar']);
 
     //Master Data MIL STD 105 E
     Route::get('/kelola-standarMIL', [PengecekanController::class, 'indexMIL']);
@@ -112,7 +112,8 @@ Route::middleware(['auth','CekJabatan:Staff QC'])->group(function () {
     Route::resource('/dataPartIncoming', DataPartIncomingController::class);
     Route::get('/dataPartIncoming/delete/{id_part_supply}', [DataPartIncomingController::class, 'delete']);
     Route::get('/dataPartIncoming/getBarang/{kategori_id}', [DataPartIncomingController::class, 'getKodePart']);
-    Route::get('/dataPartIncoming/getSupplier/{kategori_id}', [DataPartIncomingController::class, 'getSupplier']);
+    Route::get('/dataPartIncoming/getNamaPart/{kode_part}', [DataPartIncomingController::class, 'getNamaPart']);
+    Route::get('/dataPartIncoming/getSupplier/{kode_part}', [DataPartIncomingController::class, 'getSupplier']);
     Route::get('/dataPartIncoming/getBarangEdit/{kategori_id}', [DataPartIncomingController::class, 'getKodePartEdit']);
 });
 
@@ -120,16 +121,17 @@ Route::middleware(['auth','CekJabatan:Staff QC'])->group(function () {
 //data pengecekan
 Route::middleware(['auth','CekJabatan:Staff QC'])->group(function () {
     // Route::get('/kelola-pengecekan', [PengecekanController::class, 'index'])->middleware('auth');
-    Route::get('/riwayatPengecekan', [PengecekanController::class, 'riwayatPengecekan'])->middleware('auth');
     Route::get('/detailPengecekan/{id}/{kode_part}', [PengecekanController::class, 'detailPengecekan'])->middleware('auth');
     Route::post('/submit-cek', [PengecekanController::class, 'cekPerPoint']);
     Route::post('/submit-pengecekan/{id}', [PengecekanController::class, 'submitPengecekan']);
 });
 
 //data part Kepala Seksi
+    Route::get('/riwayatPengecekan', [PengecekanController::class, 'riwayatPengecekan'])->middleware('auth');
 Route::middleware(['auth','CekJabatan:Kepala Seksi QC'])->group(function () {
-    Route::get('/verifikasi-pengecekan', [DataPartIncomingController::class, 'verifikasiPengecekan']);
-    Route::get('/verifikasi-pengecekan/verifPengecekanShow/{id}', [DataPartIncomingController::class, 'verifPengecekanShow']);
+    Route::get('/verifikasi-pengecekan', [PengecekanController::class, 'verifikasiPengecekan']);
+    Route::get('/verifikasi-pengecekan/verifPengecekanShow/{id}/{kode_part}', [PengecekanController::class, 'verifPengecekanShow']);
+    Route::post('/verifikasi-pengecekan/storeVerifikasiPengecekan/{id}', [PengecekanController::class, 'storeVerifikasiPengecekan']);
 });
 
 //laporan
