@@ -25,4 +25,9 @@ class Supplier extends Model
         return $this->hasMany(dataPartIncoming::class);
     }
 
+    public function laporan()
+    {
+        return $this->hasMany(Laporan::class);
+    }
+
 }

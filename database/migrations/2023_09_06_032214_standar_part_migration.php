@@ -21,8 +21,8 @@ return new class extends Migration
             $table->foreign('id_standar')->references('id_standar')->on('standar')->onDelete('cascade');
             $table->string('rincian_standar');
             $table->string('spesifikasi');
-            $table->integer('max')->nullable();
-            $table->integer('min')->nullable();
+            $table->string('max')->nullable();
+            $table->string('min')->nullable();
             $table->timestamps();
         });
     }

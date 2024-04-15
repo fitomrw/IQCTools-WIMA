@@ -10,6 +10,8 @@ use App\Http\Controllers\PartController;
 use App\Http\Controllers\PengecekanController;
 use App\Http\Controllers\SupplierController;
 use App\Models\Pengecekan;
+use App\Models\Supplier;
+use App\Models\kategoriPart;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +25,14 @@ use App\Models\Pengecekan;
 */
 
 Route::get('/', function () {
+    $getSupplier = Supplier::all();
+    $getKategori = kategoriPart::all();
+
     return view('home', [
         "title" => "Home",
-        "image" => "img/wima_logo.png"
+        "image" => "img/wima_logo.png",
+        "getSupplier" => $getSupplier,
+        "getKategori" => $getKategori
     ]);
 })->middleware(['auth']);
 
@@ -132,6 +139,7 @@ Route::middleware(['auth','CekJabatan:Kepala Seksi QC'])->group(function () {
     Route::get('/verifikasi-pengecekan', [PengecekanController::class, 'verifikasiPengecekan']);
     Route::get('/verifikasi-pengecekan/verifPengecekanShow/{id}/{kode_part}', [PengecekanController::class, 'verifPengecekanShow']);
     Route::post('/verifikasi-pengecekan/storeVerifikasiPengecekan/{id}', [PengecekanController::class, 'storeVerifikasiPengecekan']);
+    Route::get('/verifikasi-pengecekan/getData', [PengecekanController::class, 'storeVerifikasiPengecekan']);
 });
 
 //laporan
@@ -149,6 +157,7 @@ Route::middleware(['auth','CekJabatan:Staff QC'])->group(function () {
 
 Route::middleware(['auth','CekJabatan:Staff QA'])->group(function () {
     Route::get('/kelola-LPP/verifLaporan', [LaporanController::class, 'verifIndex']);
+    Route::get('/kelola-LPP/getDataLPP', [LaporanController::class, 'getDataLPP']);
     Route::get('/kelola-LPP/verifLaporanShow/{id}', [LaporanController::class, 'verifShow']);
     Route::post('/kelola-LPP/executeVerif/{id}', [LaporanController::class, 'executeVerif']);
     Route::get('/kelola-LPP/printLPP/{id}', [LaporanController::class, 'printLPP']);

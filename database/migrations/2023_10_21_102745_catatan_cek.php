@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('status')->nullable();
             $table->string('checksheet')->nullable();
             $table->integer('urutan_sample')->nullable();
-            $table->integer('status_pengecekan')->nullable();
+            $table->integer('value_dimensi')->nullable();
             $table->date('tanggal_cek')->nullable();
             $table->timestamps();
         });

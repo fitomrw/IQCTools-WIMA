@@ -50,47 +50,47 @@ class PengecekanController extends Controller
     }
 
     public function submitPengecekan(Request $request, $id)
-    {
-       $updateData = dataPartIncoming::where('id_part_supply', $id)->first();
-       $updateData->update([
-            'tanggal_pengecekan' => $request->tanggal_periksa,
-            'status_pengecekan' => $request->status_pengecekan
-        ]); 
+    {            
+        // dd($request);
+        // Validasi input jika diperlukan
+        $request->validate([
+            'value_dimensi.*' => 'required|numeric', // Sesuaikan dengan aturan validasi Anda
+        ]);
+
+        for ($i=0; $i < count($request->input('id_value_dimensi')); $i++) { 
+            $modelData = CatatanCekModel::findOrFail($request->input('id_value_dimensi')[$i]);
+            // dd($modelData);
+
+           // Update nilai value_dimensi dalam model dengan nilai yang diterima dari formulir
+            $modelData->update(['value_dimensi' =>  $request->input('value_dimensi')[$i]]);
+        }
+            $updateData = dataPartIncoming::where('id_part_supply', $id)->first();
+            $updateData->update([
+                'tanggal_pengecekan' => $request->tanggal_periksa,
+                'status_pengecekan' => $request->status_pengecekan
+            ]); 
+
         return redirect('/riwayatPengecekan');
     }
 
-    // public function dataPengecekan(Request $request)
-    // {
-    //     if ($request->ajax()) {
-    //         $data = Pengecekan::where('casting', true)->select('id', 'jenis_downtime', 'kategori')->orderBy('kategori')->get();
-    //         return DataTables::of($data)->addIndexColumn()
-    //             ->addColumn('action', function ($data) {
-    //                 $btn = '<a class="btn fa-solid fa-pen-to-square fa-lg text-warning" onclick="EditMeasurement(' . $data->id . ')"></a>';
-    //                 return $btn;
-    //             })
-    //             ->rawColumns(['action'])
-    //             ->addIndexColumn()
-    //             ->make(true);
-    //     }
-    //     // return view('riwayatPengecekan', [
-        //     //     "title" => "Pengecekan",
-    //     //        "image" => "img/wima_logo.png"
-    //     // ]);
-    // }
-    public function detailPengecekan($id)
+    public function detailPengecekan(Request $request, $id)
     {
         $dataPartIn = dataPartIncoming::where('id_part_supply', $id)->first();
         $tanggalSekarang = Carbon::now()->toDateString();
-        // dd($id);
+        $getValueDimensi = CatatanCekModel::whereNotNull('value_dimensi')->get();
+        $valueDimensi = $getValueDimensi->pluck('value_dimensi', 'id')->toArray();
+        // $getValueDimensi = CatatanCekModel::select('select value_dimensi from catatan_cek where id')->get();
+        // dd($valueDimensi);
 
-        // $standarPerPart = StandarPerPartModel::where('kode_part', $kode_part)->get();
-        // dd($standarPerPart);
-        // dd( $dataPartIn);
+        // }
         
-        // $listCek = CatatanCekModel::where('id_part_supply', $id)->get();
+        // $getStatus = CatatanCekModel::();
+        // $valueStatus = $getStatus->get(["id", "id_standar_part", "urutan_sample"])->toArray();
+        // dd($valueStatus);
+        // $valueStatus = $getStatus->pluck('id','urutan_sample','status');
         
-        $urutanSample = $dataPartIn->jumlah_sample;
         $listCek = CatatanCekModel::where('id_part_supply', $id)->get();
+        // $getValueDimensi = $listCek->whereNotNull('value_dimensi')->get();
 
         $cekDimensi = [];
         $cekVisual = [];
@@ -118,7 +118,7 @@ class PengecekanController extends Controller
         return view('detailPengecekan', [
             "title" => "Detail Pengecekan",
             "image" => "img/wima_logo.png"
-        ], compact('dataPartIn','jumlahTabel', 'cekVisual', 'cekDimensi', 'cekFunction', 'tanggalSekarang'));
+        ], compact('dataPartIn','jumlahTabel', 'cekVisual', 'cekDimensi', 'cekFunction', 'tanggalSekarang', 'getValueDimensi', 'valueDimensi'));
    
     }
 
@@ -343,7 +343,6 @@ class PengecekanController extends Controller
     public function verifPengecekanShow($id)
     {
         $verifPengecekan = CatatanCekModel::where('id_part_supply', $id)->get();
-
         $verifCekDimensi = [];
         $verifCekVisual = [];
         $verifCekFunction = [];

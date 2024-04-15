@@ -39,10 +39,10 @@
 
                         <div id="kolom_dimensi">
                             <p class="mb-1"><b>Max</b></p>
-                            <input type="number" name="max" class=" form-control d-block">
+                            <input type="text" pattern="[0-9]+([,\.][0-9]+)?" step="any" name="max" class="form-control d-block">
 
                             <p class="mb-1"><b>Min</b></p>
-                            <input type="number" name="min" class="form-control d-block">
+                            <input type="text" pattern="[0-9]+([,\.][0-9]+)?" step="any" name="min" class="form-control d-block">
                         </div>
                         <button type="submit" class="btn btn-success mt-4">Simpan</button>
                     </div>

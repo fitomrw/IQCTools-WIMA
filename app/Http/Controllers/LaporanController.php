@@ -10,6 +10,8 @@ use App\Models\Supplier;
 // use Barryvdh\DomPDF\Facade\Pdf;
 // use PDF;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class LaporanController extends Controller
 {
@@ -31,11 +33,14 @@ class LaporanController extends Controller
 
         $suppliers = Supplier::all();
 
+        $getIssueDate = Carbon::now()->toDateString();
+
         return view('tambah-LPP', [
             "title" => "Buat Laporan Penyimpangan Part",
             "model_kategori" => $model_kategori,
             "part" => $part,
-            "suppliers" => $suppliers
+            "suppliers" => $suppliers,
+            "getIssueDate" => $getIssueDate
         ]);
     }
 
@@ -58,6 +63,8 @@ class LaporanController extends Controller
             'quantity' => 'required',
             'problem_description' => 'required',
             'found_area' => 'required',
+            'found_date' => 'required',
+            'issue_date' => 'required',
             'request' => 'required',
             'pic_person'=> 'required',
             'gambar_lpp' => 'required|image|mimes:jpeg,png,jpg,gif',
@@ -67,7 +74,7 @@ class LaporanController extends Controller
         $filename = $currentDateTime . '.' . $request->file('gambar_lpp')->getClientOriginalExtension();
         // dd($validatedData['to'], $filename);
         Laporan::create([
-            'to' => $validatedData['to'],
+            'supplier_id' => $validatedData['to'],
             'attention' => $validatedData['attention'],
             'cc' => $validatedData['cc'],
             'part_name' => $validatedData['part_name'],
@@ -76,6 +83,8 @@ class LaporanController extends Controller
             'quantity' => $validatedData['quantity'],
             'problem_description' => $validatedData['problem_description'],
             'found_area' => $validatedData['found_area'],
+            'found_date' => $validatedData['found_date'],
+            'issue_date' => $validatedData['issue_date'],
             'request' => $validatedData['request'],
             'pic_person' => $validatedData['pic_person'],
             'gambar_lpp' => $filename,
@@ -129,7 +138,8 @@ class LaporanController extends Controller
             'model' => ['required'],            
             'quantity' => ['required'],           
             'problem_description' => ['required'],            
-            'found_area' => ['required'],
+            'found_date' => ['required'],
+            'issue_date' => ['required'],
             'request' => ['required'],
             'pic_person'=> ['required'],            
         ]);
@@ -139,7 +149,7 @@ class LaporanController extends Controller
 
         Laporan::where('id', $id)
                 ->update([
-                    'to' => $validatedData['to'],
+                    'supplier_id' => $validatedData['to'],
                     'attention' => $validatedData['attention'],
                     'cc' => $validatedData['cc'],
                     'part_name' => $validatedData['part_name'],
@@ -148,6 +158,7 @@ class LaporanController extends Controller
                     'quantity' => $validatedData['quantity'],
                     'problem_description' => $validatedData['problem_description'],
                     'found_area' => $validatedData['found_area'],
+                    'issue_date' => $validatedData['issue_date'],
                     'request' => $validatedData['request'],
                     'pic_person' => $validatedData['pic_person'],
                     'gambar_lpp' => $filename,
@@ -169,11 +180,51 @@ class LaporanController extends Controller
     public function verifIndex()
     {
         $verifLaporan = Laporan::all();
+        $getSupplier = Supplier::all();
+        $getKategori = kategoriPart::all();
 
         return view('verif-LPP', [
             "title" => "Verifikasi Laporan Penyimpangan Part",
-            "verifLaporan" => $verifLaporan
+            "verifLaporan" => $verifLaporan,
+            "getSupplier" => $getSupplier,
+            "getKategori" => $getKategori
         ]);
+    }
+
+    public function getDataLPP(Request $request)
+    {
+        $supplierFilter = $request->input('supplierFilter');
+        $kategoriFilter = $request->input('kategoriFilter');
+
+        $getDataLPP = Laporan::query();
+
+        if($supplierFilter){
+            $getDataLPP->where('to', $supplierFilter)->groupBy($supplierFilter);
+        }
+        if($kategoriFilter){
+            $getDataLPP->where('model', $kategoriFilter)->groupBy($kategoriFilter);
+        }
+
+        $filteredChart = $getDataLPP->get();
+
+        $data = $getDataLPP->select('part_code', DB::raw('SUM(quantity) as total_quantity'))
+        ->groupBy('part_code')
+        ->get();
+        
+        // // Mengambil data relasi 'part'
+        // $data->load('part');
+        
+        // // Mengonversi data ke dalam bentuk array untuk response JSON
+        // $data = $data->toArray();
+        
+        // Mengumpulkan data yang akan dikirimkan sebagai respons
+        $chartInfo = [
+            'data' => $data,
+            'filteredChart' => $filteredChart
+            ];
+        dd($chartInfo);
+            
+        return response()->json($chartInfo);
     }
 
     public function verifShow($id)

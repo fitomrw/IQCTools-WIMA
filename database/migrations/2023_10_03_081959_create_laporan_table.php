@@ -15,17 +15,20 @@ return new class extends Migration
     {
         Schema::create('laporan', function (Blueprint $table) {
             $table->id();
-            $table->string('to');
+            $table->unsignedBigInteger('supplier_id');
+            $table->foreign('supplier_id')->references('id_supplier')->on('supplier')->onDelete('cascade');
             $table->string('attention');
             $table->string('cc');
             $table->string('part_code');
             $table->foreign('part_code')->references('kode_part')->on('part')->onDelete('cascade');
             $table->unsignedBigInteger('model');
             $table->foreign('model')->references('id_kategori')->on('kategori_part')->onDelete('cascade');
-            $table->string('quantity');
+            $table->integer('quantity');
             $table->string('problem_description');
             $table->string('request');
             $table->string('found_area');
+            $table->date('found_date');
+            $table->date('issue_date');
             $table->unsignedBigInteger('pic_person');
             $table->foreign('pic_person')->references('id')->on('users')->onDelete('cascade');
             $table->integer('status')->default(0);

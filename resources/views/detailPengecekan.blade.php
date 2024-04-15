@@ -1,5 +1,4 @@
 @extends ('layouts.main')
-
 @section('container')
     <div class="container-fluid border-top">
         <form id="tabelDetailPengecekan" action="/submit-pengecekan/{{ $dataPartIn->id_part_supply }}" method="post">
@@ -73,14 +72,10 @@
                             </thead>
                             <tbody>
                                 @php
-                                    $no1 = 1;
-                                    // dd($cekVisual);
                                     // Filtering the array to get elements where id is greater than 1
-                                    // $i = $i;
                                     $data = array_filter($cekVisual, function ($item) use ($i) {
                                         return $item['urutan_sample'] === $i; // Use strict comparison here
                                     });
-                                    // dd($data);
                                 @endphp
                                 @foreach ($data as $item)
                                     <tr>
@@ -135,11 +130,7 @@
                                                     for="danger-outlined{{ $item->id }}">NG</label>
                                             </td>
                                         @endif
-                                        {{-- <td>{{ $item->urutan_sample }}</td> --}}
                                     </tr>
-                                    @php
-                                        $no1++;
-                                    @endphp
                                 @endforeach
                             </tbody>
                         </table>
@@ -179,14 +170,12 @@
                             </thead>
                             <tbody>
                                 @php
-                                    $no1 = 1;
                                     // dd($cekVisual);
                                     // Filtering the array to get elements where id is greater than 1
                                     // $i = $i;
                                     $data = array_filter($cekDimensi, function ($item) use ($i) {
                                         return $item['urutan_sample'] === $i; // Use strict comparison here
                                     });
-                                    // dd($data);
                                 @endphp
                                 @foreach ($data as $item)
                                     {{-- @dd($cekDimensi) --}}
@@ -199,8 +188,15 @@
                                         <td class="text-center">{{ $item->standarPart->min }}</td>
                                         <td class="text-center">{{ $item->standarPart->standar->alat }}</td>
                                         <td class="text-center">
-                                            <input type="text" name="valueDimensi" id="valueDimensi"
-                                                class="form-control w-50 mx-auto">
+                                            @if (array_key_exists($item->id, $valueDimensi))
+                                                <input type="text" name="value_dimensi[]" id="value_dimensi"
+                                                    class="form-control w-50 mx-auto"
+                                                    value="{{ $valueDimensi[$item->id] }}" required>
+                                            @else
+                                                <input type="text" name="value_dimensi[]" id="value_dimensi"
+                                                    class="form-control w-50 mx-auto" value="" required>
+                                            @endif
+                                            <input type="hidden" name="id_value_dimensi[]" value="{{ $item->id }}">
                                         </td>
                                         @if ($item->status == null)
                                             <td class="text-center"><input type="radio" class="btn-check"
@@ -284,7 +280,6 @@
                                 </thead>
                                 <tbody>
                                     @php
-                                        $no1 = 1;
                                         // dd($cekVisual);
                                         // Filtering the array to get elements where id is greater than 1
                                         // $i = $i;
@@ -356,7 +351,27 @@
                 </div>
             @endif
 
+            @php
+                $ngFound = false;
+                $groupedCekVisual = collect([$cekVisual, $cekDimensi, $cekFunction])->groupBy('urutan_sample');
+
+                foreach ($groupedCekVisual as $urutanSample => $items) {
+                    $ngFound = $items->contains('status', 'NG') ;
+                    if ($ngFound) {
+                        break;
+                    }
+                }
+            @endphp
+
             <div class="row d-flex justify-content-end mt-2">
+                <div class="col-2">
+                    @if ($ngFound)
+                        <p class="fs-4 text-center">NG!</p>
+                    @else
+                        <p class="fs-4 text-center">OK!</p>
+                    @endif
+                </div>
+
                 <div class="col-2">
                     <form action="/submitPengecekan/{{ $dataPartIn->id_part_supply }}" method="post">
                         @csrf

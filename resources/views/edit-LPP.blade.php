@@ -11,7 +11,7 @@
                     <div class="mb-3">
                         <label for="to" class="form-label">To</label>
                         <input type="text" class="form-control" name="to" id="to"
-                            value="{{ $edit_laporan->to }}" required>
+                            value="{{ $edit_laporan->supplier->nama_supplier }}" required>
                     </div>
                     <div class="mb-3">
                         <label for="attention" class="form-label">Attention</label>
@@ -74,6 +74,14 @@
                             <option value="On Factory" {{ $edit_laporan->found_area == 'On Factory' ? 'selected' : '' }}>
                                 On Factory</option>
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="found_date" class="form-label">Found Date</label>
+                        <input type="date" id="found_date" name="found_date" class="d-block form-control" value="{{ $edit_laporan->found_date }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="issue_date" class="form-label">Issue Date</label>
+                        <input type="date" id="issue_date" name="issue_date" class="d-block form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="request" class="form-label">Request</label>

@@ -23,4 +23,9 @@ class Laporan extends Model
     {
         return $this->belongsTo(Part::class, 'part_code', 'kode_part');
     }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class, 'supplier_id', 'id_supplier');
+    }
 }

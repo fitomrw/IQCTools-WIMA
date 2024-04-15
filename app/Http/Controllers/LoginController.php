@@ -24,8 +24,12 @@ class LoginController extends Controller
 
         if(Auth::attempt($credentials)){
             $request->session()->regenerate();
-
-            return redirect()->intended('/');
+            // return redirect()->intended('/');
+            if (auth()->user()->jabatan == 'Kepala Seksi QC') {
+                return redirect()->intended('/verifikasi-pengecekan');
+            } else if (auth()->user()->jabatan == 'Staff QA') {
+                return redirect()->intended('/kelola-LPP/verifLaporan');
+            }         
         }
 
         return back()->with('loginError', 'Login gagal! Username atau password salah!');

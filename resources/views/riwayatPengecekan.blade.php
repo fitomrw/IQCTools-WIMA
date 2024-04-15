@@ -11,8 +11,9 @@
                             <th>Kode Part</th>
                             <th>Nama Part</th>
                             <th>Jumlah Pengiriman</th>
-                            <th>Status</th>
                             <th>Tanggal Pengiriman</th>
+                            <th>Status Verifikasi</th>
+                            <th colspan="2">Status Penerimaan</th>
                             <th>Aksi</th>
                         </thead>
                         <tbody>
@@ -25,6 +26,7 @@
                                     <td>{{ $item->kode_part }}</td>
                                     <td>{{ $item->part->nama_part }}</td>
                                     <td>{{ $item->jumlah_kirim }}</td>
+                                    <td>{{ $item->supply_date }}</td>
                                     @if ($item->status_pengecekan == 1)
                                         <td>
                                             <p class="bg-primary p-1 rounded-1 text-center"><b>Menunggu Verifikasi</b></p>
@@ -38,7 +40,8 @@
                                             <p class="bg-success p-1 rounded-1 text-center"><b>Sudah Verifikasi</b></p>
                                         </td>
                                     @endif
-                                    <td>{{ $item->supply_date }}</td>
+                                    <td></td>
+                                    <td></td>
                                     <td><a href="/detailPengecekan/{{ $item->id_part_supply }}/{{ $item->kode_part }}"><button
                                                 class="btn btn-info"><i class="fas fa-eye"></i></button></a></td>
                                 </tr>
