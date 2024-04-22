@@ -77,11 +77,13 @@
                     </div>
                     <div class="mb-3">
                         <label for="found_date" class="form-label">Found Date</label>
-                        <input type="date" id="found_date" name="found_date" class="d-block form-control" value="{{ $edit_laporan->found_date }}" required>
+                        <input type="date" id="found_date" name="found_date" class="d-block form-control"
+                            value="{{ $edit_laporan->found_date }}" required>
                     </div>
                     <div class="mb-3">
                         <label for="issue_date" class="form-label">Issue Date</label>
-                        <input type="date" id="issue_date" name="issue_date" class="d-block form-control" required>
+                        <input type="date" id="issue_date" name="issue_date"
+                            class="d-block form-control value="{{ $edit_laporan->issue_date }}" required>
                     </div>
                     <div class="mb-3">
                         <label for="request" class="form-label">Request</label>

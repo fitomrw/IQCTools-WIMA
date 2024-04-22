@@ -11,6 +11,9 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
+use App\Models\Supplier;
+use App\Models\kategoriPart;
+use App\Models\Part;
 use stdClass;
 
 class PengecekanController extends Controller
@@ -33,11 +36,15 @@ class PengecekanController extends Controller
     public function riwayatPengecekan()
     {
         $data = dataPartIncoming::all();
+        $finalStatusShow = CatatanCekModel::whereNotNull('final_status')->get();
+        $countedNG = $finalStatusShow->where('final_status', 1)->count();
+        $countedOK = $finalStatusShow->where('final_status', 0)->count();
+        // dd($finalStatusShow);
 
         return view('riwayatPengecekan', [
             "title" => "Pengecekan",
             "image" => "img/wima_logo.png"
-        ], compact('data'));
+        ], compact('data', 'countedNG', 'countedOK'));
     }
 
     public function cekPerPoint(Request $request)
@@ -54,7 +61,8 @@ class PengecekanController extends Controller
         // dd($request);
         // Validasi input jika diperlukan
         $request->validate([
-            'value_dimensi.*' => 'required|numeric', // Sesuaikan dengan aturan validasi Anda
+            'value_dimensi.*' => 'required|numeric',
+            // Sesuaikan dengan aturan validasi Anda
         ]);
 
         for ($i=0; $i < count($request->input('id_value_dimensi')); $i++) { 
@@ -64,11 +72,48 @@ class PengecekanController extends Controller
            // Update nilai value_dimensi dalam model dengan nilai yang diterima dari formulir
             $modelData->update(['value_dimensi' =>  $request->input('value_dimensi')[$i]]);
         }
+
             $updateData = dataPartIncoming::where('id_part_supply', $id)->first();
             $updateData->update([
                 'tanggal_pengecekan' => $request->tanggal_periksa,
                 'status_pengecekan' => $request->status_pengecekan
-            ]); 
+            ]);
+
+            $getFinalStatus = CatatanCekModel::where('id_part_supply', $id)->get();
+        // $getValueDimensi = $listCek->whereNotNull('value_dimensi')->get();
+            $cekDimensi = [];
+            $cekVisual = [];
+            $cekFunction = [];
+            
+            foreach ($getFinalStatus as $key ) {
+                // dd($key->standarPart->standar);
+                if ($key->standarPart->standar->jenis_standar == 'VISUAL') {
+                    $cekVisual[] = $key;
+                } elseif ($key->standarPart->standar->jenis_standar == 'DIMENSI') {
+                    $cekDimensi[] = $key;
+                } elseif ($key->standarPart->standar->jenis_standar == 'FUNCTION') {
+                    $cekFunction[] = $key;
+                }
+            }
+        
+            $setNGFound = false;
+            $setFinalStatus = collect([$cekVisual, $cekDimensi, $cekFunction])->flatMap(function ($item) {
+                return $item ;
+            })->groupBy('urutan_sample');
+            foreach ($setFinalStatus as $urutanSample => $items) {
+                $setNGFound = $items->contains(function ($item) {
+                    return $item['status'] === 'NG';
+                });
+                if($setNGFound) {
+                    $firstItem = $items->first();
+                    $modelData = CatatanCekModel::findOrFail($firstItem->id);
+                    $modelData->update(['final_status' => 1]);
+                }else {
+                    $firstItem = $items->first();
+                    $modelData = CatatanCekModel::findOrFail($firstItem->id);
+                    $modelData->update(['final_status' => 0]);
+                }
+            }                    
 
         return redirect('/riwayatPengecekan');
     }
@@ -79,15 +124,6 @@ class PengecekanController extends Controller
         $tanggalSekarang = Carbon::now()->toDateString();
         $getValueDimensi = CatatanCekModel::whereNotNull('value_dimensi')->get();
         $valueDimensi = $getValueDimensi->pluck('value_dimensi', 'id')->toArray();
-        // $getValueDimensi = CatatanCekModel::select('select value_dimensi from catatan_cek where id')->get();
-        // dd($valueDimensi);
-
-        // }
-        
-        // $getStatus = CatatanCekModel::();
-        // $valueStatus = $getStatus->get(["id", "id_standar_part", "urutan_sample"])->toArray();
-        // dd($valueStatus);
-        // $valueStatus = $getStatus->pluck('id','urutan_sample','status');
         
         $listCek = CatatanCekModel::where('id_part_supply', $id)->get();
         // $getValueDimensi = $listCek->whereNotNull('value_dimensi')->get();
@@ -329,19 +365,215 @@ class PengecekanController extends Controller
         return redirect('/kelola-standarMIL')->with('danger', 'Standar MIL STD 105 E Berhasil Di Hapus');
     }
     
-    public function verifikasiPengecekan()
+    public function verifikasiPengecekan($supplier, $kategori, $bulan)
     {
         $data = dataPartIncoming::where('status_pengecekan', 1)->get();
+        $finalStatusShow = CatatanCekModel::whereNotNull('final_status')->get();
+        $countedNG = $finalStatusShow->where('final_status', 1)->count();
+        $countedOK = $finalStatusShow->where('final_status', 0)->count();
 
-        return view('verifikasiPengecekan', [
-            "title" => "Verifikasi Pengecekan",
+        $laporan = null;
+        $getSupplier = Supplier::all();
+        $getKategori = kategoriPart::all();
+        // dd($supplier);
+        if ($bulan == 0) {
+            $bulanForView =  Carbon::now()->month;
+        } else {
+            $bulanForView =  $bulan;
+        }
+
+        return view('grafik', [
+            "title" => "Grafik Perbandingan Penyimpangan Part",
             "image" => "/img/wima_logo.png",
-            "data" => $data
+            "laporan" => $laporan,
+            "getSupplier" => $getSupplier,
+            "getKategori" => $getKategori,
+            "supplier" => $supplier,
+            "kategori" => $kategori,
+            "bulan" => $bulan,
+            "bulanForView" => $bulanForView,
+            "data" => $data,
+            "countedNG" => $countedNG,
+            "countedOK" => $countedOK
         ]);
+    }
+
+
+
+        // return view('verifikasiPengecekan', [
+        //     "title" => "Verifikasi Pengecekan",
+        //     "image" => "/img/wima_logo.png",
+        //     "data" => $data,
+        //     "countedNG" => $countedNG,
+        //     "countedOK" => $countedOK
+        // ]);
+
+    public function filterGrafik(Request $request)
+    {
+        // dd($request->supplierFilter, $request->kategoriFilter, $request->bulanFilter);
+        $supplier = $request->supplierFilter;
+        $kategori =  $request->kategoriFilter;
+        $bulan = $request->bulanFilter;
+
+        if ($supplier == null) {
+            $supplier = 0;
+        }
+
+        if ($kategori == null) {
+            $kategori = 0;
+        }
+
+        if ($bulan == null) {
+            $bulan = 0;
+        }
+        return redirect()->route('grafikVerif', compact('supplier', 'kategori', 'bulan'));
+    }
+
+    public function dataGrafik($supplier, $kategori, $bulan)
+    {
+
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
+
+        if ($supplier == 0 && $kategori == 0 && $bulan == 0) {
+            $AllPart = Part::all()->sortBy('nama_part');
+            foreach ($AllPart as $key) {
+                // dd($key->part);
+                $label[] = $key->nama_part;
+                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->count();
+                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->count();
+            }
+            // dd('pas1');
+        } elseif ($supplier != 0 && $kategori == 0 && $bulan == 0) {
+            $AllPart = Part::where('supplier_id', $supplier)->orderBy('nama_part')->get();
+            foreach ($AllPart as $key) {
+                // dd($key->part);
+                $label[] = $key->nama_part;
+                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->count();
+                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->count();
+            }
+            // dd('pas2');
+        } elseif ($supplier != 0 && $kategori != 0 && $bulan == 0) {
+            $AllPart = Part::where('supplier_id', $supplier)->where('kategori_id', $kategori)->orderBy('nama_part')->get();
+            foreach ($AllPart as $key) {
+                // dd($key->part);
+                $label[] = $key->nama_part;
+                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->count();
+                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->count();
+            }
+            // dd('pas3');
+        } elseif ($supplier == 0 && $kategori != 0 && $bulan == 0) {
+            $AllPart = Part::where('kategori_id', $kategori)->orderBy('nama_part')->get();
+            foreach ($AllPart as $key) {
+                // dd($key->part);
+                $label[] = $key->nama_part;
+                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->count();
+                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->count();
+            }
+            // dd('pas4');
+        } elseif ($supplier == 0 && $kategori != 0 && $bulan != 0) {
+            $AllPart = Part::where('kategori_id', $kategori)->orderBy('nama_part')->get();
+            foreach ($AllPart as $key) {
+                // dd($key->part);
+                $label[] = $key->nama_part;
+                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $bulan)
+                    ->count();
+                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $bulan)
+                    ->count();
+            }
+            // dd('pas5');
+        } elseif ($supplier != 0 && $kategori == 0 && $bulan != 0) {
+            $AllPart = Part::where('kategori_id', $supplier)->orderBy('nama_part')->get();
+            // dd($AllPart);
+            foreach ($AllPart as $key) {
+                // dd($key);
+                $label[] = $key->nama_part;
+                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $bulan)
+                    ->count();
+                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $bulan)
+                    ->count();
+            }
+            // dd('pas6', $label);
+        } elseif ($supplier == 0 && $kategori == 0 && $bulan != 0) {
+            $AllPart = Part::all()->sortBy('nama_part');
+            foreach ($AllPart as $key) {
+                // dd($key->part);
+                $label[] = $key->nama_part;
+                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $bulan)
+                    ->count();
+                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $bulan)
+                    ->count();
+            }
+            // dd('pas7');
+        } elseif ($supplier != 0 && $kategori != 0 && $bulan != 0) {
+            $AllPart = Part::where('supplier_id', $supplier)->where('kategori_id', $kategori)->orderBy('nama_part')->get();
+            foreach ($AllPart as $key) {
+                // dd($key->part);
+                $label[] = $key->nama_part;
+                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $bulan)
+                    ->count();
+                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $bulan)
+                    ->count();
+            }
+            // dd('pas8');
+        }
+
+
+        // $data1[] = [12];
+
+        // $data2[] = [12];
+
+
+        $data = [$label, $data1, $data2];
+
+        return response()->json($data);
     }
 
     public function verifPengecekanShow($id)
     {
+        $getValueDimensi = CatatanCekModel::whereNotNull('value_dimensi')->get();
+        $valueDimensi = $getValueDimensi->pluck('value_dimensi', 'id')->toArray();
+
         $verifPengecekan = CatatanCekModel::where('id_part_supply', $id)->get();
         $verifCekDimensi = [];
         $verifCekVisual = [];
@@ -378,7 +610,8 @@ class PengecekanController extends Controller
             "jumlahTabel" => $jumlahTabel,
             "verifCekVisual" => $verifCekVisual,
             "verifCekDimensi" => $verifCekDimensi,
-            "verifCekFunction" => $verifCekFunction
+            "verifCekFunction" => $verifCekFunction,
+            "valueDimensi" => $valueDimensi
         ]);
     }
 
@@ -533,5 +766,3 @@ class PengecekanController extends Controller
          return redirect('/verifikasi-pengecekan')->with("notify", 'Data Pengecekan Telah Diverifikasi!');
     }
 }
-
-

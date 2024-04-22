@@ -12,11 +12,16 @@ class CatatanCekModel extends Model
     protected $guarded = [];
     public function partIncoming()
     {
-        return $this->belongsTo(dataPartIncoming::class, 'id_part_supply','id_part_supply');
+        return $this->belongsTo(dataPartIncoming::class, 'id_part_supply', 'id_part_supply');
     }
 
     public function standarPart()
     {
-        return $this->belongsTo(StandarPerPartModel::class, 'id_standar_part','id_standar_part');
+        return $this->belongsTo(StandarPerPartModel::class, 'id_standar_part', 'id_standar_part');
+    }
+
+    public function part()
+    {
+        return $this->belongsTo(Part::class, 'id_part', 'kode_part');
     }
 }

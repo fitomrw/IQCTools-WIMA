@@ -7,14 +7,20 @@
                 <div class="table-responsive">
                     <table class="table table-bordered datatable">
                         <thead>
-                            <th>No</th>
-                            <th>Kode Part</th>
-                            <th>Nama Part</th>
-                            <th>Jumlah Pengiriman</th>
-                            <th>Tanggal Pengiriman</th>
-                            <th>Status Verifikasi</th>
-                            <th colspan="2">Status Penerimaan</th>
-                            <th>Aksi</th>
+                            <tr>
+                                <th rowspan="3">No</th>
+                                <th rowspan="3">Kode Part</th>
+                                <th rowspan="3">Nama Part</th>
+                                <th rowspan="3">Jumlah Pengiriman</th>
+                                <th rowspan="3">Tanggal Pengiriman</th>
+                                <th rowspan="3">Status Verifikasi</th>
+                                <th rowspan="1" colspan="2" class="text-center">Hasil Cek</th>
+                                <th rowspan="3">Aksi</th>
+                            </tr>
+                            <tr>
+                                <th rowspan="1">OK</th>
+                                <th rowspan="1">NG</th>
+                            </tr>
                         </thead>
                         <tbody>
                             @php
@@ -40,8 +46,8 @@
                                             <p class="bg-success p-1 rounded-1 text-center"><b>Sudah Verifikasi</b></p>
                                         </td>
                                     @endif
-                                    <td></td>
-                                    <td></td>
+                                    <td>{{ $countedOK }}</td>
+                                    <td>{{ $countedNG }}</td>
                                     <td><a href="/detailPengecekan/{{ $item->id_part_supply }}/{{ $item->kode_part }}"><button
                                                 class="btn btn-info"><i class="fas fa-eye"></i></button></a></td>
                                 </tr>

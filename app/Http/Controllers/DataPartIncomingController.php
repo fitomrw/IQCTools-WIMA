@@ -59,7 +59,7 @@ class DataPartIncomingController extends Controller
     {
         $kategori_part = kategoriPart::all();
         $suppliers = Supplier::all();
-        
+
         return view('tambahDataPartIncoming', [
             "title" => "Tambah Data Part Incoming",
             "image" => "{{ url('/img/wima_logo.png') }}",
@@ -77,7 +77,7 @@ class DataPartIncomingController extends Controller
     public function store(StoredataPartIncomingRequest $request)
     {
         // dd($request); 
-        
+
         $validatedData = $request->validate([
             'kategori_id' => ['required'],
             'kode_part' => ['required'],
@@ -89,7 +89,7 @@ class DataPartIncomingController extends Controller
             'inspection_level' => ['required'],
             // 'jumlah_sample' => ['required']
         ]);
-        
+
         dataPartIncoming::create($validatedData);
         $data = dataPartIncoming::all();
         $dataTerbaru = $data->last();
@@ -101,15 +101,16 @@ class DataPartIncomingController extends Controller
         $s2Levels = $dataTerbaru->inspection_level == 'S-II';
         $s1Levels = $dataTerbaru->inspection_level == 'S-I';
         $aqlNumber1 = $dataTerbaru->aql_number == 1;
-        
+
         $cat = new PengecekanController;
         $test = $cat->calculateJumlahTabel($s4Levels, $s3Levels, $s2Levels, $s1Levels, $dataTerbaru, $aqlNumber1);
 
-        for ($i=1; $i <= $test ; $i++) { 
-            foreach ($standarPart as $key ) {
+        for ($i = 1; $i <= $test; $i++) {
+            foreach ($standarPart as $key) {
                 CatatanCekModel::create([
                     'id_part_supply' => $dataTerbaru->id_part_supply,
                     'id_standar_part' => $key->id_standar_part,
+                    'id_part' => $key->part->nama_part,
                     'urutan_sample' => $i
                 ]);
             }
@@ -126,7 +127,6 @@ class DataPartIncomingController extends Controller
      */
     public function show(dataPartIncoming $dataPartIncoming)
     {
-
     }
 
     /**
@@ -167,9 +167,9 @@ class DataPartIncomingController extends Controller
     public function update(UpdatedataPartIncomingRequest $request, dataPartIncoming $dataPartIncoming)
     {
         $findDataPartIncoming = dataPartIncoming::find($dataPartIncoming->id_part_supply);
-        
+
         // dd($findDataPartIncoming);
-        
+
         $validatedData = $request->validate([
             'kategori_id' => ['required'],
             'kode_part' => ['required'],
@@ -183,8 +183,8 @@ class DataPartIncomingController extends Controller
 
 
 
-        dataPartIncoming::where('id_part_supply', $findDataPartIncoming->id_part_supply) 
-                        ->update($validatedData);
+        dataPartIncoming::where('id_part_supply', $findDataPartIncoming->id_part_supply)
+            ->update($validatedData);
 
         return redirect('/dataPartIncoming')->with('notify', 'Data Part Incoming Berhasil Diubah!');
     }

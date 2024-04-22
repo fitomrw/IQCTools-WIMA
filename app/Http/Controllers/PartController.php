@@ -219,6 +219,7 @@ class PartController extends Controller
             'kode_part' => $part,
             'rincian_standar' => $request->rincian_standar,
             'spesifikasi' => $request->spesifikasi,
+            'point' => $request->point,
             'max' => $request->max,
             'min' => $request->min
         ]);

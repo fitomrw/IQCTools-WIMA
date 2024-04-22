@@ -155,20 +155,26 @@
                             style="overflow-x:auto;">
                             <thead>
                                 <tr>
-                                    <th class="bg-warning">Sample ke-{{ $i }}</th>
-                                    <th class="text-center border-3" colspan="7" style="background-color: darkgrey">
+                                    <th class="bg-warning" colspan="2">Sample ke-{{ $i }}</th>
+                                    <th class="text-center border-3" colspan="8" style="background-color: darkgrey">
                                         DIMENSI</th>
                                 </tr>
                                 <tr>
-                                    <th class="text-center" rowspan="2">NO</th>
-                                    <th class="text-center" rowspan="2">URAIAN</th>
-                                    <th class="text-center" rowspan="1" colspan="2">STANDAR</th>
-                                    <th class="text-center" rowspan="2">ALAT</th>
-                                    <th class="text-center" rowspan="1" colspan="2">KESIMPULAN</th>
+                                    <th class="text-center" rowspan="3" style="width: 30px;">NO</th>
+                                    <th class="text-center" rowspan="3" style="width: 30px;">POINT</th>
+                                    <th class="text-center" rowspan="3">URAIAN</th>
+                                    <th class="text-center" rowspan="1" colspan="3">STANDAR</th>
+                                    <th class="text-center" rowspan="3">ALAT</th>
+                                    <th class="text-center" rowspan="3" style="width: 150px;">INPUT VALUE</th>
+                                    <th class="text-center" rowspan="2" colspan="2">KESIMPULAN</th>
                                 </tr>
                                 <tr>
-                                    <th class="text-center">Spesifikasi</th>
-                                    <th class="text-center">Toleransi</th>
+                                    <th class="text-center" rowspan="2">Spesifikasi</th>
+                                    <th class="text-center" colspan="2">Toleransi</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center">Max</th>
+                                    <th class="text-center">Min</th>
                                     <th class="text-center">OK</th>
                                     <th class="text-center">NG</th>
                                 </tr>
@@ -188,10 +194,24 @@
                                     {{-- @dd($cekDimensi) --}}
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $item->standarPart->point }}</td>
                                         <td>{{ $item->standarPart->standar->uraian }}</td>
-                                        <td colspan="2" class="text-center">{{ $item->standarPart->rincian_standar }}
+                                        <td class="text-center">{{ $item->standarPart->spesifikasi }}
                                         </td>
+                                        <td class="text-center">{{ $item->standarPart->max }}</td>
+                                        <td class="text-center">{{ $item->standarPart->min }}</td>
                                         <td>{{ $item->standarPart->standar->alat }}</td>
+                                        <td class="text-center">
+                                            @if (array_key_exists($item->id, $valueDimensi))
+                                                <input type="text" name="value_dimensi[]" id="value_dimensi"
+                                                    class="form-control w-50 mx-auto"
+                                                    value="{{ $valueDimensi[$item->id] }}"disabled> 
+                                            @else
+                                                <input type="text" name="value_dimensi[]" id="value_dimensi"
+                                                    class="form-control w-50 mx-auto" value="" disabled>
+                                            @endif
+                                            <input type="hidden" name="id_value_dimensi[]" value="{{ $item->id }}">
+                                        </td>
                                         @if ($item->status == null)
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"

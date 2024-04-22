@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CatatanCekModel;
 use Illuminate\Http\Request;
 use App\Models\kategoriPart;
 use App\Models\Laporan;
 use App\Models\Part;
 use App\Models\Supplier;
+// use Carbon\Carbon;
 // use Barryvdh\DomPDF\Facade\Pdf;
 // use PDF;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -66,7 +68,7 @@ class LaporanController extends Controller
             'found_date' => 'required',
             'issue_date' => 'required',
             'request' => 'required',
-            'pic_person'=> 'required',
+            'pic_person' => 'required',
             'gambar_lpp' => 'required|image|mimes:jpeg,png,jpg,gif',
         ]);
         // dd($validatedData);
@@ -89,12 +91,12 @@ class LaporanController extends Controller
             'pic_person' => $validatedData['pic_person'],
             'gambar_lpp' => $filename,
         ]);
-        
+
         $request->file('gambar_lpp')->move(public_path('img/img_lpp'), $filename);
         return redirect('/kelola-LPP')->with('success', 'Laporan LPP Berhasil Dibuat!');
     }
 
-    public function show ($id)
+    public function show($id)
     {
         $showLaporan = Laporan::find($id);
 
@@ -135,37 +137,37 @@ class LaporanController extends Controller
             'cc' => ['required'],
             'part_name' => ['required'],
             'part_code' => ['required'],
-            'model' => ['required'],            
-            'quantity' => ['required'],           
-            'problem_description' => ['required'],            
+            'model' => ['required'],
+            'quantity' => ['required'],
+            'problem_description' => ['required'],
             'found_date' => ['required'],
             'issue_date' => ['required'],
             'request' => ['required'],
-            'pic_person'=> ['required'],            
+            'pic_person' => ['required'],
         ]);
 
         $currentDateTime = now()->format('YmdHis');
         $filename = $currentDateTime . '.' . $request->file('gambar_lpp')->getClientOriginalExtension();
 
         Laporan::where('id', $id)
-                ->update([
-                    'supplier_id' => $validatedData['to'],
-                    'attention' => $validatedData['attention'],
-                    'cc' => $validatedData['cc'],
-                    'part_name' => $validatedData['part_name'],
-                    'part_code' => $validatedData['part_code'],
-                    'model' => $validatedData['model'],
-                    'quantity' => $validatedData['quantity'],
-                    'problem_description' => $validatedData['problem_description'],
-                    'found_area' => $validatedData['found_area'],
-                    'issue_date' => $validatedData['issue_date'],
-                    'request' => $validatedData['request'],
-                    'pic_person' => $validatedData['pic_person'],
-                    'gambar_lpp' => $filename,
-                ]);
-        
+            ->update([
+                'supplier_id' => $validatedData['to'],
+                'attention' => $validatedData['attention'],
+                'cc' => $validatedData['cc'],
+                'part_name' => $validatedData['part_name'],
+                'part_code' => $validatedData['part_code'],
+                'model' => $validatedData['model'],
+                'quantity' => $validatedData['quantity'],
+                'problem_description' => $validatedData['problem_description'],
+                'found_area' => $validatedData['found_area'],
+                'issue_date' => $validatedData['issue_date'],
+                'request' => $validatedData['request'],
+                'pic_person' => $validatedData['pic_person'],
+                'gambar_lpp' => $filename,
+            ]);
+
         $request->file('gambar_lpp')->move(public_path('img/img_lpp'), $filename);
-        
+
         return redirect('/kelola-LPP')->with('success', 'Laporan LPP Berhasil Diubah!');
     }
 
@@ -198,32 +200,32 @@ class LaporanController extends Controller
 
         $getDataLPP = Laporan::query();
 
-        if($supplierFilter){
+        if ($supplierFilter) {
             $getDataLPP->where('to', $supplierFilter)->groupBy($supplierFilter);
         }
-        if($kategoriFilter){
+        if ($kategoriFilter) {
             $getDataLPP->where('model', $kategoriFilter)->groupBy($kategoriFilter);
         }
 
         $filteredChart = $getDataLPP->get();
 
         $data = $getDataLPP->select('part_code', DB::raw('SUM(quantity) as total_quantity'))
-        ->groupBy('part_code')
-        ->get();
-        
+            ->groupBy('part_code')
+            ->get();
+
         // // Mengambil data relasi 'part'
         // $data->load('part');
-        
+
         // // Mengonversi data ke dalam bentuk array untuk response JSON
         // $data = $data->toArray();
-        
+
         // Mengumpulkan data yang akan dikirimkan sebagai respons
         $chartInfo = [
             'data' => $data,
             'filteredChart' => $filteredChart
-            ];
+        ];
         dd($chartInfo);
-            
+
         return response()->json($chartInfo);
     }
 
@@ -240,14 +242,14 @@ class LaporanController extends Controller
     public function executeVerif($id, Request $request)
     {
         $validatedData = $request->validate([
-            'status'=> ['required', 'integer']
+            'status' => ['required', 'integer']
         ]);
 
         // dd($validatedData);
 
         Laporan::where('id', $id)
-                ->update($validatedData);
-        
+            ->update($validatedData);
+
         return redirect('/kelola-LPP/verifLaporan')->with('success', 'Laporan LPP Telah Di Verifikasi!');
     }
 
@@ -255,7 +257,7 @@ class LaporanController extends Controller
     {
         $printingLPP = Laporan::find($id);
 
-        return view('print-LPP',[
+        return view('print-LPP', [
             "printingLPP" => $printingLPP
         ]);
 
@@ -264,4 +266,189 @@ class LaporanController extends Controller
 
     }
 
+    public function grafik($supplier, $kategori, $bulan)
+    {
+
+        $laporan = null;
+        $getSupplier = Supplier::all();
+        $getKategori = kategoriPart::all();
+        // dd($supplier);
+        if ($bulan == 0) {
+            $bulanForView =  Carbon::now()->month;
+        } else {
+            $bulanForView =  $bulan;
+        }
+
+        return view('grafik', [
+            "title" => "Grafik Perbandingan Penyimpangan Part",
+            "laporan" => $laporan,
+            "getSupplier" => $getSupplier,
+            "getKategori" => $getKategori,
+            "supplier" => $supplier,
+            "kategori" => $kategori,
+            "bulan" => $bulan,
+            "bulanForView" => $bulanForView
+        ]);
+    }
+
+    public function filterGrafik(Request $request)
+    {
+        // dd($request->supplierFilter, $request->kategoriFilter, $request->bulanFilter);
+        $supplier = $request->supplierFilter;
+        $kategori =  $request->kategoriFilter;
+        $bulan = $request->bulanFilter;
+
+        if ($supplier == null) {
+            $supplier = 0;
+        }
+
+        if ($kategori == null) {
+            $kategori = 0;
+        }
+
+        if ($bulan == null) {
+            $bulan = 0;
+        }
+        return redirect()->route('grafik', compact('supplier', 'kategori', 'bulan'));
+    }
+
+    public function dataGrafik($supplier, $kategori, $bulan)
+    {
+
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
+
+        if ($supplier == 0 && $kategori == 0 && $bulan == 0) {
+            $AllPart = Part::all()->sortBy('nama_part');
+            foreach ($AllPart as $key) {
+                // dd($key->part);
+                $label[] = $key->nama_part;
+                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->count();
+                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->count();
+            }
+            // dd('pas1');
+        } elseif ($supplier != 0 && $kategori == 0 && $bulan == 0) {
+            $AllPart = Part::where('supplier_id', $supplier)->orderBy('nama_part')->get();
+            foreach ($AllPart as $key) {
+                // dd($key->part);
+                $label[] = $key->nama_part;
+                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->count();
+                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->count();
+            }
+            // dd('pas2');
+        } elseif ($supplier != 0 && $kategori != 0 && $bulan == 0) {
+            $AllPart = Part::where('supplier_id', $supplier)->where('kategori_id', $kategori)->orderBy('nama_part')->get();
+            foreach ($AllPart as $key) {
+                // dd($key->part);
+                $label[] = $key->nama_part;
+                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->count();
+                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->count();
+            }
+            // dd('pas3');
+        } elseif ($supplier == 0 && $kategori != 0 && $bulan == 0) {
+            $AllPart = Part::where('kategori_id', $kategori)->orderBy('nama_part')->get();
+            foreach ($AllPart as $key) {
+                // dd($key->part);
+                $label[] = $key->nama_part;
+                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->count();
+                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $currentMonth)
+                    ->count();
+            }
+            // dd('pas4');
+        } elseif ($supplier == 0 && $kategori != 0 && $bulan != 0) {
+            $AllPart = Part::where('kategori_id', $kategori)->orderBy('nama_part')->get();
+            foreach ($AllPart as $key) {
+                // dd($key->part);
+                $label[] = $key->nama_part;
+                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $bulan)
+                    ->count();
+                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $bulan)
+                    ->count();
+            }
+            // dd('pas5');
+        } elseif ($supplier != 0 && $kategori == 0 && $bulan != 0) {
+            $AllPart = Part::where('kategori_id', $supplier)->orderBy('nama_part')->get();
+            // dd($AllPart);
+            foreach ($AllPart as $key) {
+                // dd($key);
+                $label[] = $key->nama_part;
+                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $bulan)
+                    ->count();
+                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $bulan)
+                    ->count();
+            }
+            // dd('pas6', $label);
+        } elseif ($supplier == 0 && $kategori == 0 && $bulan != 0) {
+            $AllPart = Part::all()->sortBy('nama_part');
+            foreach ($AllPart as $key) {
+                // dd($key->part);
+                $label[] = $key->nama_part;
+                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $bulan)
+                    ->count();
+                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $bulan)
+                    ->count();
+            }
+            // dd('pas7');
+        } elseif ($supplier != 0 && $kategori != 0 && $bulan != 0) {
+            $AllPart = Part::where('supplier_id', $supplier)->where('kategori_id', $kategori)->orderBy('nama_part')->get();
+            foreach ($AllPart as $key) {
+                // dd($key->part);
+                $label[] = $key->nama_part;
+                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $bulan)
+                    ->count();
+                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
+                    ->whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $bulan)
+                    ->count();
+            }
+            // dd('pas8');
+        }
+
+
+        // $data1[] = [12];
+
+        // $data2[] = [12];
+
+
+        $data = [$label, $data1, $data2];
+
+        return response()->json($data);
+    }
 }

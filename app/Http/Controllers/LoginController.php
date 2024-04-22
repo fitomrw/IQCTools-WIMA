@@ -26,9 +26,9 @@ class LoginController extends Controller
             $request->session()->regenerate();
             // return redirect()->intended('/');
             if (auth()->user()->jabatan == 'Kepala Seksi QC') {
-                return redirect()->intended('/verifikasi-pengecekan');
-            } else if (auth()->user()->jabatan == 'Staff QA') {
-                return redirect()->intended('/kelola-LPP/verifLaporan');
+                return redirect()->intended('/verifikasi-pengecekan/0/0/0');
+            } else if (auth()->user()->jabatan == 'Admin QC') {
+                return redirect()->intended('/register');
             }         
         }
 

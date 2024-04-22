@@ -2,27 +2,7 @@
 
 @section('container')
     <div class="container-fluid">
-        <div class="row">
-            <div class="col">
-                <label for="supplierFilter" class="form-label">Supplier</label>
-                <select class="form-select border border-dark" id="supplierFilter" name="supplierFilter">
-                    <option selected></option>
-                    @foreach ($getSupplier as $getSupp)
-                        <option value="{{ $getSupp->nama_supplier }}">{{ $getSupp->nama_supplier }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col">
-                <label for="kategoriFilter" class="form-label">Kategori</label>
-                <select class="form-select border border-dark" id="kategoriFilter" name="kategoriFilter">
-                    <option selected></option>
-                    @foreach ($getKategori as $getKate)
-                        <option value="{{ $getKate->id_kategori }}">{{ $getKate->nama_kategori }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-        <canvas id="LPPChart" style="width:100%;max-width:800px;display:block;"></canvas>
+        {{-- @include('grafik') --}}
         <table class="table" id="table-verif">
             <thead>
                 <tr>
@@ -64,7 +44,7 @@
             $(document).ready(function() {
                 $('.datatable').DataTable();
             });
-            
+
             document.addEventListener("DOMContentLoaded", function() {
                 const supplierFilter = document.getElementById('supplierFilter');
                 const kategoriFilter = document.getElementById('kategoriFilter');
@@ -89,7 +69,8 @@
                                 labels = filteredChart.filter(lpp => lpp.to === selectedSupplier).map(lpp => lpp.to
                                     .nama_part)
                             } else if (selectedKategori) {
-                                labels = filteredChart.filter(lpp => lpp.model === selectedKategori).map(lpp => lpp.part
+                                labels = filteredChart.filter(lpp => lpp.model === selectedKategori).map(lpp => lpp
+                                    .part
                                     .nama_part)
                             }
                             // console.log(total_quantity);

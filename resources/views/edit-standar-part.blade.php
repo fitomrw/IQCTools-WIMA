@@ -38,11 +38,16 @@
                         <input type="text" name="spesifikasi" class="form-control d-block">
 
                         <div id="kolom_dimensi">
+                            <p class="mb-1"><b>Point Pengecekan</b></p>
+                            <input type="text" name="point" class="form-control">
+
                             <p class="mb-1"><b>Max</b></p>
-                            <input type="text" pattern="[0-9]+([,\.][0-9]+)?" step="any" name="max" class="form-control d-block">
+                            <input type="text" pattern="[0-9]+([,\.][0-9]+)?" step="any" name="max"
+                                class="form-control d-block">
 
                             <p class="mb-1"><b>Min</b></p>
-                            <input type="text" pattern="[0-9]+([,\.][0-9]+)?" step="any" name="min" class="form-control d-block">
+                            <input type="text" pattern="[0-9]+([,\.][0-9]+)?" step="any" name="min"
+                                class="form-control d-block">
                         </div>
                         <button type="submit" class="btn btn-success mt-4">Simpan</button>
                     </div>
@@ -61,6 +66,7 @@
                     <th>Spesifikasi</th>
                     <th>Max</th>
                     <th>Min</th>
+                    <th>Point</th>
                     <th>Aksi</th>
                 </thead>
                 <tbody>
@@ -84,6 +90,7 @@
                             @else
                                 <td>{{ $item->min }}</td>
                             @endif
+                            <td>{{ $item->point }}</td>
                             <td>
                                 <form
                                     action="/kelola-masterStandarPart/delete/{{ $item->id_standar_part }}/{{ $item->kode_part }}"

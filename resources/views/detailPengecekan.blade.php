@@ -131,6 +131,27 @@
                                             </td>
                                         @endif
                                     </tr>
+                                    @php
+                                        $ngFound = false;
+                                        $groupedCekVisual = collect($cekVisual)
+                                            ->flatMap(function ($item) {
+                                                return $item;
+                                            })
+                                            ->groupBy('urutan_sample');
+                                        foreach ($groupedCekVisual as $urutanSample => $items) {
+                                            $ngFound = $items->contains(function ($item) {
+                                                return $item['status'] === 'NG';
+                                            });
+                                            if ($ngFound) {
+                                                break;
+                                            }
+                                        }
+                                    @endphp
+                                    @if ($ngFound)
+                                        <input type="hidden" name="final_status[]" value="1">
+                                    @else
+                                        <input type="hidden" name="final_status[]" value="0">
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
@@ -145,12 +166,13 @@
                             style="overflow-x:auto;">
                             <thead>
                                 <tr>
-                                    <th class="bg-warning">Sample ke-{{ $i }}</th>
+                                    <th class="bg-warning" colspan="2">Sample ke-{{ $i }}</th>
                                     <th class="text-center border-3" colspan="8" style="background-color: darkgrey">
                                         DIMENSI</th>
                                 </tr>
                                 <tr>
                                     <th class="text-center" rowspan="3" style="width: 30px;">NO</th>
+                                    <th class="text-center" rowspan="3" style="width: 30px;">POINT</th>
                                     <th class="text-center" rowspan="3">URAIAN</th>
                                     <th class="text-center" rowspan="1" colspan="3">STANDAR</th>
                                     <th class="text-center" rowspan="3">ALAT</th>
@@ -181,6 +203,7 @@
                                     {{-- @dd($cekDimensi) --}}
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $item->standarPart->point }}</td>
                                         <td>{{ $item->standarPart->standar->uraian }}</td>
                                         <td class="text-center">{{ $item->standarPart->spesifikasi }}
                                         </td>
@@ -245,6 +268,27 @@
                                             </td>
                                         @endif
                                     </tr>
+                                    @php
+                                        $ngFound = false;
+                                        $groupedCekDimensi = collect($cekDimensi)
+                                            ->flatMap(function ($item) {
+                                                return $item;
+                                            })
+                                            ->groupBy('urutan_sample');
+                                        foreach ($groupedCekDimensi as $urutanSample => $items) {
+                                            $ngFound = $items->contains(function ($item) {
+                                                return $item['status'] === 'NG';
+                                            });
+                                            if ($ngFound) {
+                                                break;
+                                            }
+                                        }
+                                    @endphp
+                                    @if ($ngFound)
+                                        <input type="hidden" name="final_status[]" value="1">
+                                    @else
+                                        <input type="hidden" name="final_status[]" value="0">
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
@@ -344,6 +388,27 @@
                                                 </td>
                                             @endif
                                         </tr>
+                                        @php
+                                            $ngFound = false;
+                                            $groupedCekDimensi = collect($cekFunction)
+                                                ->flatMap(function ($item) {
+                                                    return $item;
+                                                })
+                                                ->groupBy('urutan_sample');
+                                            foreach ($groupedCekDimensi as $urutanSample => $items) {
+                                                $ngFound = $items->contains(function ($item) {
+                                                    return $item['status'] === 'NG';
+                                                });
+                                                if ($ngFound) {
+                                                    break;
+                                                }
+                                            }
+                                        @endphp
+                                        @if ($ngFound)
+                                            <input type="hidden" name="final_status[]" value="1">
+                                        @else
+                                            <input type="hidden" name="final_status[]" value="0">
+                                        @endif
                                     @endforeach
                                 </tbody>
                             </table>
@@ -351,29 +416,34 @@
                 </div>
             @endif
 
-            @php
+            {{-- @php
                 $ngFound = false;
-                $groupedCekVisual = collect([$cekVisual, $cekDimensi, $cekFunction])->groupBy('urutan_sample');
 
+                $groupedCekVisual = collect([$cekVisual, $cekDimensi, $cekFunction])->flatMap(function ($item) {
+                    return $item;
+                })->groupBy('urutan_sample');
                 foreach ($groupedCekVisual as $urutanSample => $items) {
-                    $ngFound = $items->contains('status', 'NG') ;
+                    $ngFound = $items->contains(function ($item) {
+                        return $item['status'] === 'NG';
+                    });
+
                     if ($ngFound) {
                         break;
                     }
                 }
-            @endphp
+            @endphp --}}
 
             <div class="row d-flex justify-content-end mt-2">
-                <div class="col-2">
-                    @if ($ngFound)
-                        <p class="fs-4 text-center">NG!</p>
-                    @else
-                        <p class="fs-4 text-center">OK!</p>
-                    @endif
-                </div>
+                {{-- <div class="col-2">
+                @if ($ngFound)
+                    <input type="hidden" name="final_status[]" value="1">
+                @else
+                    <input type="hidden" name="final_status[]" value="0">
+                @endif
+            </div>  --}}
 
                 <div class="col-2">
-                    <form action="/submitPengecekan/{{ $dataPartIn->id_part_supply }}" method="post">
+                    <form action="/submit-pengecekan/{{ $dataPartIn->id_part_supply }}" method="post">
                         @csrf
                         <input type="hidden" name="status_pengecekan" value="1">
                     </form>

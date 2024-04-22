@@ -8,38 +8,24 @@
             </div>
         @endif
         <div class="row">
-            <div class="col">
-                <label for="supplierFilter" class="form-label">Supplier</label>
-                <select class="form-select border border-dark" id="supplierFilter" name="supplierFilter">
-                    <option selected></option>
-                    {{-- @foreach ($getSupplier as $getSupp)
-                        <option value="{{ $getSupp->nama_supplier }}">{{ $getSupp->nama_supplier }}</option>
-                    @endforeach --}}
-                </select>
-            </div>
-            <div class="col">
-                <label for="kategoriFilter" class="form-label">Kategori</label>
-                <select class="form-select border border-dark" id="kategoriFilter" name="kategoriFilter">
-                    <option selected></option>
-                    {{-- @foreach ($getKategori as $getKate)
-                        <option value="{{ $getKate->id_kategori }}">{{ $getKate->nama_kategori }}</option>
-                    @endforeach --}}
-                </select>
-            </div>
-        </div>
-        <canvas id="KSChart" style="width:100%;max-width:800px;display:block;"></canvas>
-        <div class="row">
             <div class="col-12">
                 <div class="table-responsive">
                     <table class="table table-bordered datatable">
                         <thead>
-                            <th>No</th>
-                            <th>Kode Part</th>
-                            <th>Nama Part</th>
-                            <th>Jumlah Pengiriman</th>
-                            <th>Status</th>
-                            <th>Tanggal Pengiriman</th>
-                            <th>Aksi</th>
+                            <tr>
+                                <th rowspan="3">No</th>
+                                <th rowspan="3">Kode Part</th>
+                                <th rowspan="3">Nama Part</th>
+                                <th rowspan="3">Jumlah Pengiriman</th>
+                                <th rowspan="3">Tanggal Pengiriman</th>
+                                <th rowspan="3">Status Verifikasi</th>
+                                <th rowspan="1" colspan="2" class="text-center">Hasil Cek</th>
+                                <th rowspan="3">Aksi</th>
+                            </tr>
+                            <tr>
+                                <th rowspan="1">OK</th>
+                                <th rowspan="1">NG</th>
+                            </tr>
                         </thead>
                         <tbody>
                             @php
@@ -61,6 +47,8 @@
                                         </td>
                                     @endif
                                     <td>{{ $item->supply_date }}</td>
+                                    <td>{{ $countedNG }}</td>
+                                    <td>{{ $countedOK }}</td>
                                     <td><a
                                             href="/verifikasi-pengecekan/verifPengecekanShow/{{ $item->id_part_supply }}/{{ $item->kode_part }}"><button
                                                 class="btn btn-info"><i class="fas fa-eye"></i></button></a></td>
