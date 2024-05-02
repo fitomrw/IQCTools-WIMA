@@ -100,9 +100,9 @@ Route::get('/riwayatPengecekan', [PengecekanController::class, 'riwayatPengeceka
 Route::middleware(['auth', 'CekJabatan:Kepala Seksi QC'])->group(function () {
     Route::get('/verifikasi-pengecekan/{supplier}/{kategori}/{bulan}', [PengecekanController::class, 'verifikasiPengecekan'])->name('grafikVerif');
     Route::post('/verifikasi-pengecekan/filterGrafik', [PengecekanController::class, 'filterGrafik']);
-    // Route::get('/api/kelola-LPP/grafik/{supplier}/{kategori}/{bulan}', [PengecekanController::class, 'dataGrafik']);
-    Route::get('/verifikasi-pengecekan/verifPengecekanShow/{id}/{kode_part}', [PengecekanController::class, 'verifPengecekanShow']);
-    Route::post('/verifikasi-pengecekan/storeVerifikasiPengecekan/{id}', [PengecekanController::class, 'storeVerifikasiPengecekan']);
+    // Route::get('/verifikasi-pengecekan/show/{id}/{kode_part}', [PengecekanController::class, 'verifikasiShow']);
+    Route::get('/verifP/{id}/{kode_part}', [PengecekanController::class, 'verifikasiShow']);
+    Route::post('/verifP/storeVerifikasiPengecekan/{id}', [PengecekanController::class, 'storeVerifikasiPengecekan']);
     Route::get('/verifikasi-pengecekan/getData', [PengecekanController::class, 'storeVerifikasiPengecekan']);
 });
 
@@ -150,7 +150,7 @@ Route::middleware(['auth', 'CekJabatan:Staff QA'])->group(function () {
     Route::get('/kelola-masterStandar/create', [PartController::class, 'createStandar']);
     Route::post('/kelola-masterStandar/store', [PartController::class, 'storeStandar']);
     Route::get('/kelola-masterStandar/edit/{id_standar}', [PartController::class, 'editStandar']);
-    Route::post('/kelola-masterStandar/update/{id_standar}', [PartController::class, 'updateStandar']);
+    Route::put('/kelola-masterStandar/update/{id_standar}', [PartController::class, 'updateStandar']);
     Route::get('/kelola-masterStandar/delete/{id_standar}', [PartController::class, 'deleteStandar']);
 
     //Master Standar Per Part

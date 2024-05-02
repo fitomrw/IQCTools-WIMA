@@ -40,4 +40,9 @@ class Part extends Model
     {
         return $this->hasMany(Laporan::class);
     }
+
+    public function standarPerPart()
+    {
+        return $this->hasMany(StandarPerPartModel::class);
+    }
 }

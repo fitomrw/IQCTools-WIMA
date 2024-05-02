@@ -29,7 +29,9 @@ class LoginController extends Controller
                 return redirect()->intended('/verifikasi-pengecekan/0/0/0');
             } else if (auth()->user()->jabatan == 'Admin QC') {
                 return redirect()->intended('/register');
-            }         
+            } else if (auth()->user()->jabatan == 'Staff QA') {
+                return redirect()->intended('/kelola-LPP/grafik/0/0/0');
+            }
         }
 
         return back()->with('loginError', 'Login gagal! Username atau password salah!');

@@ -2,7 +2,8 @@
 
 @section('container')
     <div class="container-fluid border-top">
-        <form id="tabelDetailPengecekan" action="/verifikasi-pengecekan/storeVerifikasiPengecekan/{{ $dataPartIn->id_part_supply }}" method="post">
+        <form id="tabelDetailPengecekan" action="/verifP/storeVerifikasiPengecekan/{{ $dataPartIn->id_part_supply }}"
+            method="post">
             @csrf
             <div class="row mt-3">
                 <div class="col-2">
@@ -101,7 +102,8 @@
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"
                                                     id="danger-outlined{{ $item->id }}"
-                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off" disabled>
+                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off"
+                                                    disabled>
                                                 <label class="btn btn-outline-danger"
                                                     for="danger-outlined{{ $item->id }}">NG</label>
                                             </td>
@@ -116,7 +118,8 @@
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"
                                                     id="danger-outlined{{ $item->id }}"
-                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off" disabled>
+                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off"
+                                                    disabled>
                                                 <label class="btn btn-outline-danger"
                                                     for="danger-outlined{{ $item->id }}">NG</label>
                                             </td>
@@ -124,14 +127,15 @@
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"
                                                     id="success-outlined{{ $item->id }} " autocomplete="off"
-                                                    onclick="submitCek('OK',{{ $item->id }})" disabled> 
+                                                    onclick="submitCek('OK',{{ $item->id }})" disabled>
                                                 <label class="btn btn-outline-success"
                                                     for="success-outlined{{ $item->id }} ">OK</label>
                                             </td>
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"
                                                     id="danger-outlined{{ $item->id }}" checked
-                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off" disabled>
+                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off"
+                                                    disabled>
                                                 <label class="btn btn-outline-danger"
                                                     for="danger-outlined{{ $item->id }}">NG</label>
                                             </td>
@@ -205,7 +209,7 @@
                                             @if (array_key_exists($item->id, $valueDimensi))
                                                 <input type="text" name="value_dimensi[]" id="value_dimensi"
                                                     class="form-control w-50 mx-auto"
-                                                    value="{{ $valueDimensi[$item->id] }}"disabled> 
+                                                    value="{{ $valueDimensi[$item->id] }}"disabled>
                                             @else
                                                 <input type="text" name="value_dimensi[]" id="value_dimensi"
                                                     class="form-control w-50 mx-auto" value="" disabled>
@@ -223,7 +227,8 @@
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"
                                                     id="danger-outlined{{ $item->id }}"
-                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off" disabled>
+                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off"
+                                                    disabled>
                                                 <label class="btn btn-outline-danger"
                                                     for="danger-outlined{{ $item->id }}">NG</label>
                                             </td>
@@ -238,7 +243,8 @@
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"
                                                     id="danger-outlined{{ $item->id }}"
-                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off" disabled>
+                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off"
+                                                    disabled>
                                                 <label class="btn btn-outline-danger"
                                                     for="danger-outlined{{ $item->id }}">NG</label>
                                             </td>
@@ -253,7 +259,8 @@
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"
                                                     id="danger-outlined{{ $item->id }}" checked
-                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off" disabled>
+                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off"
+                                                    disabled>
                                                 <label class="btn btn-outline-danger"
                                                     for="danger-outlined{{ $item->id }}">NG</label>
                                             </td>
@@ -355,7 +362,8 @@
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
                                                         id="danger-outlined{{ $item->id }}" checked
-                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off" disabled>
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off"
+                                                        disabled>
                                                     <label class="btn btn-outline-danger"
                                                         for="danger-outlined{{ $item->id }}">NG</label>
                                                 </td>
@@ -370,8 +378,8 @@
 
             <div class="row d-flex justify-content-end mt-2">
                 <div class="col-2">
-                        <input type="hidden" name="status_pengecekan" value="2">
-                        <button type="submit" class="btn btn-primary">Verifikasi</button>
+                    <input type="hidden" name="status_pengecekan" value="2">
+                    <button type="submit" class="btn btn-primary">Verifikasi</button>
                 </div>
             </div>
         </form>

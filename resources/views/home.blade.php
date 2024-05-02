@@ -2,8 +2,8 @@
 
 @section('container')
     {{-- Cards --}}
-    <div class="row row-cols-md-3  gx-1  mx-auto">
-        @if (auth()->user()->jabatan == 'Staff QC')
+    @if (auth()->user()->jabatan == 'Staff QC')
+        <div class="row row-cols-md-3  gx-1  mx-auto">
             <div class="col">
                 <div class="card bg-primary" style="width: 18rem; height: 10rem;">
                     <div class="card-body text-center">
@@ -36,13 +36,14 @@
                     </div>
                 </div>
             </div>
-        @endif
+        </div>
+    @endif
 
-        {{-- @if (auth()->user()->jabatan == 'Kepala Seksi QC')
+    {{-- @if (auth()->user()->jabatan == 'Kepala Seksi QC')
             
         @endif --}}
 
-        @if (auth()->user()->jabatan == 'Staff QA')
+    @if (auth()->user()->jabatan == 'Staff QA')
         <div class="col">
             <div class="card bg-primary" style="width: 18rem; height: 10rem;">
                 <div class="card-body text-center">
@@ -75,5 +76,5 @@
                 </div>
             </div>
         </div>
-        @endif
-    @endsection
+    @endif
+@endsection

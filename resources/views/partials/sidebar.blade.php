@@ -3,10 +3,13 @@
       <!-- Brand Logo -->
       <div class="row">
           <div class="col-sm-3">
-              <a href="/" class="brand-link">
-                  <img src="/img/wima_logo.png" alt="WIMA Incoming" class="image w-100 mx-1" style="opacity: .8">
-                  <p class="d-block text-center mb-1"><b>IQC</b>Tools</p>
-              </a>
+              @if (auth()->user()->jabatan == 'Kepala Seksi QC')
+              <a href="/verifikasi-pengecekan/0/0/0" @elseif(auth()->user()->jabatan == 'Staff QA') <a
+                      href="/kelola-LPP/grafik/0/0/0" @endif
+                      <a href="/" class="brand-link">
+                          <img src="/img/wima_logo.png" alt="WIMA Incoming" class="image w-100 mx-1" style="opacity: .8">
+                          <p class="d-block text-center mb-1"><b>IQC</b>Tools</p>
+                      </a>
           </div>
       </div>
 
@@ -28,7 +31,7 @@
 
                   @if (auth()->user()->jabatan == 'Kepala Seksi QC')
                       <li class="nav-item">
-                          <a href="/verifikasi-pengecekan" class="nav-link">
+                          <a href="/verifikasi-pengecekan/0/0/0" class="nav-link">
                               <p>Verifikasi Pengecekan</p>
                           </a>
                       </li>
@@ -96,8 +99,7 @@
                           $dataKat = $getKate->where('id_kategori', $kategori)->first();
                       @endphp --}}
                       <li class="nav-item">
-                          <a href="/kelola-LPP/grafik/0/0/0"
-                              class="nav-link">
+                          <a href="/kelola-LPP/verifLaporan" class="nav-link">
                               <p>Verifikasi Laporan <br> Penyimpangan Part</p>
                           </a>
                       </li>

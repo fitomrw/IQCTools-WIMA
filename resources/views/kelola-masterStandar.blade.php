@@ -48,5 +48,6 @@
                 @endforeach
             </tbody>
         </table>
+        {{ $standar->links() }}
     </div>
 @endsection

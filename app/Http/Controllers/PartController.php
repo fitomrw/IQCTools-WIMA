@@ -115,7 +115,7 @@ class PartController extends Controller
     //<<<< Master Standar >>>//
     public function indexStandar()
     {
-        $standar = StandarModel::all();
+        $standar = StandarModel::paginate(15);
 
         return view('kelola-masterStandar', [
             "title" => "Kelola Data Master Standar",

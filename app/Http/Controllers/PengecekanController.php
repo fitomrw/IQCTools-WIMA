@@ -36,16 +36,217 @@ class PengecekanController extends Controller
     public function riwayatPengecekan()
     {
         $data = dataPartIncoming::all();
-        $finalStatusShow = CatatanCekModel::whereNotNull('final_status')->get();
-        $countedNG = $finalStatusShow->where('final_status', 1)->count();
-        $countedOK = $finalStatusShow->where('final_status', 0)->count();
-        // dd($finalStatusShow);
+        // $getHasilOK = CatatanCekModel::where('final_status', 0)->get()
+        // $getCheckResults = CatatanCekModel::where('id_part_supply', $id)->get();
+        //     $cekDimensi = [];
+        //     $cekVisual = [];
+        //     $cekFunction = [];
+        //     // dd($getCheckResults);
+        //     foreach ($getCheckResults as $key ) {
+        //         if ($key->standarPart->standar->jenis_standar == 'VISUAL') {
+        //             $cekVisual[] = $key;
+        //         } elseif ($key->standarPart->standar->jenis_standar == 'DIMENSI') {
+        //             $cekDimensi[] = $key;
+        //         } elseif ($key->standarPart->standar->jenis_standar == 'FUNCTION') {
+        //             $cekFunction[] = $key;
+        //         }
+        //     }
+        
+        //     $getHasilCek = false;
+        //     $countHasilCek = collect([$cekVisual, $cekDimensi, $cekFunction])->flatMap(function ($item) {
+        //         return $item ;
+        //     })->groupBy('urutan_sample');
+            
+        //     foreach ($countHasilCek as $urutanSample => $items) {
+        //         $getHasilCek = $items->contains(function ($item) {
+        //             return $item['status'] === 'NG';
+        //         });
+        //         if($getHasilCek) {
+        //             $firstItem = $items->first();
+        //             $modelData = CatatanCekModel::findOrFail($firstItem->id);
+        //             $modelData->update(['final_status' => 1]);
+        //         }else {
+        //             $firstItem = $items->first();
+        //             $modelData = CatatanCekModel::findOrFail($firstItem->id);
+        //             $modelData->update(['final_status' => 0]);
+        //         }
+        //     }
 
+        // $getHasilCek = CatatanCekModel::all()->pluck('final_status', 'id_part_supply')->toArray();  
+        // $throwHasilCek = collect($getHasilCek)->groupBy('id_part_supply');
+        // dd($getHasilCek);
+        // dd($throwHasilCek);
+        // $getHasilOK = $finalStatusShow->groupBy('id_part_supply')->map(function ($items) {
+        //     return $items->where('final_status', 0)->count();
+        // });
+        
+        // $getHasilNG = $finalStatusShow->groupBy('id_part_supply')->map(function ($items) {
+        //     return $items->where('final_status', 1)->count();
+        // });
+        // dd($getHasilOK);
+        // $getHasilCek     = $finalStatusShow->pluck('final_status')->groupBy('id_part_supply');
+        // dd($getHasilCek);
+        
+        // $countedNG = $finalStatusShow->where('final_status', 1)->count();
+        // $countedOK = $finalStatusShow->where('final_status', 0)->count();
+        // $s4Levels = $data->inspection_level == 'S-IV';
+        // $s3Levels = $data->inspection_level == 'S-III';
+        // $s2Levels = $data->inspection_level == 'S-II';
+        // $s1Levels = $data->inspection_level == 'S-I';
+        // $aqlNumber1 = $data->aql_number == 1;
+        // $AQLStatus = $this->calculatedAqlStatus($countedOK, $countedNG, $s4Levels, $s3Levels, $s2Levels, $s1Levels, $aqlNumber1);
+        // for sending data through view
+        // 's4Levels', 's3Levels', 's2Levels', 's1Levels', 'aqlNumber1'
+
+        $finalStatusShow = CatatanCekModel::whereNotNull('final_status')->get();
+        $countedNG = $finalStatusShow->where('final_status', 1)->groupBy('id_part_supply');
+        $countedOK = $finalStatusShow->where('final_status', 0)->groupBy('id_part_supply');
+        // dd($countedOK);
+ 
         return view('riwayatPengecekan', [
             "title" => "Pengecekan",
             "image" => "img/wima_logo.png"
         ], compact('data', 'countedNG', 'countedOK'));
     }
+
+    // public function calculatedAqlStatus ($countedOK, $countedNG, $s4Levels, $s3Levels, $s2Levels, $s1Levels, $aqlNumber1)
+    // {
+    //     if ($countedNG >=1 && $s4Levels && $aqlNumber1){
+    //         //    dd('test1');
+    //         return "Reject";
+    //     } elseif ($countedOK >=1 && $countedNG <= 2 && $s4Levels  && $aqlNumber1){
+    //         return "Reject";
+    //     } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s4Levels  && $aqlNumber1){
+    //         // dd('test3');
+    //         return 3;
+    //     } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s4Levels && $aqlNumber1){
+    //         // dd('test4');
+    //         return 5;
+    //     } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim <= 90 && $s4Levels && $aqlNumber1){
+    //         // dd('test5');
+    //         return 5;
+    //     } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim <= 150 && $s4Levels && $aqlNumber1){
+    //         // dd('test6');        
+    //         return 8;
+    //     } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim <= 280 && $s4Levels && $aqlNumber1){
+    //         // dd('test7');
+    //         return 13;
+    //     } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim <= 500 && $s4Levels && $aqlNumber1){
+    //         // dd('test8');
+    //         return 13;
+    //     } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim <= 1200 && $s4Levels && $aqlNumber1){
+    //         // dd('test9');
+    //         return 20;
+    //     } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim <= 3200 && $s4Levels && $aqlNumber1){
+    //         return 32;
+    //     } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim <= 10000 && $s4Levels && $aqlNumber1){
+    //         return 32;
+    //     } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim <= 35000 && $s4Levels && $aqlNumber1){
+    //         return 50;
+    //     } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim <= 150000 && $s4Levels && $aqlNumber1){
+    //         return 80;
+    //     } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim <= 500000 && $s4Levels && $aqlNumber1){
+    //         return 80;
+    //     }elseif($dataPartIn->jumlah_kirim >= 500001 && $dataPartIn->jumlah_kirim <= INF  && $s4Levels && $aqlNumber1){
+    //         return 125;
+
+    //     //Inspection Levels = "S-III", AQL Number = 1
+    //     }elseif($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s3Levels && $aqlNumber1){
+    //         return 2;
+    //     } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s3Levels  && $aqlNumber1){
+    //         return 2;
+    //     } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s3Levels  && $aqlNumber1){
+    //         return 3;
+    //     } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s3Levels && $aqlNumber1){
+    //         return 3;
+    //     } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim <= 90 && $s3Levels && $aqlNumber1){
+    //         return 5;
+    //     } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim <= 150 && $s3Levels && $aqlNumber1){
+    //         return 5;
+    //     } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim <= 280 && $s3Levels && $aqlNumber1){
+    //         return 8;
+    //     } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim <= 500 && $s3Levels && $aqlNumber1){
+    //         return 8;
+    //     } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim <= 1200 && $s3Levels && $aqlNumber1){
+    //         return 13;
+    //     } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim <= 3200 && $s3Levels && $aqlNumber1){
+    //         return 13;
+    //     } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim <= 10000 && $s3Levels && $aqlNumber1){
+    //         return 20;
+    //     } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim <= 35000 && $s3Levels && $aqlNumber1){
+    //         return 20;
+    //     } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim <= 150000 && $s3Levels && $aqlNumber1){
+    //         return 32;
+    //     } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim <= 500000 && $s3Levels && $aqlNumber1){
+    //         return 32;
+    //     }elseif($dataPartIn->jumlah_kirim >= 500001 && $dataPartIn->jumlah_kirim <= INF  && $s3Levels && $aqlNumber1){
+    //         return 50;
+        
+    //     //Inspection Levels = "S-II", AQL Number = 1
+    //     }elseif ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s2Levels && $aqlNumber1){
+    //     return 2;
+    //     } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s2Levels  && $aqlNumber1){
+    //         return 2;
+    //     } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s2Levels  && $aqlNumber1){
+    //         return 2;
+    //     } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s2Levels && $aqlNumber1){
+    //         return 3;
+    //     } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim <= 90 && $s2Levels && $aqlNumber1){
+    //         return 3;
+    //     } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim <= 150 && $s2Levels && $aqlNumber1){
+    //         return 3;
+    //     } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim <= 280 && $s2Levels && $aqlNumber1){
+    //         return 5;
+    //     } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim <= 500 && $s2Levels && $aqlNumber1){
+    //         return 5;
+    //     } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim <= 1200 && $s2Levels && $aqlNumber1){
+    //         return 5;
+    //     } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim <= 3200 && $s2Levels && $aqlNumber1){
+    //         return 8;
+    //     } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim <= 10000 && $s2Levels && $aqlNumber1){
+    //         return 8;
+    //     } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim <= 35000 && $s2Levels && $aqlNumber1){
+    //         return 8;
+    //     } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim <= 150000 && $s2Levels && $aqlNumber1){
+    //         return 13;
+    //     } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim <= 500000 && $s2Levels && $aqlNumber1){
+    //         return 13;
+    //     } elseif($dataPartIn->jumlah_kirim >= 500001 && $dataPartIn->jumlah_kirim <= INF  && $s2Levels && $aqlNumber1){
+    //         return 13;
+
+    //     //Inspection Levels = "S-I" AQL Number = 1
+    //     }elseif ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s1Levels && $aqlNumber1){
+    //         return 2;
+    //     } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s1Levels  && $aqlNumber1){
+    //         return 2;
+    //     } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s1Levels  && $aqlNumber1){
+    //         return 2;
+    //     } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s1Levels && $aqlNumber1){
+    //         return 2;
+    //     } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim <= 90 && $s1Levels && $aqlNumber1){
+    //         return 3;
+    //     } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim <= 150 && $s1Levels && $aqlNumber1){
+    //         return 3;
+    //     } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim <= 280 && $s1Levels && $aqlNumber1){
+    //         return 3;
+    //     } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim <= 500 && $s1Levels && $aqlNumber1){
+    //         return 3;
+    //     } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim <= 1200 && $s1Levels && $aqlNumber1){
+    //         return 5;
+    //     } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim <= 3200 && $s1Levels && $aqlNumber1){
+    //         return 5;
+    //     } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim <= 10000 && $s1Levels && $aqlNumber1){
+    //         return 5;
+    //     } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim <= 35000 && $s1Levels && $aqlNumber1){
+    //         return 5;
+    //     } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim <= 150000 && $s1Levels && $aqlNumber1){
+    //         return 8;
+    //     } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim <= 500000 && $s1Levels && $aqlNumber1){
+    //         return 8;
+    //     } elseif($dataPartIn->jumlah_kirim >= 500001 && $dataPartIn->jumlah_kirim <= INF  && $s1Levels && $aqlNumber1){
+    //         return 8;
+    //     }
+    // }
 
     public function cekPerPoint(Request $request)
     {
@@ -60,10 +261,10 @@ class PengecekanController extends Controller
     {            
         // dd($request);
         // Validasi input jika diperlukan
-        $request->validate([
-            'value_dimensi.*' => 'required|numeric',
-            // Sesuaikan dengan aturan validasi Anda
-        ]);
+        // $request->validate([
+        //     'value_dimensi.*' => 'required|numeric',
+        //     // Sesuaikan dengan aturan validasi Anda
+        // ]);
 
         for ($i=0; $i < count($request->input('id_value_dimensi')); $i++) { 
             $modelData = CatatanCekModel::findOrFail($request->input('id_value_dimensi')[$i]);
@@ -75,7 +276,6 @@ class PengecekanController extends Controller
 
             $updateData = dataPartIncoming::where('id_part_supply', $id)->first();
             $updateData->update([
-                'tanggal_pengecekan' => $request->tanggal_periksa,
                 'status_pengecekan' => $request->status_pengecekan
             ]);
 
@@ -365,6 +565,11 @@ class PengecekanController extends Controller
         return redirect('/kelola-standarMIL')->with('danger', 'Standar MIL STD 105 E Berhasil Di Hapus');
     }
     
+    public function pengecekanShow($id)
+    {
+        
+    }
+
     public function verifikasiPengecekan($supplier, $kategori, $bulan)
     {
         $data = dataPartIncoming::where('status_pengecekan', 1)->get();
@@ -383,7 +588,7 @@ class PengecekanController extends Controller
         }
 
         return view('grafik', [
-            "title" => "Grafik Perbandingan Penyimpangan Part",
+            "title" => "Grafik Pengecekan Part",
             "image" => "/img/wima_logo.png",
             "laporan" => $laporan,
             "getSupplier" => $getSupplier,
@@ -398,16 +603,9 @@ class PengecekanController extends Controller
         ]);
     }
 
-
-
-        // return view('verifikasiPengecekan', [
-        //     "title" => "Verifikasi Pengecekan",
-        //     "image" => "/img/wima_logo.png",
-        //     "data" => $data,
-        //     "countedNG" => $countedNG,
-        //     "countedOK" => $countedOK
-        // ]);
-
+    
+    
+    
     public function filterGrafik(Request $request)
     {
         // dd($request->supplierFilter, $request->kategoriFilter, $request->bulanFilter);
@@ -422,155 +620,77 @@ class PengecekanController extends Controller
         if ($kategori == null) {
             $kategori = 0;
         }
-
+        
         if ($bulan == null) {
             $bulan = 0;
         }
         return redirect()->route('grafikVerif', compact('supplier', 'kategori', 'bulan'));
     }
-
-    public function dataGrafik($supplier, $kategori, $bulan)
+    
+    public function pengecekanIndex()
     {
-
-        $currentMonth = Carbon::now()->month;
-        $currentYear = Carbon::now()->year;
-
-        if ($supplier == 0 && $kategori == 0 && $bulan == 0) {
-            $AllPart = Part::all()->sortBy('nama_part');
-            foreach ($AllPart as $key) {
-                // dd($key->part);
-                $label[] = $key->nama_part;
-                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $currentMonth)
-                    ->count();
-                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $currentMonth)
-                    ->count();
-            }
-            // dd('pas1');
-        } elseif ($supplier != 0 && $kategori == 0 && $bulan == 0) {
-            $AllPart = Part::where('supplier_id', $supplier)->orderBy('nama_part')->get();
-            foreach ($AllPart as $key) {
-                // dd($key->part);
-                $label[] = $key->nama_part;
-                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $currentMonth)
-                    ->count();
-                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $currentMonth)
-                    ->count();
-            }
-            // dd('pas2');
-        } elseif ($supplier != 0 && $kategori != 0 && $bulan == 0) {
-            $AllPart = Part::where('supplier_id', $supplier)->where('kategori_id', $kategori)->orderBy('nama_part')->get();
-            foreach ($AllPart as $key) {
-                // dd($key->part);
-                $label[] = $key->nama_part;
-                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $currentMonth)
-                    ->count();
-                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $currentMonth)
-                    ->count();
-            }
-            // dd('pas3');
-        } elseif ($supplier == 0 && $kategori != 0 && $bulan == 0) {
-            $AllPart = Part::where('kategori_id', $kategori)->orderBy('nama_part')->get();
-            foreach ($AllPart as $key) {
-                // dd($key->part);
-                $label[] = $key->nama_part;
-                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $currentMonth)
-                    ->count();
-                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $currentMonth)
-                    ->count();
-            }
-            // dd('pas4');
-        } elseif ($supplier == 0 && $kategori != 0 && $bulan != 0) {
-            $AllPart = Part::where('kategori_id', $kategori)->orderBy('nama_part')->get();
-            foreach ($AllPart as $key) {
-                // dd($key->part);
-                $label[] = $key->nama_part;
-                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $bulan)
-                    ->count();
-                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $bulan)
-                    ->count();
-            }
-            // dd('pas5');
-        } elseif ($supplier != 0 && $kategori == 0 && $bulan != 0) {
-            $AllPart = Part::where('kategori_id', $supplier)->orderBy('nama_part')->get();
-            // dd($AllPart);
-            foreach ($AllPart as $key) {
-                // dd($key);
-                $label[] = $key->nama_part;
-                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $bulan)
-                    ->count();
-                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $bulan)
-                    ->count();
-            }
-            // dd('pas6', $label);
-        } elseif ($supplier == 0 && $kategori == 0 && $bulan != 0) {
-            $AllPart = Part::all()->sortBy('nama_part');
-            foreach ($AllPart as $key) {
-                // dd($key->part);
-                $label[] = $key->nama_part;
-                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $bulan)
-                    ->count();
-                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $bulan)
-                    ->count();
-            }
-            // dd('pas7');
-        } elseif ($supplier != 0 && $kategori != 0 && $bulan != 0) {
-            $AllPart = Part::where('supplier_id', $supplier)->where('kategori_id', $kategori)->orderBy('nama_part')->get();
-            foreach ($AllPart as $key) {
-                // dd($key->part);
-                $label[] = $key->nama_part;
-                $data1[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 0)
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $bulan)
-                    ->count();
-                $data2[] = CatatanCekModel::where('id_part', $key->kode_part)->where('final_status', 1)
-                    ->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $bulan)
-                    ->count();
-            }
-            // dd('pas8');
-        }
-
-
-        // $data1[] = [12];
-
-        // $data2[] = [12];
-
-
-        $data = [$label, $data1, $data2];
-
-        return response()->json($data);
+        $data = dataPartIncoming::where('status_pengecekan', 1)->get();
+        $finalStatusShow = CatatanCekModel::whereNotNull('final_status')->get();
+        $countedNG = $finalStatusShow->where('final_status', 1)->count();
+        $countedOK = $finalStatusShow->where('final_status', 0)->count();
+        
+        return view('verifikasiPengecekan', [
+            "title" => "Verifikasi Pengecekan",
+            "image" => "/img/wima_logo.png",
+            "data" => $data,
+            "countedNG" => $countedNG,
+            "countedOK" => $countedOK
+        ]);
     }
 
     public function verifPengecekanShow($id)
     {
+        // $getValueDimensi = CatatanCekModel::whereNotNull('value_dimensi')->get();
+        // $valueDimensi = $getValueDimensi->pluck('value_dimensi', 'id')->toArray();
+
+        // $verifPengecekan = CatatanCekModel::where('id_part_supply', $id)->get();
+        // $verifCekDimensi = [];
+        // $verifCekVisual = [];
+        // $verifCekFunction = [];
+
+        // // dd($cekVisual);
+        
+        // foreach ($verifPengecekan as $key ) {
+        //     // dd($key->standarPart->standar);
+        //     if ($key->standarPart->standar->jenis_standar == 'VISUAL') {
+        //     $verifCekVisual[] = $key;
+        //     } elseif ($key->standarPart->standar->jenis_standar == 'DIMENSI') {
+        //         $verifCekDimensi[] = $key;
+        //     } elseif ($key->standarPart->standar->jenis_standar == 'FUNCTION') {
+        //         $verifCekFunction[] = $key;
+        //     }
+        // } 
+
+        // $dataPartIn = dataPartIncoming::where('id_part_supply', $id)->first();
+
+        // $s4Levels = $dataPartIn->inspection_level == 'S-IV';
+        // $s3Levels = $dataPartIn->inspection_level == 'S-III';
+        // $s2Levels = $dataPartIn->inspection_level == 'S-II';
+        // $s1Levels = $dataPartIn->inspection_level == 'S-I';
+        // $aqlNumber1 = $dataPartIn->aql_number == 1;
+        
+        // $jumlahTabel = $this->showCalculateJumlahTabel($s4Levels, $s3Levels, $s2Levels, $s1Levels, $dataPartIn, $aqlNumber1);
+
+        // return view('verifDetailPengecekan', [
+        //     "title" => "Verifikasi Pengecekan",
+        //     "image" => "/img/wima_logo.png",
+        //     "verifPengecekan" => $verifPengecekan,
+        //     "dataPartIn" => $dataPartIn,
+        //     "jumlahTabel" => $jumlahTabel,
+        //     "verifCekVisual" => $verifCekVisual,
+        //     "verifCekDimensi" => $verifCekDimensi,
+        //     "verifCekFunction" => $verifCekFunction,
+        //     "valueDimensi" => $valueDimensi
+        // ]);
+    }
+    public function verifikasiShow($id)
+    {
+        // dd('test');
         $getValueDimensi = CatatanCekModel::whereNotNull('value_dimensi')->get();
         $valueDimensi = $getValueDimensi->pluck('value_dimensi', 'id')->toArray();
 
@@ -584,14 +704,14 @@ class PengecekanController extends Controller
         foreach ($verifPengecekan as $key ) {
             // dd($key->standarPart->standar);
             if ($key->standarPart->standar->jenis_standar == 'VISUAL') {
-            $verifCekVisual[] = $key;
+                $verifCekVisual[] = $key;
             } elseif ($key->standarPart->standar->jenis_standar == 'DIMENSI') {
                 $verifCekDimensi[] = $key;
             } elseif ($key->standarPart->standar->jenis_standar == 'FUNCTION') {
                 $verifCekFunction[] = $key;
             }
         } 
-          
+
         $dataPartIn = dataPartIncoming::where('id_part_supply', $id)->first();
 
         $s4Levels = $dataPartIn->inspection_level == 'S-IV';
@@ -763,6 +883,6 @@ class PengecekanController extends Controller
         $updateData->update([
              'status_pengecekan' => $request->status_pengecekan
          ]); 
-         return redirect('/verifikasi-pengecekan')->with("notify", 'Data Pengecekan Telah Diverifikasi!');
+         return redirect('/verifikasi-pengecekan/0/0/0')->with("notify", 'Data Pengecekan Telah Diverifikasi!');
     }
 }

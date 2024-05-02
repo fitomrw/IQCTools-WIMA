@@ -16,4 +16,9 @@ class StandarPerPartModel extends Model
         return $this->belongsTo(StandarModel::class, 'id_standar', 'id_standar');
     }
 
+    public function part()
+    {
+        return $this->belongsTo(Part::class, 'kode_part', 'kode_part');
+    }
+
 }

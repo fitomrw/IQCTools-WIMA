@@ -23,9 +23,11 @@ return new class extends Migration
             $table->string('checksheet')->nullable();
             $table->integer('urutan_sample')->nullable();
             $table->string('final_status')->nullable();
-            $table->integer('value_dimensi')->nullable();
+            $table->string('value_dimensi')->nullable();
             $table->date('tanggal_cek')->nullable();
             $table->timestamps();
+            $table->string('id_part');
+            $table->foreign('id_part')->references('kode_part')->on('part')->onDelete('cascade');
         });
     }
 

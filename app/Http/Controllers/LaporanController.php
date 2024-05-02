@@ -8,6 +8,7 @@ use App\Models\kategoriPart;
 use App\Models\Laporan;
 use App\Models\Part;
 use App\Models\Supplier;
+use App\Models\dataPartIncoming;
 // use Carbon\Carbon;
 // use Barryvdh\DomPDF\Facade\Pdf;
 // use PDF;
@@ -268,6 +269,11 @@ class LaporanController extends Controller
 
     public function grafik($supplier, $kategori, $bulan)
     {
+        $data = dataPartIncoming::where('status_pengecekan', 1)->get();
+        $finalStatusShow = CatatanCekModel::whereNotNull('final_status')->get();
+        $countedNG = $finalStatusShow->where('final_status', 1)->count();
+        $countedOK = $finalStatusShow->where('final_status', 0)->count();
+
 
         $laporan = null;
         $getSupplier = Supplier::all();
@@ -280,14 +286,17 @@ class LaporanController extends Controller
         }
 
         return view('grafik', [
-            "title" => "Grafik Perbandingan Penyimpangan Part",
+            "title" => "Grafik Pengecekan Part",
             "laporan" => $laporan,
             "getSupplier" => $getSupplier,
             "getKategori" => $getKategori,
             "supplier" => $supplier,
             "kategori" => $kategori,
             "bulan" => $bulan,
-            "bulanForView" => $bulanForView
+            "bulanForView" => $bulanForView,
+            "data" => $data,
+            "countedNG" => $countedNG,
+            "countedOK" => $countedOK
         ]);
     }
 

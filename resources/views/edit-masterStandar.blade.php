@@ -3,7 +3,7 @@
 @section('container')
     <div class="container-fluid">
         <div class="row">
-            <form action="/kelola-masterStandar/update/{{ $editStandar->id_standar }}" method="post">
+            <form action="/kelola-masterStandar/update/{{ $editStandar->id_standar }}" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="col-lg-5 d-inline-block ml-2">

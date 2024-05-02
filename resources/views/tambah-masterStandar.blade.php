@@ -25,6 +25,10 @@
                         <option value="TANGAN">TANGAN</option>
                         <option value="CALIPER">CALIPER</option>
                         <option value="FUNCTION">FUNCTION</option>
+                        <option value="RING GAUGE">RING GAUGE</option>
+                        <option value="THREAD GAUGE">THREAD GAUGE</option>
+                        <option value="FILLER GAUGE">FILLER GAUGE</option>
+                        <option value="MISTAR BAJA">MISTAR BAJA</option>
                     </select>
                 </div>
 

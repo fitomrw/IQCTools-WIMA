@@ -107,10 +107,11 @@ class DataPartIncomingController extends Controller
 
         for ($i = 1; $i <= $test; $i++) {
             foreach ($standarPart as $key) {
+                // dd($key->part->nama_part);
                 CatatanCekModel::create([
                     'id_part_supply' => $dataTerbaru->id_part_supply,
                     'id_standar_part' => $key->id_standar_part,
-                    'id_part' => $key->part->nama_part,
+                    'id_part' => $key->part->kode_part,
                     'urutan_sample' => $i
                 ]);
             }

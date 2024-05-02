@@ -30,7 +30,6 @@
                 <div class="col-3">
                     <table class="table table-sm table-borderless">
                         <tr>
-                            {{-- <td>Tanggal Periksa</td> --}}
                             @if ($dataPartIn->tanggal_pengecekan != null)
                                 <label for="tanggal_periksa" class="form-label">Tanggal</label>
                                 <td><input type="date" class="form-control" name="tanggal_periksa" id="tanggal_periksa"
@@ -58,6 +57,7 @@
                                 </tr>
                                 <tr>
                                     <th class="text-center" rowspan="2">NO</th>
+                                    <th class="text-center" rowspan="2" style="width: 30px;">POINT</th>
                                     <th class="text-center" rowspan="2">URAIAN</th>
                                     <th class="text-center" rowspan="1" colspan="2">STANDAR</th>
                                     <th class="text-center" rowspan="2">ALAT</th>
@@ -79,7 +79,8 @@
                                 @endphp
                                 @foreach ($data as $item)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td class="text-center">{{ $loop->iteration }}</td>
                                         <td>{{ $item->standarPart->standar->uraian }}</td>
                                         <td colspan="2" class="text-center">{{ $item->standarPart->spesifikasi }}
                                         </td>
@@ -202,25 +203,33 @@
                                 @foreach ($data as $item)
                                     {{-- @dd($cekDimensi) --}}
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $item->standarPart->point }}</td>
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td class="text-center">{{ $item->standarPart->point }}</td>
                                         <td>{{ $item->standarPart->standar->uraian }}</td>
                                         <td class="text-center">{{ $item->standarPart->spesifikasi }}
                                         </td>
                                         <td class="text-center">{{ $item->standarPart->max }}</td>
                                         <td class="text-center">{{ $item->standarPart->min }}</td>
                                         <td class="text-center">{{ $item->standarPart->standar->alat }}</td>
-                                        <td class="text-center">
-                                            @if (array_key_exists($item->id, $valueDimensi))
+                                        @if ($item->standarPart->standar->alat == 'RING GAUGE')
+                                            <td>
                                                 <input type="text" name="value_dimensi[]" id="value_dimensi"
-                                                    class="form-control w-50 mx-auto"
-                                                    value="{{ $valueDimensi[$item->id] }}" required>
-                                            @else
-                                                <input type="text" name="value_dimensi[]" id="value_dimensi"
-                                                    class="form-control w-50 mx-auto" value="" required>
-                                            @endif
-                                            <input type="hidden" name="id_value_dimensi[]" value="{{ $item->id }}">
-                                        </td>
+                                                    class="form-control w-50 mx-auto" value="" disabled>
+                                            </td>
+                                        @else
+                                            <td class="text-center">
+                                                @if (array_key_exists($item->id, $valueDimensi))
+                                                    <input type="text" name="value_dimensi[]" id="value_dimensi"
+                                                        class="form-control w-50 mx-auto"
+                                                        value="{{ $valueDimensi[$item->id] }}" required>
+                                                @else
+                                                    <input type="text" name="value_dimensi[]" id="value_dimensi"
+                                                        class="form-control w-50 mx-auto" value="" required>
+                                                @endif
+                                                <input type="hidden" name="id_value_dimensi[]"
+                                                    value="{{ $item->id }}">
+                                            </td>
+                                        @endif
                                         @if ($item->status == null)
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"
@@ -310,6 +319,7 @@
                                     </tr>
                                     <tr>
                                         <th class="text-center" rowspan="2">NO</th>
+                                        <th class="text-center" rowspan="2" style="width: 30px;">POINT</th>
                                         <th class="text-center" rowspan="2">URAIAN</th>
                                         <th class="text-center" rowspan="1" colspan="2">STANDAR</th>
                                         <th class="text-center" rowspan="2">ALAT</th>
@@ -334,6 +344,7 @@
                                     @endphp
                                     @foreach ($data as $item)
                                         <tr>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item->standarPart->standar->uraian }}</td>
                                             <td colspan="2" class="text-center">
@@ -447,40 +458,41 @@
                         @csrf
                         <input type="hidden" name="status_pengecekan" value="1">
                     </form>
-                    <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="submit" class="btn btn-success" name="submitButton">Submit</button>
                 </div>
             </div>
         </form>
-        {{-- {{ $paginatedData->links }} --}}
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-        <script>
-            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+    </div>
+    {{-- {{ $paginatedData->links }} --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-            function submitCek(kondisi, id) {
-                var formData = {
-                    _token: csrfToken,
-                    key1: kondisi,
-                    key2: id,
-                };
-                $.ajax({
-                    type: 'POST',
-                    url: '/submit-cek', // The URL of your Laravel route
-                    data: formData,
-                    dataType: 'json',
-                    success: function(data) {
-                        // Handle the response from the server
-                        console.log('Terupdate'); // You can do something with the response
-                        // windows.load();
-                    },
-                    error: function(error) {
-                        // Handle any errors that occur during the AJAX request
-                        console.error(error);
-                    },
-                });
-            }
-
-            $(document).ready(function() {
-                $('.datatable').DataTable();
+        function submitCek(kondisi, id) {
+            var formData = {
+                _token: csrfToken,
+                key1: kondisi,
+                key2: id,
+            };
+            $.ajax({
+                type: 'POST',
+                url: '/submit-cek', // The URL of your Laravel route
+                data: formData,
+                dataType: 'json',
+                success: function(data) {
+                    // Handle the response from the server
+                    console.log('Terupdate'); // You can do something with the response
+                    // windows.load();
+                },
+                error: function(error) {
+                    // Handle any errors that occur during the AJAX request
+                    console.error(error);
+                },
             });
-        </script>
-    @endsection
+        }
+
+        $(document).ready(function() {
+            $('.datatable').DataTable();
+        });
+    </script>
+@endsection

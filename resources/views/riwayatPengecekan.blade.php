@@ -18,8 +18,8 @@
                                 <th rowspan="3">Aksi</th>
                             </tr>
                             <tr>
-                                <th rowspan="1">OK</th>
-                                <th rowspan="1">NG</th>
+                                <th rowspan="1" class="bg-success">OK</th>
+                                <th rowspan="1" class="bg-danger">NG</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -46,8 +46,10 @@
                                             <p class="bg-success p-1 rounded-1 text-center"><b>Sudah Verifikasi</b></p>
                                         </td>
                                     @endif
-                                    <td>{{ $countedOK }}</td>
-                                    <td>{{ $countedNG }}</td>
+
+                                    <td>{{ $countedOK[$item->id_part_supply]->where('final_status', 0)->count() }}</td>
+                                    <td>{{ $countedNG[$item->id_part_supply]->where('final_status', 1)->count() }}</td>
+
                                     <td><a href="/detailPengecekan/{{ $item->id_part_supply }}/{{ $item->kode_part }}"><button
                                                 class="btn btn-info"><i class="fas fa-eye"></i></button></a></td>
                                 </tr>
