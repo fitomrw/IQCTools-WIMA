@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('supplier_id');
             $table->foreign('supplier_id')->references('id_supplier')->on('supplier')->onDelete('cascade');
-            $table->string('attention');
-            $table->string('cc');
+            $table->string('attention', 100);
+            $table->string('cc', 100);
             $table->string('part_code');
             $table->foreign('part_code')->references('kode_part')->on('part')->onDelete('cascade');
             $table->unsignedBigInteger('model');
@@ -26,9 +26,9 @@ return new class extends Migration
             $table->integer('quantity');
             $table->string('problem_description');
             $table->string('request');
-            $table->string('found_area');
-            $table->date('found_date');
-            $table->date('issue_date');
+            $table->string('found_area', 60);
+            $table->string('found_date', 50);
+            $table->string('issue_date', 50);
             $table->unsignedBigInteger('pic_person');
             $table->foreign('pic_person')->references('id')->on('users')->onDelete('cascade');
             $table->integer('status')->default(0);

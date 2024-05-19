@@ -103,6 +103,7 @@
                                     <th rowspan="3">Nama Part</th>
                                     <th rowspan="3">Jumlah Pengiriman</th>
                                     <th rowspan="3">Tanggal Pengiriman</th>
+                                    <th rowspan="3">Inspection Level</th>
                                     <th rowspan="3">Status Verifikasi</th>
                                     <th rowspan="1" colspan="2" class="text-center">Hasil Cek</th>
                                     <th rowspan="3">Aksi</th>
@@ -123,6 +124,7 @@
                                         <td>{{ $item->part->nama_part }}</td>
                                         <td>{{ $item->jumlah_kirim }}</td>
                                         <td>{{ $item->supply_date }}</td>
+                                        <td>{{ $item->inspection_level }}</td>
                                         @if ($item->status_pengecekan == 1)
                                             <td>
                                                 <p class="bg-primary p-1 rounded-1 text-center"><b>Menunggu Verifikasi</b>
@@ -137,8 +139,20 @@
                                                 <p class="bg-success p-1 rounded-1 text-center"><b>Sudah Verifikasi</b></p>
                                             </td>
                                         @endif
-                                        <td>{{ $countedNG }}</td>
-                                        <td>{{ $countedOK }}</td>
+                                    @if (isset($countedOK[$item->id_part_supply]) && $countedOK[$item->id_part_supply]->where('final_status', 0) !== null)
+                                        <td>{{ $countedOK[$item->id_part_supply]->where('final_status', 0)->count() }}</td>
+                                    @else
+                                        <td>0</td>
+                                    @endif
+                                    
+                                    @if (isset($countedNG[$item->id_part_supply]) && $countedNG[$item->id_part_supply]->where('final_status', 1) !== null)
+                                        <td>{{ $countedNG[$item->id_part_supply]->where('final_status', 1)->count() }}</td>
+                                    @else
+                                        <td>0</td>
+                                    @endif
+                                    
+                                        {{-- <td>{{ $countedOK }}</td>
+                                        <td>{{ $countedNG }}</td> --}}
                                         <td>
                                             <a href="/verifP/{{ $item->id_part_supply }}/{{ $item->kode_part }}">
                                                 <button class="btn btn-info">

@@ -115,11 +115,14 @@ class LaporanController extends Controller
 
         $part = Part::all();
 
+        $suppliers = Supplier::all();
+
         return view('edit-LPP', [
             "title" => "Edit Laporan Penyimpangan Part",
             "model_kategori" => $model_kategori,
             "part" => $part,
-            "edit_laporan" => $edit_laporan
+            "edit_laporan" => $edit_laporan,
+            "suppliers" => $suppliers
         ]);
     }
 
@@ -133,18 +136,20 @@ class LaporanController extends Controller
     public function update($id, Request $request)
     {
         $validatedData = $request->validate([
-            'to' => ['required'],
-            'attention' => ['required'],
-            'cc' => ['required'],
-            'part_name' => ['required'],
-            'part_code' => ['required'],
-            'model' => ['required'],
-            'quantity' => ['required'],
-            'problem_description' => ['required'],
-            'found_date' => ['required'],
-            'issue_date' => ['required'],
-            'request' => ['required'],
-            'pic_person' => ['required'],
+            'to' => 'required',
+            'attention' => 'required',
+            'cc' => 'required',
+            'part_name' => 'required',
+            'part_code' => 'required',
+            'model' => 'required',
+            'quantity' => 'required',
+            'problem_description' => 'required',
+            'found_area' => 'required',
+            'found_date' => 'required',
+            'issue_date' => 'required',
+            'request' => 'required',
+            'pic_person' => 'required',
+            'gambar_lpp' => 'required|image|mimes:jpeg,png,jpg,gif',
         ]);
 
         $currentDateTime = now()->format('YmdHis');
@@ -161,10 +166,11 @@ class LaporanController extends Controller
                 'quantity' => $validatedData['quantity'],
                 'problem_description' => $validatedData['problem_description'],
                 'found_area' => $validatedData['found_area'],
+                'found_date' => $validatedData['found_date'],
                 'issue_date' => $validatedData['issue_date'],
                 'request' => $validatedData['request'],
                 'pic_person' => $validatedData['pic_person'],
-                'gambar_lpp' => $filename,
+                // 'gambar_lpp' => $filename,
             ]);
 
         $request->file('gambar_lpp')->move(public_path('img/img_lpp'), $filename);

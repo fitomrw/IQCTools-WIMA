@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id('id_kategori');
             // $table->string('kode_part');
             // $table->foreign('kode_part')->references('kode_part')->on('part')->onDelete('cascade');
-            $table->string('nama_kategori');
+            $table->string('nama_kategori', 50);
             $table->timestamps();
         });
     }

@@ -47,19 +47,22 @@
                     </table>
                 </div>
             </div>
-            <div class="row mt-2">
-                <h3 class="text-center"><b>PEMERIKSAAN VISUAL</b></h3>
-                @for ($i = 1; $i <= $jumlahTabel; $i++)
+            <h3 class="text-center"><b>CHECKSHEET PEMERIKSAAN</b></h3>
+            @for ($i = 1; $i <= $jumlahTabel; $i++)
+                <div class="row mt-2">
                     <div class="col-12 table-responsive">
                         <table id="tabelUtamaDetailPengecekan" class="table table-bordered mt-3" style="overflow-x:auto;">
                             <thead>
                                 <tr>
-                                    <th class="bg-warning">Sample ke-{{ $i }}</th>
-                                    <th class="text-center border-3" colspan="7" style="background-color: darkgrey">
+                                    <th class="bg-warning text-center" colspan="8">Sample ke-{{ $i }}</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center border-3" colspan="8" style="background-color: darkgrey">
                                         VISUAL</th>
                                 </tr>
                                 <tr>
                                     <th class="text-center" rowspan="2">NO</th>
+                                    <th class="text-center" rowspan="2" style="width: 30px;">POINT</th>
                                     <th class="text-center" rowspan="2">URAIAN</th>
                                     <th class="text-center" rowspan="1" colspan="2">STANDAR</th>
                                     <th class="text-center" rowspan="2">ALAT</th>
@@ -86,10 +89,10 @@
                                 @foreach ($data as $item)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item->standarPart->standar->uraian }}</td>
-                                        <td colspan="2" class="text-center">{{ $item->standarPart->rincian_standar }}
+                                        <td colspan="2" class="text-center">{{ $item->standarPart->spesifikasi }}
                                         </td>
-
                                         <td>{{ $item->standarPart->standar->alat }}</td>
                                         @if ($item->status == null)
                                             <td class="text-center"><input type="radio" class="btn-check"
@@ -149,18 +152,18 @@
                             </tbody>
                         </table>
                     </div>
-                @endfor
-            </div>
-            <div class="row mt-2">
-                <h3 class="text-center"><b>PEMERIKSAAN DIMENSI</b></h3>
-                @for ($i = 1; $i <= $jumlahTabel; $i++)
+                    {{-- @endfor --}}
+                </div>
+                <div class="row mt-2">
+                    {{-- <h3 class="text-center"><b>PEMERIKSAAN DIMENSI</b></h3> --}}
+                    {{-- @for ($i = 1; $i <= $jumlahTabel; $i++) --}}
                     <div class="col-12 table-responsive">
                         <table class="table table-bordered" class="table table-bordered mt-3 datatable"
                             style="overflow-x:auto;">
                             <thead>
                                 <tr>
-                                    <th class="bg-warning" colspan="2">Sample ke-{{ $i }}</th>
-                                    <th class="text-center border-3" colspan="8" style="background-color: darkgrey">
+                                    {{-- <th class="bg-warning" colspan="2">Sample ke-{{ $i }}</th> --}}
+                                    <th class="text-center border-3" colspan="10" style="background-color: darkgrey">
                                         DIMENSI</th>
                                 </tr>
                                 <tr>
@@ -270,23 +273,24 @@
                             </tbody>
                         </table>
                     </div>
-                @endfor
-            </div>
-            @if ($verifCekFunction != null)
-                <h3 class="text-center"><b>PEMERIKSAAN FUNCTION</b></h3>
-                <div class="row mt-2">
-                    @for ($i = 1; $i <= $jumlahTabel; $i++)
+                    {{-- @endfor --}}
+                </div>
+                @if ($verifCekFunction != null)
+                    {{-- <h3 class="text-center"><b>PEMERIKSAAN FUNCTION</b></h3> --}}
+                    <div class="row mt-2">
+                        {{-- @for ($i = 1; $i <= $jumlahTabel; $i++) --}}
                         <div class="col-12 table-responsive">
                             <table class="table table-bordered" style="overflow-x:auto;">
                                 <thead>
                                     <tr>
-                                        <th class="bg-warning">Sample ke-{{ $i }}</th>
-                                        <th class="text-center border-3" colspan="7"
+                                        {{-- <th class="bg-warning">Sample ke-{{ $i }}</th> --}}
+                                        <th class="text-center border-3" colspan="8"
                                             style="background-color: darkgrey">
                                             FUNCTION</th>
                                     </tr>
                                     <tr>
                                         <th class="text-center" rowspan="2">NO</th>
+                                        <th class="text-center" rowspan="2" style="width: 30px;">POINT</th>
                                         <th class="text-center" rowspan="2">URAIAN</th>
                                         <th class="text-center" rowspan="1" colspan="2">STANDAR</th>
                                         <th class="text-center" rowspan="2">ALAT</th>
@@ -313,11 +317,11 @@
                                     @foreach ($data as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item->standarPart->standar->uraian }}</td>
                                             <td colspan="2" class="text-center">
-                                                {{ $item->standarPart->rincian_standar }}
+                                                {{ $item->standarPart->spesifikasi }}
                                             </td>
-
                                             <td>{{ $item->standarPart->standar->alat }}</td>
                                             @if ($item->status == null)
                                                 <td class="text-center"><input type="radio" class="btn-check"
@@ -372,9 +376,10 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                    @endfor
-                </div>
-            @endif
+                        </div>
+                    </div>
+                @endif
+            @endfor
 
             <div class="row d-flex justify-content-end mt-2">
                 <div class="col-2">

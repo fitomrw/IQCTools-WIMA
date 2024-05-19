@@ -259,13 +259,6 @@ class PengecekanController extends Controller
 
     public function submitPengecekan(Request $request, $id)
     {            
-        // dd($request);
-        // Validasi input jika diperlukan
-        // $request->validate([
-        //     'value_dimensi.*' => 'required|numeric',
-        //     // Sesuaikan dengan aturan validasi Anda
-        // ]);
-
         for ($i=0; $i < count($request->input('id_value_dimensi')); $i++) { 
             $modelData = CatatanCekModel::findOrFail($request->input('id_value_dimensi')[$i]);
             // dd($modelData);
@@ -364,22 +357,26 @@ class PengecekanController extends Controller
         //Inspection Levels = "S-IV", AQL Number = 1 (Default WIMA)
         if ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s4Levels && $aqlNumber1){
     //    dd('test1');
-            return 2;
+            return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s4Levels  && $aqlNumber1){
             // dd('test2');
-            return 2;
+            if ($dataPartIn->jumlah_kirim < 13) {
+                return 13;
+            } elseif ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
+                return $dataPartIn->jumlah_kirim;
+            } 
         } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s4Levels  && $aqlNumber1){
             // dd('test3');
-            return 3;
+            return 13; 
         } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s4Levels && $aqlNumber1){
             // dd('test4');
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim <= 90 && $s4Levels && $aqlNumber1){
             // dd('test5');
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim <= 150 && $s4Levels && $aqlNumber1){
             // dd('test6');        
-            return 8;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim <= 280 && $s4Levels && $aqlNumber1){
             // dd('test7');
             return 13;
@@ -388,11 +385,11 @@ class PengecekanController extends Controller
             return 13;
         } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim <= 1200 && $s4Levels && $aqlNumber1){
             // dd('test9');
-            return 20;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim <= 3200 && $s4Levels && $aqlNumber1){
-            return 32;
+            return 50;
         } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim <= 10000 && $s4Levels && $aqlNumber1){
-            return 32;
+            return 50;
         } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim <= 35000 && $s4Levels && $aqlNumber1){
             return 50;
         } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim <= 150000 && $s4Levels && $aqlNumber1){
@@ -404,61 +401,69 @@ class PengecekanController extends Controller
 
         //Inspection Levels = "S-III", AQL Number = 1
         }elseif($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s3Levels && $aqlNumber1){
-            return 2;
+            return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s3Levels  && $aqlNumber1){
-            return 2;
+            if ($dataPartIn->jumlah_kirim < 13) {
+                return 13;
+            } elseif ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
+                return $dataPartIn->jumlah_kirim;
+            } 
         } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s3Levels  && $aqlNumber1){
-            return 3;
+            return 13; 
         } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s3Levels && $aqlNumber1){
-            return 3;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim <= 90 && $s3Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim <= 150 && $s3Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim <= 280 && $s3Levels && $aqlNumber1){
-            return 8;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim <= 500 && $s3Levels && $aqlNumber1){
-            return 8;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim <= 1200 && $s3Levels && $aqlNumber1){
             return 13;
         } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim <= 3200 && $s3Levels && $aqlNumber1){
             return 13;
         } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim <= 10000 && $s3Levels && $aqlNumber1){
-            return 20;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim <= 35000 && $s3Levels && $aqlNumber1){
-            return 20;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim <= 150000 && $s3Levels && $aqlNumber1){
-            return 32;
+            return 50;
         } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim <= 500000 && $s3Levels && $aqlNumber1){
-            return 32;
+            return 50;
         }elseif($dataPartIn->jumlah_kirim >= 500001 && $dataPartIn->jumlah_kirim <= INF  && $s3Levels && $aqlNumber1){
             return 50;
         
         //Inspection Levels = "S-II", AQL Number = 1
         }elseif ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s2Levels && $aqlNumber1){
-        return 2;
+            return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s2Levels  && $aqlNumber1){
-            return 2;
+            if ($dataPartIn->jumlah_kirim < 13) {
+                return 13;
+            } elseif ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
+                return $dataPartIn->jumlah_kirim;
+            } 
         } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s2Levels  && $aqlNumber1){
-            return 2;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s2Levels && $aqlNumber1){
-            return 3;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim <= 90 && $s2Levels && $aqlNumber1){
-            return 3;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim <= 150 && $s2Levels && $aqlNumber1){
-            return 3;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim <= 280 && $s2Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim <= 500 && $s2Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim <= 1200 && $s2Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim <= 3200 && $s2Levels && $aqlNumber1){
-            return 8;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim <= 10000 && $s2Levels && $aqlNumber1){
-            return 8;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim <= 35000 && $s2Levels && $aqlNumber1){
-            return 8;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim <= 150000 && $s2Levels && $aqlNumber1){
             return 13;
         } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim <= 500000 && $s2Levels && $aqlNumber1){
@@ -468,35 +473,39 @@ class PengecekanController extends Controller
 
         //Inspection Levels = "S-I" AQL Number = 1
         }elseif ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s1Levels && $aqlNumber1){
-            return 2;
+            return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s1Levels  && $aqlNumber1){
-            return 2;
+            if ($dataPartIn->jumlah_kirim < 13) {
+                return 13;
+            } elseif ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
+                return $dataPartIn->jumlah_kirim;
+            }
         } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s1Levels  && $aqlNumber1){
-            return 2;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s1Levels && $aqlNumber1){
-            return 2;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim <= 90 && $s1Levels && $aqlNumber1){
-            return 3;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim <= 150 && $s1Levels && $aqlNumber1){
-            return 3;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim <= 280 && $s1Levels && $aqlNumber1){
-            return 3;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim <= 500 && $s1Levels && $aqlNumber1){
-            return 3;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim <= 1200 && $s1Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim <= 3200 && $s1Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim <= 10000 && $s1Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim <= 35000 && $s1Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim <= 150000 && $s1Levels && $aqlNumber1){
-            return 8;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim <= 500000 && $s1Levels && $aqlNumber1){
-            return 8;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 500001 && $dataPartIn->jumlah_kirim <= INF  && $s1Levels && $aqlNumber1){
-            return 8;
+            return 13;
         }
 
     }
@@ -574,8 +583,8 @@ class PengecekanController extends Controller
     {
         $data = dataPartIncoming::where('status_pengecekan', 1)->get();
         $finalStatusShow = CatatanCekModel::whereNotNull('final_status')->get();
-        $countedNG = $finalStatusShow->where('final_status', 1)->count();
-        $countedOK = $finalStatusShow->where('final_status', 0)->count();
+        $countedNG = $finalStatusShow->where('final_status', 1)->groupBy('id_part_supply');
+        $countedOK = $finalStatusShow->where('final_status', 0)->groupBy('id_part_supply');
 
         $laporan = null;
         $getSupplier = Supplier::all();
@@ -740,23 +749,27 @@ class PengecekanController extends Controller
         // dd('test');
         //Inspection Levels = "S-IV", AQL Number = 1 (Default WIMA)
         if ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s4Levels && $aqlNumber1){
-    //    dd('test1');
-            return 2;
+            //    dd('test1');
+            return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s4Levels  && $aqlNumber1){
             // dd('test2');
-            return 2;
+            if ($dataPartIn->jumlah_kirim < 13) {
+                return 13;
+            } elseif ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
+                return $dataPartIn->jumlah_kirim;
+            } 
         } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s4Levels  && $aqlNumber1){
             // dd('test3');
-            return 3;
+            return 13; 
         } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s4Levels && $aqlNumber1){
             // dd('test4');
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim <= 90 && $s4Levels && $aqlNumber1){
             // dd('test5');
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim <= 150 && $s4Levels && $aqlNumber1){
             // dd('test6');        
-            return 8;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim <= 280 && $s4Levels && $aqlNumber1){
             // dd('test7');
             return 13;
@@ -765,11 +778,11 @@ class PengecekanController extends Controller
             return 13;
         } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim <= 1200 && $s4Levels && $aqlNumber1){
             // dd('test9');
-            return 20;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim <= 3200 && $s4Levels && $aqlNumber1){
-            return 32;
+            return 50;
         } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim <= 10000 && $s4Levels && $aqlNumber1){
-            return 32;
+            return 50;
         } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim <= 35000 && $s4Levels && $aqlNumber1){
             return 50;
         } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim <= 150000 && $s4Levels && $aqlNumber1){
@@ -781,61 +794,69 @@ class PengecekanController extends Controller
 
         //Inspection Levels = "S-III", AQL Number = 1
         }elseif($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s3Levels && $aqlNumber1){
-            return 2;
+            return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s3Levels  && $aqlNumber1){
-            return 2;
+            if ($dataPartIn->jumlah_kirim < 13) {
+                return 13;
+            } elseif ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
+                return $dataPartIn->jumlah_kirim;
+            } 
         } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s3Levels  && $aqlNumber1){
-            return 3;
+            return 13; 
         } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s3Levels && $aqlNumber1){
-            return 3;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim <= 90 && $s3Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim <= 150 && $s3Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim <= 280 && $s3Levels && $aqlNumber1){
-            return 8;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim <= 500 && $s3Levels && $aqlNumber1){
-            return 8;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim <= 1200 && $s3Levels && $aqlNumber1){
             return 13;
         } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim <= 3200 && $s3Levels && $aqlNumber1){
             return 13;
         } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim <= 10000 && $s3Levels && $aqlNumber1){
-            return 20;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim <= 35000 && $s3Levels && $aqlNumber1){
-            return 20;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim <= 150000 && $s3Levels && $aqlNumber1){
-            return 32;
+            return 50;
         } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim <= 500000 && $s3Levels && $aqlNumber1){
-            return 32;
+            return 50;
         }elseif($dataPartIn->jumlah_kirim >= 500001 && $dataPartIn->jumlah_kirim <= INF  && $s3Levels && $aqlNumber1){
             return 50;
         
         //Inspection Levels = "S-II", AQL Number = 1
         }elseif ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s2Levels && $aqlNumber1){
-        return 2;
+            return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s2Levels  && $aqlNumber1){
-            return 2;
+            if ($dataPartIn->jumlah_kirim < 13) {
+                return 13;
+            } elseif ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
+                return $dataPartIn->jumlah_kirim;
+            } 
         } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s2Levels  && $aqlNumber1){
-            return 2;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s2Levels && $aqlNumber1){
-            return 3;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim <= 90 && $s2Levels && $aqlNumber1){
-            return 3;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim <= 150 && $s2Levels && $aqlNumber1){
-            return 3;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim <= 280 && $s2Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim <= 500 && $s2Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim <= 1200 && $s2Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim <= 3200 && $s2Levels && $aqlNumber1){
-            return 8;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim <= 10000 && $s2Levels && $aqlNumber1){
-            return 8;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim <= 35000 && $s2Levels && $aqlNumber1){
-            return 8;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim <= 150000 && $s2Levels && $aqlNumber1){
             return 13;
         } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim <= 500000 && $s2Levels && $aqlNumber1){
@@ -845,35 +866,39 @@ class PengecekanController extends Controller
 
         //Inspection Levels = "S-I" AQL Number = 1
         }elseif ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s1Levels && $aqlNumber1){
-            return 2;
+            return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s1Levels  && $aqlNumber1){
-            return 2;
+            if ($dataPartIn->jumlah_kirim < 13) {
+                return 13;
+            } elseif ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
+                return $dataPartIn->jumlah_kirim;
+            }
         } elseif($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s1Levels  && $aqlNumber1){
-            return 2;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s1Levels && $aqlNumber1){
-            return 2;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 51 && $dataPartIn->jumlah_kirim <= 90 && $s1Levels && $aqlNumber1){
-            return 3;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 91 && $dataPartIn->jumlah_kirim <= 150 && $s1Levels && $aqlNumber1){
-            return 3;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 151 && $dataPartIn->jumlah_kirim <= 280 && $s1Levels && $aqlNumber1){
-            return 3;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 281 && $dataPartIn->jumlah_kirim <= 500 && $s1Levels && $aqlNumber1){
-            return 3;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 501 && $dataPartIn->jumlah_kirim <= 1200 && $s1Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 1201 && $dataPartIn->jumlah_kirim <= 3200 && $s1Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 3201 && $dataPartIn->jumlah_kirim <= 10000 && $s1Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 10001 && $dataPartIn->jumlah_kirim <= 35000 && $s1Levels && $aqlNumber1){
-            return 5;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 35001 && $dataPartIn->jumlah_kirim <= 150000 && $s1Levels && $aqlNumber1){
-            return 8;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 150001 && $dataPartIn->jumlah_kirim <= 500000 && $s1Levels && $aqlNumber1){
-            return 8;
+            return 13;
         } elseif($dataPartIn->jumlah_kirim >= 500001 && $dataPartIn->jumlah_kirim <= INF  && $s1Levels && $aqlNumber1){
-            return 8;
+            return 13;
         }
     }
 

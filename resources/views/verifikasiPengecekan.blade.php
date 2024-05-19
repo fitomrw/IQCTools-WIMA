@@ -18,6 +18,7 @@
                                 <th rowspan="3">Nama Part</th>
                                 <th rowspan="3">Jumlah Pengiriman</th>
                                 <th rowspan="3">Tanggal Pengiriman</th>
+                                <th rowspan="3">Inspection Level</th>
                                 <th rowspan="3">Status Verifikasi</th>
                                 <th rowspan="1" colspan="2" class="text-center">Hasil Cek</th>
                                 <th rowspan="3">Aksi</th>
@@ -47,8 +48,8 @@
                                         </td>
                                     @endif
                                     <td>{{ $item->supply_date }}</td>
-                                    <td>{{ $countedNG }}</td>
                                     <td>{{ $countedOK }}</td>
+                                    <td>{{ $countedNG }}</td>
                                     <td><a
                                             href="/verifikasi-pengecekan/verifPengecekanShow/{{ $item->id_part_supply }}/{{ $item->kode_part }}"><button
                                                 class="btn btn-info"><i class="fas fa-eye"></i></button></a></td>

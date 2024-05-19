@@ -20,10 +20,10 @@ return new class extends Migration
             $table->unsignedBigInteger('id_standar');
             $table->foreign('id_standar')->references('id_standar')->on('standar')->onDelete('cascade');
             $table->string('rincian_standar');
-            $table->string('spesifikasi');
-            $table->string('point');
-            $table->string('max')->nullable();
-            $table->string('min')->nullable();
+            $table->string('spesifikasi', 100);
+            $table->string('point', 10);
+            $table->string('max', 10)->nullable();
+            $table->string('min', 10)->nullable();
             $table->timestamps();
         });
     }

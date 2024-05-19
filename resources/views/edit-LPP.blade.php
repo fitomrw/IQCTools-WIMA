@@ -10,8 +10,14 @@
                     @method('PUT')
                     <div class="mb-3">
                         <label for="to" class="form-label">To</label>
-                        <input type="text" class="form-control" name="to" id="to"
-                            value="{{ $edit_laporan->supplier->nama_supplier }}" required>
+                        <select class="form-select" name="to" id="to">
+                            <option value="">Pilih Supplier</option>
+                            @foreach ($suppliers as $sup)
+                                <option value="{{ $sup->id_supplier }}" {{ $edit_laporan->supplier_id == $sup->id_supplier ? 'selected' : '' }}>
+                                    {{ $sup->nama_supplier }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="attention" class="form-label">Attention</label>
@@ -34,11 +40,12 @@
                             @endforeach
                         </select>
                     </div>
+
                     <div class="mb-3">
                         <label for="part_name" class="form-label">Part Name</label>
                         <select class="form-select" name="part_name" id="part_name" required>
+                            <option value="">Pilih Part Name</option>
                             @foreach ($part as $p)
-                                <option selected></option>
                                 <option value="{{ $p->nama_part }}"
                                     {{ $edit_laporan->part->nama_part == $p->nama_part ? 'selected' : '' }}>
                                     {{ $p->nama_part }}</option>
@@ -46,10 +53,10 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="part_code" class="form-label">Part code</label>
+                        <label for="part_code" class="form-label">Part Code</label>
                         <select class="form-select" name="part_code" id="part_code" required>
+                            <option value="">Pilih Part Code</option>
                             @foreach ($part as $p)
-                                <option selected></option>
                                 <option value="{{ $p->kode_part }}"
                                     {{ $edit_laporan->part_code == $p->kode_part ? 'selected' : '' }}>
                                     {{ $p->kode_part }}</option>
@@ -83,7 +90,7 @@
                     <div class="mb-3">
                         <label for="issue_date" class="form-label">Issue Date</label>
                         <input type="date" id="issue_date" name="issue_date"
-                            class="d-block form-control value="{{ $edit_laporan->issue_date }}" required>
+                            class="d-block form-control" value="{{ $edit_laporan->issue_date }}" required>
                     </div>
                     <div class="mb-3">
                         <label for="request" class="form-label">Request</label>
@@ -93,10 +100,11 @@
                     <div class="mb-3">
                         <label for="problem_description" class="form-label d-block">Gambar Temuan</label>
                         <img src="/img/img_lpp/{{ $edit_laporan->gambar_lpp }}" alt="gambar_temuan"
-                            style="max-width: 300px">
+                        style="max-width: 300px">
                         <label for="formFile" class="form-label d-block">Input Gambar</label>
-                        <input class="form-control" type="file" id="formFile" name="gambar_lpp" required>
+                        <input class="form-control" type="file" id="formFile" name="gambar_lpp">
                     </div>
+                    <input type="hidden" name="pic_person" value="{{ auth()->user()->id }}">
                     <button type="submit" class="btn btn-primary">Ubah</button>
             </div>
         </div>

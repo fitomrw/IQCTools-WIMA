@@ -23,8 +23,8 @@ return new class extends Migration
             $table->foreign('supplier_id')->references('id_supplier')->on('supplier')->onDelete('cascade');
             // $table->string('checksheet_supplier')->default('Ada');
             $table->date('supply_date');
-            $table->string('aql_number');
-            $table->string('inspection_level');
+            $table->string('aql_number', 10);
+            $table->string('inspection_level', 10);
             $table->mediumInteger('jumlah_kirim');
             // $table->mediumInteger('jumlah_sample');
             // $table->mediumInteger('jumlah_cek')->default(1);

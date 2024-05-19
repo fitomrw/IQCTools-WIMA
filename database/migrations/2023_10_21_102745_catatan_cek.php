@@ -19,11 +19,11 @@ return new class extends Migration
             $table->foreign('id_part_supply')->references('id_part_supply')->on('tbl_part_in')->onDelete('cascade');
             $table->unsignedBigInteger('id_standar_part');
             $table->foreign('id_standar_part')->references('id_standar_part')->on('standar_part')->onDelete('cascade');
-            $table->string('status')->nullable();
-            $table->string('checksheet')->nullable();
+            $table->string('status',10)->nullable();
+            $table->string('checksheet', 10)->nullable();
             $table->integer('urutan_sample')->nullable();
-            $table->string('final_status')->nullable();
-            $table->string('value_dimensi')->nullable();
+            $table->string('final_status', 10)->nullable();
+            $table->string('value_dimensi', 10)->nullable();
             $table->date('tanggal_cek')->nullable();
             $table->timestamps();
             $table->string('id_part');

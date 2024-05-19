@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>
+        
         @if (auth()->user()->jabatan == 'Staff QA' && Request::is('/kelola-LPP/grafik/0/0/0'))
             Dashboard
         @elseif (auth()->user()->jabatan == 'Kepala Seksi QC' && Request::is('verifikasi-pengecekan/0/0/0'))

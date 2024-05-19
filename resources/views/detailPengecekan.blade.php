@@ -44,15 +44,17 @@
                     </table>
                 </div>
             </div>
-            <div class="row mt-2">
-                <h3 class="text-center"><b>PEMERIKSAAN VISUAL</b></h3>
-                @for ($i = 1; $i <= $jumlahTabel; $i++)
+            <h3 class="text-center"><b>CHECKSHEET PEMERIKSAAN</b></h3>
+            @for ($i = 1; $i <= $jumlahTabel; $i++)
+                <div class="row mt-2">
                     <div class="col-12 table-responsive">
                         <table id="tabelUtamaDetailPengecekan" class="table table-bordered mt-3" style="overflow-x:auto;">
                             <thead>
                                 <tr>
-                                    <th class="bg-warning">Sample ke-{{ $i }}</th>
-                                    <th class="text-center border-3" colspan="7" style="background-color: darkgrey">
+                                    <th class="bg-warning text-center" colspan="8">Sample ke-{{ $i }}</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center border-3" colspan="8" style="background-color: darkgrey">
                                         VISUAL</th>
                                 </tr>
                                 <tr>
@@ -157,18 +159,19 @@
                             </tbody>
                         </table>
                     </div>
-                @endfor
-            </div>
-            <div class="row mt-2">
-                <h3 class="text-center"><b>PEMERIKSAAN DIMENSI</b></h3>
-                @for ($i = 1; $i <= $jumlahTabel; $i++)
+                    {{-- @endfor --}}
+                </div>
+                {{-- PEMERIKSAAN DIMENSI --}}
+                <div class="row mt-2">
+                    {{-- <h3 class="text-center"><b>PEMERIKSAAN DIMENSI</b></h3> --}}
+                    {{-- @for ($i = 1; $i <= $jumlahTabel; $i++) --}}
                     <div class="col-12 table-responsive">
                         <table class="table table-bordered" class="table table-bordered mt-3 datatable"
                             style="overflow-x:auto;">
                             <thead>
                                 <tr>
-                                    <th class="bg-warning" colspan="2">Sample ke-{{ $i }}</th>
-                                    <th class="text-center border-3" colspan="8" style="background-color: darkgrey">
+                                    {{-- <th class="bg-warning" colspan="2">Sample ke-{{ $i }}</th> --}}
+                                    <th class="text-center border-3" colspan="10" style="background-color: darkgrey">
                                         DIMENSI</th>
                                 </tr>
                                 <tr>
@@ -221,37 +224,40 @@
                                                 @if (array_key_exists($item->id, $valueDimensi))
                                                     <input type="text" name="value_dimensi[]" id="value_dimensi"
                                                         class="form-control w-50 mx-auto"
+                                                        oninput="test({{ $item->id }}, {{ $item->standarPart->spesifikasi }},'{{ $item->standarPart->max }}','{{ $item->standarPart->min }}')"
                                                         value="{{ $valueDimensi[$item->id] }}" required>
                                                 @else
                                                     <input type="text" name="value_dimensi[]" id="value_dimensi"
-                                                        class="form-control w-50 mx-auto" value="" required>
+                                                        class="form-control w-50 mx-auto" value=""
+                                                        oninput="test({{ $item->id }}, {{ $item->standarPart->spesifikasi }},'{{ $item->standarPart->max }}','{{ $item->standarPart->min }}')"
+                                                        required>
                                                 @endif
                                                 <input type="hidden" name="id_value_dimensi[]"
-                                                    value="{{ $item->id }}">
+                                                    oninput="test({{ $item->id }}, {{ $item->standarPart->spesifikasi }},'{{ $item->standarPart->max }}','{{ $item->standarPart->min }}')">
                                             </td>
                                         @endif
                                         @if ($item->status == null)
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"
-                                                    id="success-outlined{{ $item->id }} " autocomplete="off"
+                                                    id="success-outlinedtest{{ $item->id }}" autocomplete="off"
                                                     onclick="submitCek('OK',{{ $item->id }})">
                                                 <label class="btn btn-outline-success"
-                                                    for="success-outlined{{ $item->id }} ">OK</label>
+                                                    for="success-outlinedtest{{ $item->id }}">OK</label>
                                             </td>
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"
-                                                    id="danger-outlined{{ $item->id }}"
+                                                    id="danger-outlinedtest{{ $item->id }}"
                                                     onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
                                                 <label class="btn btn-outline-danger"
-                                                    for="danger-outlined{{ $item->id }}">NG</label>
+                                                    for="danger-outlinedtest{{ $item->id }}">NG</label>
                                             </td>
                                         @elseif($item->status == 'OK')
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"
-                                                    id="success-outlined{{ $item->id }} " autocomplete="off" checked
-                                                    onclick="submitCek('OK',{{ $item->id }})">
+                                                    id="success-outlinedtest{{ $item->id }}" autocomplete="off"
+                                                    checked onclick="submitCek('OK',{{ $item->id }})">
                                                 <label class="btn btn-outline-success"
-                                                    for="success-outlined{{ $item->id }} ">OK</label>
+                                                    for="success-outlinedtest{{ $item->id }}">OK</label>
                                             </td>
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"
@@ -263,10 +269,10 @@
                                         @elseif($item->status == 'NG')
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"
-                                                    id="success-outlined{{ $item->id }} " autocomplete="off"
+                                                    id="success-outlinedtest{{ $item->id }}" autocomplete="off"
                                                     onclick="submitCek('OK',{{ $item->id }})">
                                                 <label class="btn btn-outline-success"
-                                                    for="success-outlined{{ $item->id }} ">OK</label>
+                                                    for="success-outlinedtest{{ $item->id }}">OK</label>
                                             </td>
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"
@@ -302,18 +308,19 @@
                             </tbody>
                         </table>
                     </div>
-                @endfor
-            </div>
-            @if ($cekFunction != null)
-                <h3 class="text-center"><b>PEMERIKSAAN FUNCTION</b></h3>
-                <div class="row mt-2">
-                    @for ($i = 1; $i <= $jumlahTabel; $i++)
+                    {{-- @endfor --}}
+                </div>
+                {{-- PEMERIKSAAN FUNCTION --}}
+                @if ($cekFunction != null)
+                    <div class="row mt-2">
+                        {{-- <h3 class="text-center"><b>PEMERIKSAAN FUNCTION</b></h3> --}}
+                        {{-- @for ($i = 1; $i <= $jumlahTabel; $i++) --}}
                         <div class="col-12 table-responsive">
                             <table class="table table-bordered" style="overflow-x:auto;">
                                 <thead>
                                     <tr>
-                                        <th class="bg-warning">Sample ke-{{ $i }}</th>
-                                        <th class="text-center border-3" colspan="7"
+                                        {{-- <th class="bg-warning">Sample ke-{{ $i }}</th> --}}
+                                        <th class="text-center border-3" colspan="8"
                                             style="background-color: darkgrey">
                                             FUNCTION</th>
                                     </tr>
@@ -378,7 +385,8 @@
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
                                                         id="danger-outlined{{ $item->id }}"
-                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
+                                                        onclick="submitCek('NG',{{ $item->id }})"
+                                                        autocomplete="off">
                                                     <label class="btn btn-outline-danger"
                                                         for="danger-outlined{{ $item->id }}">NG</label>
                                                 </td>
@@ -393,7 +401,8 @@
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
                                                         id="danger-outlined{{ $item->id }}" checked
-                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
+                                                        onclick="submitCek('NG',{{ $item->id }})"
+                                                        autocomplete="off">
                                                     <label class="btn btn-outline-danger"
                                                         for="danger-outlined{{ $item->id }}">NG</label>
                                                 </td>
@@ -423,9 +432,10 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                    @endfor
-                </div>
-            @endif
+                        </div>
+                    </div>
+                @endif
+            @endfor
 
             {{-- @php
                 $ngFound = false;
@@ -467,6 +477,22 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script>
         var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+        function test(id, spesifikasi, max, min) {
+            // console.log(id);
+            // console.log(spesifikasi);
+            console.log(max);
+            console.log(min);
+            let batasAtas = spesifikasi + min;
+            let batasBawah = spesifikasi + max;
+            console.log(batasAtas);
+            console.log(batasBawah);
+            var radioButton = document.getElementById('success-outlinedtest' + id);
+            console.log(radioButton);
+            // Set the checked attribute to true to select the radio button
+            radioButton.checked = true;
+
+        }
 
         function submitCek(kondisi, id) {
             var formData = {
