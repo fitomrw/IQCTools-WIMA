@@ -68,14 +68,14 @@ Route::middleware(['auth', 'CekJabatan:Admin QC'])->group(function () {
 
 
     //Master Data MIL STD 105 E
-    Route::get('/kelola-standarMIL', [PengecekanController::class, 'indexMIL']);
+    
     Route::get('/kelola-standarMIL/create', [PengecekanController::class, 'createMIL']);
     Route::post('/kelola-standarMIL/store', [PengecekanController::class, 'storeMIL']);
     Route::get('/kelola-standarMIL/edit/{id}', [PengecekanController::class, 'editMIL']);
     Route::put('/kelola-standarMIL/update/{id}', [PengecekanController::class, 'updateMIL']);
     Route::get('/kelola-standarMIL/destroy/{id}', [PengecekanController::class, 'deleteMIL']);
 });
-
+Route::get('/kelola-standarMIL', [PengecekanController::class, 'indexMIL']);
 //data part incoming
 Route::middleware(['auth', 'CekJabatan:Staff QC'])->group(function () {
     Route::resource('/dataPartIncoming', DataPartIncomingController::class);
@@ -92,8 +92,12 @@ Route::middleware(['auth', 'CekJabatan:Staff QC'])->group(function () {
     // Route::get('/kelola-pengecekan', [PengecekanController::class, 'index'])->middleware('auth');
     Route::get('/detailPengecekan/{id}/{kode_part}', [PengecekanController::class, 'detailPengecekan'])->middleware('auth');
     Route::post('/submit-cek', [PengecekanController::class, 'cekPerPoint']);
-    Route::post('/submit-pengecekan/{id}', [PengecekanController::class, 'submitPengecekan']);
+    Route::post('/simpanData/{id}', [PengecekanController::class, 'simpanData']);
+    // Route::post('/submitP', function() {}
+    //     return "GOBLOK LOE!";
+    // });
 });
+Route::post('/submit-pengecekan/{id}', [PengecekanController::class, 'submitPengecekan']);
 
 //data part Kepala Seksi
 Route::get('/riwayatPengecekan', [PengecekanController::class, 'riwayatPengecekan'])->middleware('auth');
@@ -171,3 +175,7 @@ Route::middleware(['auth', 'CekJabatan:Staff QA'])->group(function () {
 });
 
 Route::get('/api/kelola-LPP/grafik/{supplier}/{kategori}/{bulan}', [LaporanController::class, 'dataGrafik']);
+// routes/web.php
+Route::post('/test', function () {
+    return 'Form submitted!';
+});

@@ -5,7 +5,7 @@
         <div class="card">
             <div class="card-header bg-secondary"></div>
             <div class="card-body">
-                <form action="/kelola-LPP/update/{{ $edit_laporan->id }}" method="post">
+                <form action="/kelola-LPP/update/{{ $edit_laporan->id }}" method="post" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="mb-3">
@@ -82,16 +82,18 @@
                                 On Factory</option>
                         </select>
                     </div>
+
+
                     <div class="mb-3">
                         <label for="found_date" class="form-label">Found Date</label>
                         <input type="date" id="found_date" name="found_date" class="d-block form-control"
-                            value="{{ $edit_laporan->found_date }}" required>
+                            value="{{ old('found_date', $edit_laporan->found_date) }}" required>
                     </div>
                     <div class="mb-3">
                         <label for="issue_date" class="form-label">Issue Date</label>
                         <input type="date" id="issue_date" name="issue_date"
-                            class="d-block form-control" value="{{ $edit_laporan->issue_date }}" required>
-                    </div>
+                            class="d-block form-control" value="{{ old('issue_date', $edit_laporan->issue_date) }}" required>
+                    </div>                    
                     <div class="mb-3">
                         <label for="request" class="form-label">Request</label>
                         <textarea class="form-control" id="request" rows="5" name="request" required>{{ $edit_laporan->request }}

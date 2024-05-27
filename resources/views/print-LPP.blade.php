@@ -45,19 +45,19 @@
                     <td>Part Name</td>
                     <td>: {{ $printingLPP->part->nama_part }}</td>
                     <td>LPP No.</td>
-                    <td>: {{ $printingLPP->id }}/IV/2023</td>
+                    <td>: {{ $printingLPP->id }}/IV/2024</td>
                 </tr>
                 <tr>
                     <td>Part No.</td>
                     <td>: {{ $printingLPP->part_code }}</td>
                     <td>Found Date</td>
-                    <td>: 22/03/2023</td>
+                    <td>: {{ $printingLPP->found_date }}</td>
                 </tr>
                 <tr>
                     <td>Model</td>
                     <td>: {{ $printingLPP->kategori_part->nama_kategori }}</td>
                     <td>Issue date</td>
-                    <td>: 22/03/2023</td>
+                    <td>: {{ $printingLPP->issue_date }}</td>
                 </tr>
                 <tr>
                     <td>Qty</td>

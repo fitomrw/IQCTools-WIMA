@@ -2,6 +2,15 @@
 
 @section('container')
     <div class="container-fluid">
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @elseif (session('danger'))
+            <div class="alert alert-danger">
+                {{ session('danger') }}
+            </div>
+        @endif
         <a href="/kelola-LPP/create">
             <button type="button" class="btn btn-primary d-block mb-3">Buat Laporan Penyimpangan Part</button>
         </a>

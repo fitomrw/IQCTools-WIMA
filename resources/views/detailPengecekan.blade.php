@@ -2,6 +2,7 @@
 @section('container')
     <div class="container-fluid border-top">
         <form id="tabelDetailPengecekan" action="/submit-pengecekan/{{ $dataPartIn->id_part_supply }}" method="post">
+            {{-- @dd($dataPartIn) --}}
             @csrf
             <div class="row mt-3">
                 <div class="col-2">
@@ -30,16 +31,15 @@
                 <div class="col-3">
                     <table class="table table-sm table-borderless">
                         <tr>
-                            @if ($dataPartIn->tanggal_pengecekan != null)
-                                <label for="tanggal_periksa" class="form-label">Tanggal</label>
-                                <td><input type="date" class="form-control" name="tanggal_periksa" id="tanggal_periksa"
-                                        value="{{ $dataPartIn->tanggal_pengecekan }}" required></td>
+                            @if ($tanggalCek->tanggal_cek != null) 
+                                <label for="tanggal_cek" class="form-label">Tanggal</label>
+                                <td><input type="date" class="form-control" name="tanggal_cek" id="tanggal_cek"
+                                        value="{{ $tanggalCek->tanggal_cek }}" disabled></td>
                             @else
-                                <label for="tanggal_periksa" class="form-label">Tanggal</label>
-                                <td><input type="date" class="form-control" name="tanggal_periksa" id="tanggal_periksa"
+                                <label for="tanggal_cek" class="form-label">Tanggal</label>
+                                <td><input type="date" class="form-control" name="tanggal_cek" id="tanggal_cek"
                                         value="{{ $tanggalSekarang }}" required></td>
                             @endif
-
                         </tr>
                     </table>
                 </div>
@@ -87,74 +87,149 @@
                                         <td colspan="2" class="text-center">{{ $item->standarPart->spesifikasi }}
                                         </td>
                                         <td>{{ $item->standarPart->standar->alat }}</td>
-                                        @if ($item->status == null)
+                                        {{-- IF THE CHECKSHEET ALREADY VERIFIED --}}
+                                        @if ($dataPartIn->status_pengecekan == 2)
+                                            @if ($item->status == null)
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"
                                                     id="success-outlined{{ $item->id }} " autocomplete="off"
-                                                    onclick="submitCek('OK',{{ $item->id }})">
+                                                    onclick="submitCek('OK',{{ $item->id }})" disabled>
                                                 <label class="btn btn-outline-success"
                                                     for="success-outlined{{ $item->id }} ">OK</label>
                                             </td>
                                             <td class="text-center"><input type="radio" class="btn-check"
                                                     name="options-outlined{{ $item->id }}"
                                                     id="danger-outlined{{ $item->id }}"
-                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
+                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off" disabled>
                                                 <label class="btn btn-outline-danger"
                                                     for="danger-outlined{{ $item->id }}">NG</label>
                                             </td>
-                                        @elseif($item->status == 'OK')
-                                            <td class="text-center"><input type="radio" class="btn-check"
-                                                    name="options-outlined{{ $item->id }}"
-                                                    id="success-outlined{{ $item->id }} " autocomplete="off" checked
-                                                    onclick="submitCek('OK',{{ $item->id }})">
-                                                <label class="btn btn-outline-success"
-                                                    for="success-outlined{{ $item->id }} ">OK</label>
-                                            </td>
-                                            <td class="text-center"><input type="radio" class="btn-check"
-                                                    name="options-outlined{{ $item->id }}"
-                                                    id="danger-outlined{{ $item->id }}"
-                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
-                                                <label class="btn btn-outline-danger"
-                                                    for="danger-outlined{{ $item->id }}">NG</label>
-                                            </td>
-                                        @elseif($item->status == 'NG')
-                                            <td class="text-center"><input type="radio" class="btn-check"
-                                                    name="options-outlined{{ $item->id }}"
-                                                    id="success-outlined{{ $item->id }} " autocomplete="off"
-                                                    onclick="submitCek('OK',{{ $item->id }})">
-                                                <label class="btn btn-outline-success"
-                                                    for="success-outlined{{ $item->id }} ">OK</label>
-                                            </td>
-                                            <td class="text-center"><input type="radio" class="btn-check"
-                                                    name="options-outlined{{ $item->id }}"
-                                                    id="danger-outlined{{ $item->id }}" checked
-                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
-                                                <label class="btn btn-outline-danger"
-                                                    for="danger-outlined{{ $item->id }}">NG</label>
-                                            </td>
-                                        @endif
-                                    </tr>
-                                    @php
-                                        $ngFound = false;
-                                        $groupedCekVisual = collect($cekVisual)
-                                            ->flatMap(function ($item) {
-                                                return $item;
-                                            })
-                                            ->groupBy('urutan_sample');
-                                        foreach ($groupedCekVisual as $urutanSample => $items) {
-                                            $ngFound = $items->contains(function ($item) {
-                                                return $item['status'] === 'NG';
-                                            });
-                                            if ($ngFound) {
-                                                break;
+                                            @elseif($item->status == 'OK')
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="success-outlined{{ $item->id }} " autocomplete="off" checked
+                                                        onclick="submitCek('OK',{{ $item->id }})" disabled>
+                                                    <label class="btn btn-outline-success"
+                                                        for="success-outlined{{ $item->id }} ">OK</label>
+                                                </td>
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="danger-outlined{{ $item->id }}"
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off" disabled>
+                                                    <label class="btn btn-outline-danger"
+                                                        for="danger-outlined{{ $item->id }}">NG</label>
+                                                </td>
+                                            @elseif($item->status == 'NG')
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="success-outlined{{ $item->id }} " autocomplete="off"
+                                                        onclick="submitCek('OK',{{ $item->id }})" disabled>
+                                                    <label class="btn btn-outline-success"
+                                                        for="success-outlined{{ $item->id }} ">OK</label>
+                                                </td>
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="danger-outlined{{ $item->id }}" checked
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off" disabled>
+                                                    <label class="btn btn-outline-danger"
+                                                        for="danger-outlined{{ $item->id }}">NG</label>
+                                                </td>
+                                            @endif
+                                        </tr>
+                                        @php
+                                            $ngFound = false;
+                                            $groupedCekVisual = collect($cekVisual)
+                                                ->flatMap(function ($item) {
+                                                    return $item;
+                                                })
+                                                ->groupBy('urutan_sample');
+                                            foreach ($groupedCekVisual as $urutanSample => $items) {
+                                                $ngFound = $items->contains(function ($item) {
+                                                    return $item['status'] === 'NG';
+                                                });
+                                                if ($ngFound) {
+                                                    break;
+                                                }
                                             }
-                                        }
-                                    @endphp
-                                    @if ($ngFound)
-                                        <input type="hidden" name="final_status[]" value="1">
-                                    @else
-                                        <input type="hidden" name="final_status[]" value="0">
+                                        @endphp
+                                        @if ($ngFound)
+                                            <input type="hidden" name="final_status[]" value="1">
+                                        @else
+                                            <input type="hidden" name="final_status[]" value="0">
+                                        @endif
+                                        {{-- (END OF) IF THE CHECKSHEET ALREADY VERIFIED --}}
+                                        @else
+                                        {{--IF THE CHECKSHEET NOT VERIFIED YET OR NOT CHECKED YET  --}}
+                                            @if ($item->status == null)
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="success-outlined{{ $item->id }} " autocomplete="off"
+                                                        onclick="submitCek('OK',{{ $item->id }})">
+                                                    <label class="btn btn-outline-success"
+                                                        for="success-outlined{{ $item->id }} ">OK</label>
+                                                </td>
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="danger-outlined{{ $item->id }}"
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
+                                                    <label class="btn btn-outline-danger"
+                                                        for="danger-outlined{{ $item->id }}">NG</label>
+                                                </td>
+                                            @elseif($item->status == 'OK')
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="success-outlined{{ $item->id }} " autocomplete="off" checked
+                                                        onclick="submitCek('OK',{{ $item->id }})">
+                                                    <label class="btn btn-outline-success"
+                                                        for="success-outlined{{ $item->id }} ">OK</label>
+                                                </td>
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="danger-outlined{{ $item->id }}"
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
+                                                    <label class="btn btn-outline-danger"
+                                                        for="danger-outlined{{ $item->id }}">NG</label>
+                                                </td>
+                                            @elseif($item->status == 'NG')
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="success-outlined{{ $item->id }} " autocomplete="off"
+                                                        onclick="submitCek('OK',{{ $item->id }})">
+                                                    <label class="btn btn-outline-success"
+                                                        for="success-outlined{{ $item->id }} ">OK</label>
+                                                </td>
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="danger-outlined{{ $item->id }}" checked
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
+                                                    <label class="btn btn-outline-danger"
+                                                        for="danger-outlined{{ $item->id }}">NG</label>
+                                                </td>
+                                            @endif
+                                        </tr>
+                                        @php
+                                            $ngFound = false;
+                                            $groupedCekVisual = collect($cekVisual)
+                                                ->flatMap(function ($item) {
+                                                    return $item;
+                                                })
+                                                ->groupBy('urutan_sample');
+                                            foreach ($groupedCekVisual as $urutanSample => $items) {
+                                                $ngFound = $items->contains(function ($item) {
+                                                    return $item['status'] === 'NG';
+                                                });
+                                                if ($ngFound) {
+                                                    break;
+                                                }
+                                            }
+                                        @endphp
+                                        @if ($ngFound)
+                                            <input type="hidden" name="final_status[]" value="1">
+                                        @else
+                                            <input type="hidden" name="final_status[]" value="0">
+                                        @endif
                                     @endif
+                                    {{--(END OF) IF THE CHECKSHEET NOT VERIFIED YET OR NOT CHECKED YET  --}}
                                 @endforeach
                             </tbody>
                         </table>
@@ -219,69 +294,243 @@
                                                 <input type="text" name="value_dimensi[]" id="value_dimensi"
                                                     class="form-control w-50 mx-auto" value="" disabled>
                                             </td>
+                                            @if ($dataPartIn->status_pengecekan == 2)
+                                                @if ($item->status == null)
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="success-outlinedtest{{ $item->id }}" autocomplete="off"
+                                                        onclick="submitCek('OK',{{ $item->id }})" disabled>
+                                                    <label class="btn btn-outline-success"
+                                                        for="success-outlinedtest{{ $item->id }}">OK</label>
+                                                </td>
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="danger-outlinedtest{{ $item->id }}"
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off" disabled>
+                                                    <label class="btn btn-outline-danger"
+                                                        for="danger-outlinedtest{{ $item->id }}">NG</label>
+                                                </td>
+                                                @elseif($item->status == 'OK')
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="success-outlinedtest{{ $item->id }}" autocomplete="off"
+                                                        checked onclick="submitCek('OK',{{ $item->id }})" disabled>
+                                                    <label class="btn btn-outline-success"
+                                                        for="success-outlinedtest{{ $item->id }}">OK</label>
+                                                </td>
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="danger-outlinedtest{{ $item->id }}"
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off"
+                                                        disabled>
+                                                    <label class="btn btn-outline-danger"
+                                                        for="danger-outlinedtest{{ $item->id }}">NG</label>
+                                                </td>
+                                                @elseif($item->status == 'NG')
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="success-outlinedtest{{ $item->id }}" autocomplete="off"
+                                                        onclick="submitCek('OK',{{ $item->id }})" disabled>
+                                                    <label class="btn btn-outline-success"
+                                                        for="success-outlinedtest{{ $item->id }}">OK</label>
+                                                </td>
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="danger-outlinedtest{{ $item->id }}" checked
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off"
+                                                        disabled>
+                                                    <label class="btn btn-outline-danger"
+                                                        for="danger-outlinedtest{{ $item->id }}">NG</label>
+                                                </td>
+                                            @endif
+                                        </tr>
+                                        @php
+                                            $ngFound = false;
+                                            $groupedCekDimensi = collect($cekDimensi)
+                                                ->flatMap(function ($item) {
+                                                    return $item;
+                                                })
+                                                ->groupBy('urutan_sample');
+                                            foreach ($groupedCekDimensi as $urutanSample => $items) {
+                                                $ngFound = $items->contains(function ($item) {
+                                                    return $item['status'] === 'NG';
+                                                });
+                                                if ($ngFound) {
+                                                    break;
+                                                }
+                                            }
+                                        @endphp
+                                        @if ($ngFound)
+                                            <input type="hidden" name="final_status[]" value="1">
                                         @else
-                                            <td class="text-center">
-                                                @if (array_key_exists($item->id, $valueDimensi))
-                                                    <input type="text" name="value_dimensi[]" id="value_dimensi"
-                                                        class="form-control w-50 mx-auto"
-                                                        oninput="test({{ $item->id }}, {{ $item->standarPart->spesifikasi }},'{{ $item->standarPart->max }}','{{ $item->standarPart->min }}')"
-                                                        value="{{ $valueDimensi[$item->id] }}" required>
-                                                @else
-                                                    <input type="text" name="value_dimensi[]" id="value_dimensi"
-                                                        class="form-control w-50 mx-auto" value=""
-                                                        oninput="test({{ $item->id }}, {{ $item->standarPart->spesifikasi }},'{{ $item->standarPart->max }}','{{ $item->standarPart->min }}')"
-                                                        required>
-                                                @endif
-                                                <input type="hidden" name="id_value_dimensi[]"
-                                                    oninput="test({{ $item->id }}, {{ $item->standarPart->spesifikasi }},'{{ $item->standarPart->max }}','{{ $item->standarPart->min }}')">
-                                            </td>
+                                            <input type="hidden" name="final_status[]" value="0">
                                         @endif
-                                        @if ($item->status == null)
-                                            <td class="text-center"><input type="radio" class="btn-check"
-                                                    name="options-outlined{{ $item->id }}"
-                                                    id="success-outlinedtest{{ $item->id }}" autocomplete="off"
-                                                    onclick="submitCek('OK',{{ $item->id }})">
-                                                <label class="btn btn-outline-success"
-                                                    for="success-outlinedtest{{ $item->id }}">OK</label>
-                                            </td>
-                                            <td class="text-center"><input type="radio" class="btn-check"
-                                                    name="options-outlined{{ $item->id }}"
-                                                    id="danger-outlinedtest{{ $item->id }}"
-                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
-                                                <label class="btn btn-outline-danger"
-                                                    for="danger-outlinedtest{{ $item->id }}">NG</label>
-                                            </td>
-                                        @elseif($item->status == 'OK')
-                                            <td class="text-center"><input type="radio" class="btn-check"
-                                                    name="options-outlined{{ $item->id }}"
-                                                    id="success-outlinedtest{{ $item->id }}" autocomplete="off"
-                                                    checked onclick="submitCek('OK',{{ $item->id }})">
-                                                <label class="btn btn-outline-success"
-                                                    for="success-outlinedtest{{ $item->id }}">OK</label>
-                                            </td>
-                                            <td class="text-center"><input type="radio" class="btn-check"
-                                                    name="options-outlined{{ $item->id }}"
-                                                    id="danger-outlined{{ $item->id }}"
-                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
-                                                <label class="btn btn-outline-danger"
-                                                    for="danger-outlined{{ $item->id }}">NG</label>
-                                            </td>
-                                        @elseif($item->status == 'NG')
-                                            <td class="text-center"><input type="radio" class="btn-check"
-                                                    name="options-outlined{{ $item->id }}"
-                                                    id="success-outlinedtest{{ $item->id }}" autocomplete="off"
-                                                    onclick="submitCek('OK',{{ $item->id }})">
-                                                <label class="btn btn-outline-success"
-                                                    for="success-outlinedtest{{ $item->id }}">OK</label>
-                                            </td>
-                                            <td class="text-center"><input type="radio" class="btn-check"
-                                                    name="options-outlined{{ $item->id }}"
-                                                    id="danger-outlined{{ $item->id }}" checked
-                                                    onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
-                                                <label class="btn btn-outline-danger"
-                                                    for="danger-outlined{{ $item->id }}">NG</label>
-                                            </td>
+
+                                            @else
+                                    
+                                            @if ($item->status == null)
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="success-outlinedtest{{ $item->id }}" autocomplete="off"
+                                                        onclick="submitCek('OK',{{ $item->id }})">
+                                                    <label class="btn btn-outline-success"
+                                                        for="success-outlinedtest{{ $item->id }}">OK</label>
+                                                </td>
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="danger-outlinedtest{{ $item->id }}"
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off>
+                                                    <label class="btn btn-outline-danger"
+                                                        for="danger-outlinedtest{{ $item->id }}">NG</label>
+                                                </td>
+                                            @elseif($item->status == 'OK')
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="success-outlinedtest{{ $item->id }}" autocomplete="off"
+                                                        checked onclick="submitCek('OK',{{ $item->id }})" >
+                                                    <label class="btn btn-outline-success"
+                                                        for="success-outlinedtest{{ $item->id }}">OK</label>
+                                                </td>
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="danger-outlinedtest{{ $item->id }}"
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off"
+                                                        >
+                                                    <label class="btn btn-outline-danger"
+                                                        for="danger-outlinedtest{{ $item->id }}">NG</label>
+                                                </td>
+                                            @elseif($item->status == 'NG')
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="success-outlinedtest{{ $item->id }}" autocomplete="off"
+                                                        onclick="submitCek('OK',{{ $item->id }})" >
+                                                    <label class="btn btn-outline-success"
+                                                        for="success-outlinedtest{{ $item->id }}">OK</label>
+                                                </td>
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="danger-outlinedtest{{ $item->id }}" checked
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off"
+                                                        >
+                                                    <label class="btn btn-outline-danger"
+                                                        for="danger-outlinedtest{{ $item->id }}">NG</label>
+                                                </td>
+                                            @endif
+                                        </tr>
+                                        @php
+                                            $ngFound = false;
+                                            $groupedCekDimensi = collect($cekDimensi)
+                                                ->flatMap(function ($item) {
+                                                    return $item;
+                                                })
+                                                ->groupBy('urutan_sample');
+                                            foreach ($groupedCekDimensi as $urutanSample => $items) {
+                                                $ngFound = $items->contains(function ($item) {
+                                                    return $item['status'] === 'NG';
+                                                });
+                                                if ($ngFound) {
+                                                    break;
+                                                }
+                                            }
+                                        @endphp
+                                        @if ($ngFound)
+                                            <input type="hidden" name="final_status[]" value="1">
+                                        @else
+                                            <input type="hidden" name="final_status[]" value="0">
                                         @endif
+
+                                        @endif
+
+                                        @else
+
+                                        @if ($dataPartIn->status_pengecekan == 2)
+                                        <td class="text-center">
+                                            @if (array_key_exists($item->id, $valueDimensi))
+                                                <input type="text" name="value_dimensi[]"
+                                                    id="inputDim{{ $item->id }}"
+                                                    class="form-control w-50 mx-auto"
+                                                    oninput="test({{ $item->id }}, {{ $item->standarPart->spesifikasi }},'{{ $item->standarPart->max }}','{{ $item->standarPart->min }}')"
+                                                    value="{{ $valueDimensi[$item->id] }}" disabled>
+                                            @else
+                                                <input type="text" name="value_dimensi[]"
+                                                    class="form-control w-50 mx-auto" value=""
+                                                    id="inputDim{{ $item->id }}"
+                                                    oninput="test({{ $item->id }}, {{ $item->standarPart->spesifikasi }},'{{ $item->standarPart->max }}','{{ $item->standarPart->min }}')"
+                                                    disabled>
+                                            @endif
+                                            <input type="hidden" name="id_value_dimensi[]"
+                                                id="inputDim{{ $item->id }}" value="{{ $item->id }}"
+                                                oninput="test({{ $item->id }}, {{ $item->standarPart->spesifikasi }},'{{ $item->standarPart->max }}','{{ $item->standarPart->min }}')">
+                                        </td>
+                                        @else
+                                        <td class="text-center">
+                                            @if (array_key_exists($item->id, $valueDimensi))
+                                                <input type="text" name="value_dimensi[]"
+                                                    id="inputDim{{ $item->id }}"
+                                                    class="form-control w-50 mx-auto"
+                                                    oninput="test({{ $item->id }}, {{ $item->standarPart->spesifikasi }},'{{ $item->standarPart->max }}','{{ $item->standarPart->min }}')"
+                                                    value="{{ $valueDimensi[$item->id] }}" required>
+                                            @else
+                                                <input type="text" name="value_dimensi[]"
+                                                    class="form-control w-50 mx-auto" value=""
+                                                    id="inputDim{{ $item->id }}"
+                                                    oninput="test({{ $item->id }}, {{ $item->standarPart->spesifikasi }},'{{ $item->standarPart->max }}','{{ $item->standarPart->min }}')"
+                                                    required>
+                                            @endif
+                                            <input type="hidden" name="id_value_dimensi[]"
+                                                id="inputDim{{ $item->id }}" value="{{ $item->id }}"
+                                                oninput="test({{ $item->id }}, {{ $item->standarPart->spesifikasi }},'{{ $item->standarPart->max }}','{{ $item->standarPart->min }}')">
+                                        </td>
+                                        @endif
+                                            @if ($item->status == null)
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="success-outlinedtest{{ $item->id }}" autocomplete="off"
+                                                        onclick="submitCek('OK',{{ $item->id }})" disabled>
+                                                    <label class="btn btn-outline-success"
+                                                        for="success-outlinedtest{{ $item->id }}">OK</label>
+                                                </td>
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="danger-outlinedtest{{ $item->id }}"
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off"
+                                                        disabled>
+                                                    <label class="btn btn-outline-danger"
+                                                        for="danger-outlinedtest{{ $item->id }}">NG</label>
+                                                </td>
+                                            @elseif($item->status == 'OK')
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="success-outlinedtest{{ $item->id }}" autocomplete="off"
+                                                        checked onclick="submitCek('OK',{{ $item->id }})" disabled>
+                                                    <label class="btn btn-outline-success"
+                                                        for="success-outlinedtest{{ $item->id }}">OK</label>
+                                                </td>
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="danger-outlinedtest{{ $item->id }}"
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off"
+                                                        disabled>
+                                                    <label class="btn btn-outline-danger"
+                                                        for="danger-outlinedtest{{ $item->id }}">NG</label>
+                                                </td>
+                                            @elseif($item->status == 'NG')
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="success-outlinedtest{{ $item->id }}" autocomplete="off"
+                                                        onclick="submitCek('OK',{{ $item->id }})" disabled>
+                                                    <label class="btn btn-outline-success"
+                                                        for="success-outlinedtest{{ $item->id }}">OK</label>
+                                                </td>
+                                                <td class="text-center"><input type="radio" class="btn-check"
+                                                        name="options-outlined{{ $item->id }}"
+                                                        id="danger-outlinedtest{{ $item->id }}" checked
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off"
+                                                        disabled>
+                                                    <label class="btn btn-outline-danger"
+                                                        for="danger-outlinedtest{{ $item->id }}">NG</label>
+                                                </td>
+                                            @endif
                                     </tr>
                                     @php
                                         $ngFound = false;
@@ -303,6 +552,7 @@
                                         <input type="hidden" name="final_status[]" value="1">
                                     @else
                                         <input type="hidden" name="final_status[]" value="0">
+                                    @endif
                                     @endif
                                 @endforeach
                             </tbody>
@@ -357,8 +607,82 @@
                                             <td colspan="2" class="text-center">
                                                 {{ $item->standarPart->spesifikasi }}
                                             </td>
-
                                             <td>{{ $item->standarPart->standar->alat }}</td>
+                                            {{-- IF THE CHECKSHEET ALREADY VERIFIED --}}
+                                            @if ($dataPartIn->status_pengecekan == 2)
+                                                @if ($item->status == null)
+                                                    <td class="text-center"><input type="radio" class="btn-check"
+                                                            name="options-outlined{{ $item->id }}"
+                                                            id="success-outlined{{ $item->id }} " autocomplete="off"
+                                                            onclick="submitCek('OK',{{ $item->id }})" disabled>
+                                                        <label class="btn btn-outline-success"
+                                                            for="success-outlined{{ $item->id }} ">OK</label>
+                                                    </td>
+                                                    <td class="text-center"><input type="radio" class="btn-check"
+                                                            name="options-outlined{{ $item->id }}"
+                                                            id="danger-outlined{{ $item->id }}"
+                                                            onclick="submitCek('NG',{{ $item->id }})" autocomplete="off" disabled>
+                                                        <label class="btn btn-outline-danger"
+                                                            for="danger-outlined{{ $item->id }}">NG</label>
+                                                    </td>
+                                                @elseif($item->status == 'OK')
+                                                    <td class="text-center"><input type="radio" class="btn-check"
+                                                            name="options-outlined{{ $item->id }}"
+                                                            id="success-outlined{{ $item->id }} " autocomplete="off"
+                                                            checked onclick="submitCek('OK',{{ $item->id }})" disabled>
+                                                        <label class="btn btn-outline-success"
+                                                            for="success-outlined{{ $item->id }} ">OK</label>
+                                                    </td>
+                                                    <td class="text-center"><input type="radio" class="btn-check"
+                                                            name="options-outlined{{ $item->id }}"
+                                                            id="danger-outlined{{ $item->id }}"
+                                                            onclick="submitCek('NG',{{ $item->id }})"
+                                                            autocomplete="off" disabled>
+                                                        <label class="btn btn-outline-danger"
+                                                            for="danger-outlined{{ $item->id }}">NG</label>
+                                                    </td>
+                                                @elseif($item->status == 'NG')
+                                                    <td class="text-center"><input type="radio" class="btn-check"
+                                                            name="options-outlined{{ $item->id }}"
+                                                            id="success-outlined{{ $item->id }} " autocomplete="off"
+                                                            onclick="submitCek('OK',{{ $item->id }})" disabled>
+                                                        <label class="btn btn-outline-success"
+                                                            for="success-outlined{{ $item->id }} ">OK</label>
+                                                    </td>
+                                                    <td class="text-center"><input type="radio" class="btn-check"
+                                                            name="options-outlined{{ $item->id }}"
+                                                            id="danger-outlined{{ $item->id }}" checked
+                                                            onclick="submitCek('NG',{{ $item->id }})"
+                                                            autocomplete="off" disabled>
+                                                        <label class="btn btn-outline-danger"
+                                                            for="danger-outlined{{ $item->id }}">NG</label>
+                                                    </td>
+                                                @endif
+                                    </tr>
+                                    @php
+                                        $ngFound = false;
+                                        $groupedCekDimensi = collect($cekFunction)
+                                            ->flatMap(function ($item) {
+                                                return $item;
+                                            })
+                                            ->groupBy('urutan_sample');
+                                        foreach ($groupedCekDimensi as $urutanSample => $items) {
+                                            $ngFound = $items->contains(function ($item) {
+                                                return $item['status'] === 'NG';
+                                            });
+                                            if ($ngFound) {
+                                                break;
+                                            }
+                                        }
+                                    @endphp
+                                    @if ($ngFound)
+                                        <input type="hidden" name="final_status[]" value="1">
+                                    @else
+                                        <input type="hidden" name="final_status[]" value="0">
+                                    @endif
+                                        {{-- (END OF) IF THE CHECKSHEET ALREADY VERIFIED --}}
+                                        {{-- IF THE CHECKSHEET NOT VERIFIED YET OR NOT CHECKED YET --}}
+                                            @else
                                             @if ($item->status == null)
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
@@ -429,6 +753,8 @@
                                         @else
                                             <input type="hidden" name="final_status[]" value="0">
                                         @endif
+                                        @endif
+                                        {{-- (END OF) IF THE CHECKSHEET ALREADY VERIFIED --}}
                                     @endforeach
                                 </tbody>
                             </table>
@@ -437,38 +763,25 @@
                 @endif
             @endfor
 
-            {{-- @php
-                $ngFound = false;
-
-                $groupedCekVisual = collect([$cekVisual, $cekDimensi, $cekFunction])->flatMap(function ($item) {
-                    return $item;
-                })->groupBy('urutan_sample');
-                foreach ($groupedCekVisual as $urutanSample => $items) {
-                    $ngFound = $items->contains(function ($item) {
-                        return $item['status'] === 'NG';
-                    });
-
-                    if ($ngFound) {
-                        break;
-                    }
-                }
-            @endphp --}}
 
             <div class="row d-flex justify-content-end mt-2">
-                {{-- <div class="col-2">
-                @if ($ngFound)
-                    <input type="hidden" name="final_status[]" value="1">
-                @else
-                    <input type="hidden" name="final_status[]" value="0">
-                @endif
-            </div>  --}}
-
                 <div class="col-2">
-                    <form action="/submit-pengecekan/{{ $dataPartIn->id_part_supply }}" method="post">
+                    @if ($ngFound)
+                        <input type="hidden" name="final_status[]" value="1">
+                    @else
+                        <input type="hidden" name="final_status[]" value="0">
+                    @endif
+                </div>
+
+                <div class="col-2 mb-2">
+                    <form id="tabelDetailPengecekan" action="/submit-pengecekan/{{ $dataPartIn->id_part_supply }}"
+                        method="post">
                         @csrf
                         <input type="hidden" name="status_pengecekan" value="1">
                     </form>
-                    <button type="submit" class="btn btn-success" name="submitButton">Submit</button>
+                    @if ($dataPartIn->status_pengecekan == 0 || $dataPartIn->status_pengecekan == 1)
+                        <button type="submit" class="btn btn-success" name="submitButton">Submit</button>
+                    @endif
                 </div>
             </div>
         </form>
@@ -479,19 +792,26 @@
         var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
         function test(id, spesifikasi, max, min) {
-            // console.log(id);
-            // console.log(spesifikasi);
-            console.log(max);
-            console.log(min);
-            let batasAtas = spesifikasi + min;
-            let batasBawah = spesifikasi + max;
-            console.log(batasAtas);
-            console.log(batasBawah);
-            var radioButton = document.getElementById('success-outlinedtest' + id);
-            console.log(radioButton);
-            // Set the checked attribute to true to select the radio button
-            radioButton.checked = true;
 
+            var newSpesifikasi = parseFloat(spesifikasi);
+            var newMax = parseFloat(max);
+            let batasAtas = (newSpesifikasi + newMax); // Subtract min from newSpesifikasi
+            let batasBawah = (newSpesifikasi - min); // Add max to newSpesifikasi
+
+            var radioButton = document.getElementById('success-outlinedtest' + id);
+            var wrongButton = document.getElementById('danger-outlinedtest' + id);
+            var inputDimensi = document.getElementById('inputDim' + id);
+            if (batasAtas < inputDimensi.value || batasBawah > inputDimensi.value) {
+                wrongButton.checked = true;
+                console.log('S')
+                submitCek('NG', id)
+            } else {
+                radioButton.checked = true;
+                console.log('B')
+                submitCek('OK', id)
+            }
+            console.log(inputDimensi.value);
+            // Set the checked attribute to true to select the radio button
         }
 
         function submitCek(kondisi, id) {

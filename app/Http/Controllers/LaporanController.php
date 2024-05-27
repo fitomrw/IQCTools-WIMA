@@ -139,7 +139,7 @@ class LaporanController extends Controller
             'to' => 'required',
             'attention' => 'required',
             'cc' => 'required',
-            'part_name' => 'required',
+            // 'part_name' => 'required',
             'part_code' => 'required',
             'model' => 'required',
             'quantity' => 'required',
@@ -149,31 +149,52 @@ class LaporanController extends Controller
             'issue_date' => 'required',
             'request' => 'required',
             'pic_person' => 'required',
-            'gambar_lpp' => 'required|image|mimes:jpeg,png,jpg,gif',
+            'gambar_lpp' => 'image|mimes:jpeg,png,jpg,gif',
         ]);
 
-        $currentDateTime = now()->format('YmdHis');
-        $filename = $currentDateTime . '.' . $request->file('gambar_lpp')->getClientOriginalExtension();
+        if ($request->file('gambar_lpp') == null) {
+            Laporan::where('id', $id)
+                ->update([
+                    'supplier_id' => $validatedData['to'],
+                    'attention' => $validatedData['attention'],
+                    'cc' => $validatedData['cc'],
+                    // 'part_name' => $validatedData['part_name'],
+                    'part_code' => $validatedData['part_code'],
+                    'model' => $validatedData['model'],
+                    'quantity' => $validatedData['quantity'],
+                    'problem_description' => $validatedData['problem_description'],
+                    'found_area' => $validatedData['found_area'],
+                    'found_date' => $validatedData['found_date'],
+                    'issue_date' => $validatedData['issue_date'],
+                    'request' => $validatedData['request'],
+                    'pic_person' => $validatedData['pic_person'],
+                    // 'gambar_lpp' => $filename,
+                ]);
+        } else {
+            $currentDateTime = now()->format('YmdHis');
+            $filename = $currentDateTime . '.' . $request->file('gambar_lpp')->getClientOriginalExtension();
 
-        Laporan::where('id', $id)
-            ->update([
-                'supplier_id' => $validatedData['to'],
-                'attention' => $validatedData['attention'],
-                'cc' => $validatedData['cc'],
-                'part_name' => $validatedData['part_name'],
-                'part_code' => $validatedData['part_code'],
-                'model' => $validatedData['model'],
-                'quantity' => $validatedData['quantity'],
-                'problem_description' => $validatedData['problem_description'],
-                'found_area' => $validatedData['found_area'],
-                'found_date' => $validatedData['found_date'],
-                'issue_date' => $validatedData['issue_date'],
-                'request' => $validatedData['request'],
-                'pic_person' => $validatedData['pic_person'],
-                // 'gambar_lpp' => $filename,
-            ]);
+            Laporan::where('id', $id)
+                ->update([
+                    'supplier_id' => $validatedData['to'],
+                    'attention' => $validatedData['attention'],
+                    'cc' => $validatedData['cc'],
+                    // 'part_name' => $validatedData['part_name'],
+                    'part_code' => $validatedData['part_code'],
+                    'model' => $validatedData['model'],
+                    'quantity' => $validatedData['quantity'],
+                    'problem_description' => $validatedData['problem_description'],
+                    'found_area' => $validatedData['found_area'],
+                    'found_date' => $validatedData['found_date'],
+                    'issue_date' => $validatedData['issue_date'],
+                    'request' => $validatedData['request'],
+                    'pic_person' => $validatedData['pic_person'],
+                    'gambar_lpp' => $filename,
+                ]);
 
-        $request->file('gambar_lpp')->move(public_path('img/img_lpp'), $filename);
+            $request->file('gambar_lpp')->move(public_path('img/img_lpp'), $filename);
+        }
+
 
         return redirect('/kelola-LPP')->with('success', 'Laporan LPP Berhasil Diubah!');
     }

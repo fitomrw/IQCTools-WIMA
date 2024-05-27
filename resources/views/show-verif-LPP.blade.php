@@ -4,7 +4,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-5 d-inline-block ml-2">
-                <p><b>To :</b> {{ $showVerifLaporan->to }}</p>
+                <p><b>To :</b> {{ $showVerifLaporan->supplier->nama_supplier }}</p>
                 <p><b>Attention :</b> {{ $showVerifLaporan->attention }}</p>
                 <p><b>CC :</b> {{ $showVerifLaporan->cc }}</p>
                 <p><b>Model :</b> {{ $showVerifLaporan->kategori_part->nama_kategori }}</p>

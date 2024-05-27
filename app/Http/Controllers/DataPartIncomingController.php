@@ -174,7 +174,7 @@ class DataPartIncomingController extends Controller
         $validatedData = $request->validate([
             'kategori_id' => ['required'],
             'kode_part' => ['required'],
-            'nama_part' => ['required'],
+            // 'nama_part' => ['required'],
             'supplier_id' => ['required'],
             'supply_date' => ['required'],
             'jumlah_kirim' => ['required'],
@@ -186,6 +186,32 @@ class DataPartIncomingController extends Controller
 
         dataPartIncoming::where('id_part_supply', $findDataPartIncoming->id_part_supply)
             ->update($validatedData);
+
+            $data = dataPartIncoming::all();
+            $dataTerbaru = $data->last();
+            $standarPart = StandarPerPartModel::where('kode_part', $dataTerbaru->kode_part)->get();
+            // dd($standarPart);
+    
+            $s4Levels = $dataTerbaru->inspection_level == 'S-IV';
+            $s3Levels = $dataTerbaru->inspection_level == 'S-III';
+            $s2Levels = $dataTerbaru->inspection_level == 'S-II';
+            $s1Levels = $dataTerbaru->inspection_level == 'S-I';
+            $aqlNumber1 = $dataTerbaru->aql_number == 1;
+    
+            $cat = new PengecekanController;
+            $test = $cat->calculateJumlahTabel($s4Levels, $s3Levels, $s2Levels, $s1Levels, $dataTerbaru, $aqlNumber1);
+    
+            for ($i = 1; $i <= $test; $i++) {
+                foreach ($standarPart as $key) {
+                    // dd($key->part->nama_part);
+                    CatatanCekModel::create([
+                        'id_part_supply' => $dataTerbaru->id_part_supply,
+                        'id_standar_part' => $key->id_standar_part,
+                        'id_part' => $key->part->kode_part,
+                        'urutan_sample' => $i
+                    ]);
+                }
+            }
 
         return redirect('/dataPartIncoming')->with('notify', 'Data Part Incoming Berhasil Diubah!');
     }

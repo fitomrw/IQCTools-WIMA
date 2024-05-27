@@ -33,14 +33,14 @@
                     <table class="table table-sm table-borderless">
                         <tr>
                             {{-- <td>Tanggal Periksa</td> --}}
-                            @if ($dataPartIn->tanggal_pengecekan != null)
-                                <label for="tanggal_periksa" class="form-label">Tanggal Pemeriksaan</label>
-                                <td><input type="date" class="form-control" name="tanggal_periksa" id="tanggal_periksa"
-                                        value="{{ $dataPartIn->tanggal_pengecekan }}" required></td>
+                            @if ($getTanggalCek->tanggal_cek != null)
+                                <label for="tanggal_cek" class="form-label">Tanggal Pemeriksaan</label>
+                                <td><input type="date" class="form-control" name="tanggal_cek" id="tanggal_cek"
+                                        value="{{ $getTanggalCek->tanggal_cek }}" disabled></td>
                             @else
                                 <label for="tanggal_periksa" class="form-label">Tanggal Pemeriksaan</label>
                                 <td><input type="date" class="form-control" name="tanggal_periksa" id="tanggal_periksa"
-                                        value="{{ $dataPartIn->supply_date }}" disabled></td>
+                                        value="" disabled></td>
                             @endif
 
                         </tr>
