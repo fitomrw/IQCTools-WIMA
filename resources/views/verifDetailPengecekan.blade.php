@@ -34,11 +34,11 @@
                         <tr>
                             {{-- <td>Tanggal Periksa</td> --}}
                             @if ($getTanggalCek->tanggal_cek != null)
-                                <label for="tanggal_cek" class="form-label">Tanggal Pemeriksaan</label>
+                                <label for="tanggal_cek" class="form-label">Tanggal</label>
                                 <td><input type="date" class="form-control" name="tanggal_cek" id="tanggal_cek"
                                         value="{{ $getTanggalCek->tanggal_cek }}" disabled></td>
                             @else
-                                <label for="tanggal_periksa" class="form-label">Tanggal Pemeriksaan</label>
+                                <label for="tanggal_periksa" class="form-label">Tanggal</label>
                                 <td><input type="date" class="form-control" name="tanggal_periksa" id="tanggal_periksa"
                                         value="" disabled></td>
                             @endif
@@ -381,12 +381,13 @@
                 @endif
             @endfor
 
-            <div class="row d-flex justify-content-end mt-2">
+            <div class="row d-flex justify-content-end mt-2 mb-2">
                 <div class="col-2">
                     <input type="hidden" name="status_pengecekan" value="2">
                     <button type="submit" class="btn btn-primary">Verifikasi</button>
                 </div>
             </div>
+        </div>
         </form>
         {{-- {{ $paginatedData->links }} --}}
         <meta name="csrf-token" content="{{ csrf_token() }}">

@@ -75,6 +75,10 @@
                         <strong>Bulan
                             :</strong> {{ $bulanForView }}
                     </span>
+                @elseif($supplier == 0 && $kategori == 0 && $bulan != 0)
+                    <span> <strong>Supplier :</strong> 0 | <strong>Kategori :</strong> 0 | <strong>Bulan
+                        :</strong> {{ $bulanForView }}
+                    </span>
                 @endif
             @else
                 <span> <strong>Supplier :</strong> 0 | <strong>Kategori :</strong> 0 | <strong>Bulan

@@ -134,7 +134,7 @@
                     <div style="font-size: 10px" class="ms-2">Fill By QCD WIMA</div>
                     <div class="row">
                         <div style="font-size: 18px; font-weight:bold;" class="ms-2">Date: </div>
-                        <div style="font-size: 18px; margin:10px 0px 15px 0px;" class="ms-2">10 Juli 2024 </div>
+                        <div style="font-size: 18px; margin:10px 0px 15px 0px;" class="ms-2">01 Juli 2024 </div>
                     </div>
                     <div class="row">
                         <div class="col-6">

@@ -16,6 +16,7 @@
                                 <th rowspan="3">Inspection Level</th>
                                 <th rowspan="3">Status Verifikasi</th>
                                 <th rowspan="1" colspan="2" class="text-center">Hasil Cek</th>
+                                <th rowspan="3">Keputusan</th>
                                 <th rowspan="3">Aksi</th>
                             </tr>
                             <tr>
@@ -60,8 +61,20 @@
                                     @else
                                         <td>0</td>
                                     @endif
-                                    
 
+                                    @if (isset($keputusanDiterima[$item->id_part_supply]) && !$keputusanDiterima[$item->id_part_supply]->where('keputusan', 'Diterima')->isEmpty())
+                                        <td>
+                                            <p class="bg-success p-1 rounded-1 text-center"><b>Diterima</b></p>
+                                        </td>
+                                    @elseif(isset($keputusanDitolak[$item->id_part_supply]) && !$keputusanDitolak[$item->id_part_supply]->where('keputusan', 'Ditolak')->isEmpty())
+                                        <td>
+                                            <p class="bg-danger p-1 rounded-1 text-center"><b>Ditolak</b></p>
+                                        </td>
+                                    @else
+                                        <td>
+                                            <p class="bg-warning p-1 rounded-1 text-center"><b>Belum Diputuskan</b></p>
+                                        </td>
+                                    @endif
                                     <td><a href="/detailPengecekan/{{ $item->id_part_supply }}/{{ $item->kode_part }}"><button
                                                 class="btn btn-info"><i class="fas fa-eye"></i></button></a></td>
                                 </tr>

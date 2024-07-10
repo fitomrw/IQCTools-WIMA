@@ -40,12 +40,18 @@ class PengecekanController extends Controller
         $finalStatusShow = CatatanCekModel::whereNotNull('final_status')->get();
         $countedNG = $finalStatusShow->where('final_status', 1)->groupBy('id_part_supply');
         $countedOK = $finalStatusShow->where('final_status', 0)->groupBy('id_part_supply');
+        
+        $getKeputusan = CatatanCekModel::whereNotNull('keputusan')->get();
+        $keputusanDiterima = $getKeputusan->where('keputusan', 'Diterima')->groupBy('id_part_supply');
+        // dd($keputusanDiterima);
+        $keputusanDitolak = $getKeputusan->where('keputusan', 'Ditolak')->groupBy('id_part_supply');
+
         // dd($countedOK);
 
         return view('riwayatPengecekan', [
             "title" => "Pengecekan",
             "image" => "img/wima_logo.png"
-        ], compact('data', 'countedNG', 'countedOK'));
+        ], compact('data', 'countedNG', 'countedOK', 'keputusanDiterima', 'keputusanDitolak'));
     }
 
 
@@ -73,18 +79,20 @@ class PengecekanController extends Controller
         $updateData->update([
             'status_pengecekan' => $request->status_pengecekan
         ]);
-        
-        $storeTanggalCek = CatatanCekModel::where('id_part_supply', $id)->first();
-        $storeTanggalCek->update([
-            'tanggal_cek' => $request->tanggal_cek
-        ]);
 
+        //Untuk Notifikasi Keputusan
+        $s4Levels = $updateData->inspection_level == 'S-IV';
+        $s3Levels = $updateData->inspection_level == 'S-III';
+        $s2Levels = $updateData->inspection_level == 'S-II';
+        $s1Levels = $updateData->inspection_level == 'S-I';
+        $aqlNumber1 = $updateData->aql_number == 1;
+        
         $getFinalStatus = CatatanCekModel::where('id_part_supply', $id)->get();
         // $getValueDimensi = $listCek->whereNotNull('value_dimensi')->get();
         $cekDimensi = [];
         $cekVisual = [];
         $cekFunction = [];
-
+        
         foreach ($getFinalStatus as $key) {
             // dd($key->standarPart->standar);
             if ($key->standarPart->standar->jenis_standar == 'VISUAL') {
@@ -95,11 +103,12 @@ class PengecekanController extends Controller
                 $cekFunction[] = $key;
             }
         }
-
+        
         $setNGFound = false;
         $setFinalStatus = collect([$cekVisual, $cekDimensi, $cekFunction])->flatMap(function ($item) {
             return $item;
         })->groupBy('urutan_sample');
+        // dd($setFinalStatus);
         foreach ($setFinalStatus as $urutanSample => $items) {
             $setNGFound = $items->contains(function ($item) {
                 return $item['status'] === 'NG';
@@ -114,8 +123,415 @@ class PengecekanController extends Controller
                 $modelData->update(['final_status' => 0]);
             }
         }
+        $pengecekanDecision = $this->calculateJumlahNG($s4Levels, $s3Levels, $s2Levels, $s1Levels, $aqlNumber1, $updateData, $setFinalStatus);
+        
+        $storeTanggalCek = CatatanCekModel::where('id_part_supply', $id)->first();
+        $storeTanggalCek->update([
+            'tanggal_cek' => $request->tanggal_cek,
+            'keputusan' => $pengecekanDecision
+        ]);
+       
+        $jumlahNG = $setFinalStatus->flatMap(function ($items) {
+            return $items;
+        })->filter(function ($item) {
+            return $item->final_status == 1;
+        })->count();
+
+        
 
         return redirect('/riwayatPengecekan');
+    }
+
+    public function calculateJumlahNG($s4Levels, $s3Levels, $s2Levels, $s1Levels, $aqlNumber1, $updateData, $setFinalStatus)
+    {
+        $jumlahFinalStatusSatu = $setFinalStatus->flatMap(function ($items) {
+            return $items;
+        })->filter(function ($item) {
+            return $item->final_status == 1;
+        })->count();
+
+        // dd($jumlahFinalStatusSatu);
+        // dd('test');
+        //Inspection Levels = "S-IV", AQL Number = 1 (Default WIMA)
+        if ($updateData->jumlah_kirim >= 1 && $updateData->jumlah_kirim <= 8 && $s4Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } elseif ($jumlahFinalStatusSatu <= 1) {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 9 && $updateData->jumlah_kirim <= 15 && $s4Levels  && $aqlNumber1) {
+            // dd('test2');
+            if ($updateData->jumlah_kirim >= 13 && $updateData->jumlah_kirim <= 15) {
+                if ($jumlahFinalStatusSatu >= 1) {
+                    return "Ditolak";
+                } else {
+                    return "Diterima";
+                }
+            }
+        } elseif ($updateData->jumlah_kirim >= 16 && $updateData->jumlah_kirim <= 25 && $s4Levels  && $aqlNumber1) {
+            // dd('test3');
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 26 && $updateData->jumlah_kirim <= 50 && $s4Levels && $aqlNumber1) {
+            // dd('test4');
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 51 && $updateData->jumlah_kirim <= 90 && $s4Levels && $aqlNumber1) {
+            // dd('test5');
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            }  else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 91 && $updateData->jumlah_kirim <= 150 && $s4Levels && $aqlNumber1) {
+            // dd('test6');        
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 151 && $updateData->jumlah_kirim <= 280 && $s4Levels && $aqlNumber1) {
+            // dd('test7');
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 281 && $updateData->jumlah_kirim <= 500 && $s4Levels && $aqlNumber1) {
+            // dd('test8');
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 501 && $updateData->jumlah_kirim <= 1200 && $s4Levels && $aqlNumber1) {
+            // dd('test9');
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 1201 && $updateData->jumlah_kirim <= 3200 && $s4Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Diterima";
+            } elseif ($jumlahFinalStatusSatu >= 2) {
+                return "Ditolak";
+            } 
+        } elseif ($updateData->jumlah_kirim >= 3201 && $updateData->jumlah_kirim <= 10000 && $s4Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Diterima";
+            } elseif ($jumlahFinalStatusSatu >= 2) {
+                return "Ditolak";
+            }
+        } elseif ($updateData->jumlah_kirim >= 10001 && $updateData->jumlah_kirim <= 35000 && $s4Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu > 1) {
+                return "Diterima";
+            } elseif ($jumlahFinalStatusSatu >= 2) {
+                return "Ditolak";
+            }
+        } elseif ($updateData->jumlah_kirim >= 35001 && $updateData->jumlah_kirim <= 150000 && $s4Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 2) {
+                return "Diterima";
+            } elseif ($jumlahFinalStatusSatu >= 3) {
+                return "Ditolak";
+            }
+        } elseif ($updateData->jumlah_kirim >= 150001 && $updateData->jumlah_kirim <= 500000 && $s4Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 2) {
+                return "Diterima";
+            } elseif ($jumlahFinalStatusSatu >= 3) {
+                return "Ditolak";
+            }
+        } elseif ($updateData->jumlah_kirim >= 500001 && $updateData->jumlah_kirim <= INF  && $s4Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 3) {
+                return "Diterima";
+            } elseif ($jumlahFinalStatusSatu >= 4) {
+                return "Ditolak";
+            }
+
+            //Inspection Levels = "S-III", AQL Number = 1
+        } elseif ($updateData->jumlah_kirim >= 1 && $updateData->jumlah_kirim <= 8 && $s3Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 9 && $updateData->jumlah_kirim <= 15 && $s3Levels  && $aqlNumber1) {
+            if ($updateData->jumlah_kirim >= 13 && $updateData->jumlah_kirim <= 15) {
+                if ($jumlahFinalStatusSatu >= 1) {
+                    return "Ditolak";
+                } else {
+                    return "Diterima";
+                }
+            } 
+        } elseif ($updateData->jumlah_kirim >= 16 && $updateData->jumlah_kirim <= 25 && $s3Levels  && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 26 && $updateData->jumlah_kirim <= 50 && $s3Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 51 && $updateData->jumlah_kirim <= 90 && $s3Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 91 && $updateData->jumlah_kirim <= 150 && $s3Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 151 && $updateData->jumlah_kirim <= 280 && $s3Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 281 && $updateData->jumlah_kirim <= 500 && $s3Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 501 && $updateData->jumlah_kirim <= 1200 && $s3Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 1201 && $updateData->jumlah_kirim <= 3200 && $s3Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 3201 && $updateData->jumlah_kirim <= 10000 && $s3Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 10001 && $updateData->jumlah_kirim <= 35000 && $s3Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 35001 && $updateData->jumlah_kirim <= 150000 && $s3Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Diterima";
+            } elseif ($jumlahFinalStatusSatu >= 2) {
+                return "Ditolak";
+            }
+        } elseif ($updateData->jumlah_kirim >= 150001 && $updateData->jumlah_kirim <= 500000 && $s3Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Diterima";
+            } elseif ($jumlahFinalStatusSatu >= 2) {
+                return "Ditolak";
+            }
+        } elseif ($updateData->jumlah_kirim >= 500001 && $updateData->jumlah_kirim <= INF  && $s3Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Diterima";
+            } elseif ($jumlahFinalStatusSatu >= 2) {
+                return "Ditolak";
+            }
+
+            //Inspection Levels = "S-II", AQL Number = 1
+        } elseif ($updateData->jumlah_kirim >= 1 && $updateData->jumlah_kirim <= 8 && $s2Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 9 && $updateData->jumlah_kirim <= 15 && $s2Levels  && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 16 && $updateData->jumlah_kirim <= 25 && $s2Levels  && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 26 && $updateData->jumlah_kirim <= 50 && $s2Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 51 && $updateData->jumlah_kirim <= 90 && $s2Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 91 && $updateData->jumlah_kirim <= 150 && $s2Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 151 && $updateData->jumlah_kirim <= 280 && $s2Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 281 && $updateData->jumlah_kirim <= 500 && $s2Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 501 && $updateData->jumlah_kirim <= 1200 && $s2Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 1201 && $updateData->jumlah_kirim <= 3200 && $s2Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 3201 && $updateData->jumlah_kirim <= 10000 && $s2Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 10001 && $updateData->jumlah_kirim <= 35000 && $s2Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 35001 && $updateData->jumlah_kirim <= 150000 && $s2Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 150001 && $updateData->jumlah_kirim <= 500000 && $s2Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 500001 && $updateData->jumlah_kirim <= INF  && $s2Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+
+            //Inspection Levels = "S-I" AQL Number = 1
+        } elseif ($updateData->jumlah_kirim >= 1 && $updateData->jumlah_kirim <= 8 && $s1Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 9 && $updateData->jumlah_kirim <= 15 && $s1Levels  && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 16 && $updateData->jumlah_kirim <= 25 && $s1Levels  && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 26 && $updateData->jumlah_kirim <= 50 && $s1Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 51 && $updateData->jumlah_kirim <= 90 && $s1Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 91 && $updateData->jumlah_kirim <= 150 && $s1Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 151 && $updateData->jumlah_kirim <= 280 && $s1Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 281 && $updateData->jumlah_kirim <= 500 && $s1Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 501 && $updateData->jumlah_kirim <= 1200 && $s1Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 1201 && $updateData->jumlah_kirim <= 3200 && $s1Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 3201 && $updateData->jumlah_kirim <= 10000 && $s1Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 10001 && $updateData->jumlah_kirim <= 35000 && $s1Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 35001 && $updateData->jumlah_kirim <= 150000 && $s1Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 150001 && $updateData->jumlah_kirim <= 500000 && $s1Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        } elseif ($updateData->jumlah_kirim >= 500001 && $updateData->jumlah_kirim <= INF  && $s1Levels && $aqlNumber1) {
+            if ($jumlahFinalStatusSatu >= 1) {
+                return "Ditolak";
+            } else {
+                return "Diterima";
+            }
+        }
     }
 
     public function detailPengecekan(Request $request, $id)
@@ -167,11 +583,9 @@ class PengecekanController extends Controller
             return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s4Levels  && $aqlNumber1) {
             // dd('test2');
-            if ($dataPartIn->jumlah_kirim < 13) {
+            if ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
                 return 13;
-            } elseif ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
-                return $dataPartIn->jumlah_kirim;
-            }
+            } return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s4Levels  && $aqlNumber1) {
             // dd('test3');
             return 13;
@@ -207,14 +621,12 @@ class PengecekanController extends Controller
             return 125;
 
             //Inspection Levels = "S-III", AQL Number = 1
-        } elseif ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s3Levels && $aqlNumber1) {
+        } elseif ($dataPartIn->jumlah_kirim >= 1 && $dataPartIn->jumlah_kirim <= 8 && $s3Levels && $aqlNumber1) {
             return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s3Levels  && $aqlNumber1) {
-            if ($dataPartIn->jumlah_kirim < 13) {
+            if ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
                 return 13;
-            } elseif ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
-                return $dataPartIn->jumlah_kirim;
-            }
+            } return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s3Levels  && $aqlNumber1) {
             return 13;
         } elseif ($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s3Levels && $aqlNumber1) {
@@ -243,14 +655,12 @@ class PengecekanController extends Controller
             return 50;
 
             //Inspection Levels = "S-II", AQL Number = 1
-        } elseif ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s2Levels && $aqlNumber1) {
+        } elseif ($dataPartIn->jumlah_kirim >= 1 && $dataPartIn->jumlah_kirim <= 8 && $s2Levels && $aqlNumber1) {
             return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s2Levels  && $aqlNumber1) {
-            if ($dataPartIn->jumlah_kirim < 13) {
+            if ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
                 return 13;
-            } elseif ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
-                return $dataPartIn->jumlah_kirim;
-            }
+            } return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s2Levels  && $aqlNumber1) {
             return 13;
         } elseif ($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s2Levels && $aqlNumber1) {
@@ -279,14 +689,12 @@ class PengecekanController extends Controller
             return 13;
 
             //Inspection Levels = "S-I" AQL Number = 1
-        } elseif ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s1Levels && $aqlNumber1) {
+        } elseif ($dataPartIn->jumlah_kirim >= 1 && $dataPartIn->jumlah_kirim <= 8 && $s1Levels && $aqlNumber1) {
             return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s1Levels  && $aqlNumber1) {
-            if ($dataPartIn->jumlah_kirim < 13) {
+            if ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
                 return 13;
-            } elseif ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
-                return $dataPartIn->jumlah_kirim;
-            }
+            } return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s1Levels  && $aqlNumber1) {
             return 13;
         } elseif ($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s1Levels && $aqlNumber1) {
@@ -514,11 +922,9 @@ class PengecekanController extends Controller
             return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s4Levels  && $aqlNumber1) {
             // dd('test2');
-            if ($dataPartIn->jumlah_kirim < 13) {
+            if ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
                 return 13;
-            } elseif ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
-                return $dataPartIn->jumlah_kirim;
-            }
+            } return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s4Levels  && $aqlNumber1) {
             // dd('test3');
             return 13;
@@ -557,11 +963,9 @@ class PengecekanController extends Controller
         } elseif ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s3Levels && $aqlNumber1) {
             return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s3Levels  && $aqlNumber1) {
-            if ($dataPartIn->jumlah_kirim < 13) {
+            if ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
                 return 13;
-            } elseif ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
-                return $dataPartIn->jumlah_kirim;
-            }
+            } return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s3Levels  && $aqlNumber1) {
             return 13;
         } elseif ($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s3Levels && $aqlNumber1) {
@@ -593,11 +997,9 @@ class PengecekanController extends Controller
         } elseif ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s2Levels && $aqlNumber1) {
             return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s2Levels  && $aqlNumber1) {
-            if ($dataPartIn->jumlah_kirim < 13) {
+            if ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
                 return 13;
-            } elseif ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
-                return $dataPartIn->jumlah_kirim;
-            }
+            } return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s2Levels  && $aqlNumber1) {
             return 13;
         } elseif ($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s2Levels && $aqlNumber1) {
@@ -629,11 +1031,9 @@ class PengecekanController extends Controller
         } elseif ($dataPartIn->jumlah_kirim >= 2 && $dataPartIn->jumlah_kirim <= 8 && $s1Levels && $aqlNumber1) {
             return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 9 && $dataPartIn->jumlah_kirim <= 15 && $s1Levels  && $aqlNumber1) {
-            if ($dataPartIn->jumlah_kirim < 13) {
+            if ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
                 return 13;
-            } elseif ($dataPartIn->jumlah_kirim >= 13 && $dataPartIn->jumlah_kirim <= 15) {
-                return $dataPartIn->jumlah_kirim;
-            }
+            } return $dataPartIn->jumlah_kirim;
         } elseif ($dataPartIn->jumlah_kirim >= 16 && $dataPartIn->jumlah_kirim <= 25 && $s1Levels  && $aqlNumber1) {
             return 13;
         } elseif ($dataPartIn->jumlah_kirim >= 26 && $dataPartIn->jumlah_kirim <= 50 && $s1Levels && $aqlNumber1) {
@@ -669,7 +1069,7 @@ class PengecekanController extends Controller
         $updateData->update([
             'status_pengecekan' => $request->status_pengecekan
         ]);
-        return redirect('/verifikasi-pengecekan/0/0/0')->with("notify", 'Data Pengecekan Telah Diverifikasi!');
+        return redirect('/verifikasi-pengecekan/0/0/0')->with("notify", 'Data Pengecekan Telah Di Verifikasi!');
     }
 
     public function anjenk()

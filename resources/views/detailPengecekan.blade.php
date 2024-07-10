@@ -31,15 +31,22 @@
                 <div class="col-3">
                     <table class="table table-sm table-borderless">
                         <tr>
-                            @if ($tanggalCek->tanggal_cek != null) 
+                            @if ($dataPartIn->status_pengecekan == 2)
                                 <label for="tanggal_cek" class="form-label">Tanggal</label>
                                 <td><input type="date" class="form-control" name="tanggal_cek" id="tanggal_cek"
                                         value="{{ $tanggalCek->tanggal_cek }}" disabled></td>
                             @else
-                                <label for="tanggal_cek" class="form-label">Tanggal</label>
-                                <td><input type="date" class="form-control" name="tanggal_cek" id="tanggal_cek"
-                                        value="{{ $tanggalSekarang }}" required></td>
+                                @if ($tanggalCek->tanggal_cek != null) 
+                                    <label for="tanggal_cek" class="form-label">Tanggal</label>
+                                    <td><input type="date" class="form-control" name="tanggal_cek" id="tanggal_cek"
+                                            value="{{ $tanggalCek->tanggal_cek }}" disabled></td>
+                                @else
+                                    <label for="tanggal_cek" class="form-label">Tanggal</label>
+                                    <td><input type="date" class="form-control" name="tanggal_cek" id="tanggal_cek"
+                                            value="{{ $tanggalSekarang }}" required></td>
+                                @endif
                             @endif
+                            
                         </tr>
                     </table>
                 </div>
@@ -164,14 +171,14 @@
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
                                                         id="success-outlined{{ $item->id }} " autocomplete="off"
-                                                        onclick="submitCek('OK',{{ $item->id }})">
+                                                        onclick="submitCek('OK',{{ $item->id }})" required>
                                                     <label class="btn btn-outline-success"
                                                         for="success-outlined{{ $item->id }} ">OK</label>
                                                 </td>
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
                                                         id="danger-outlined{{ $item->id }}"
-                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off" required>
                                                     <label class="btn btn-outline-danger"
                                                         for="danger-outlined{{ $item->id }}">NG</label>
                                                 </td>
@@ -179,14 +186,14 @@
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
                                                         id="success-outlined{{ $item->id }} " autocomplete="off" checked
-                                                        onclick="submitCek('OK',{{ $item->id }})">
+                                                        onclick="submitCek('OK',{{ $item->id }})" required>
                                                     <label class="btn btn-outline-success"
                                                         for="success-outlined{{ $item->id }} ">OK</label>
                                                 </td>
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
                                                         id="danger-outlined{{ $item->id }}"
-                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off" required>
                                                     <label class="btn btn-outline-danger"
                                                         for="danger-outlined{{ $item->id }}">NG</label>
                                                 </td>
@@ -194,14 +201,14 @@
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
                                                         id="success-outlined{{ $item->id }} " autocomplete="off"
-                                                        onclick="submitCek('OK',{{ $item->id }})">
+                                                        onclick="submitCek('OK',{{ $item->id }})" required>
                                                     <label class="btn btn-outline-success"
                                                         for="success-outlined{{ $item->id }} ">OK</label>
                                                 </td>
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
                                                         id="danger-outlined{{ $item->id }}" checked
-                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off" required>
                                                     <label class="btn btn-outline-danger"
                                                         for="danger-outlined{{ $item->id }}">NG</label>
                                                 </td>
@@ -372,14 +379,14 @@
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
                                                         id="success-outlinedtest{{ $item->id }}" autocomplete="off"
-                                                        onclick="submitCek('OK',{{ $item->id }})">
+                                                        onclick="submitCek('OK',{{ $item->id }})" required>
                                                     <label class="btn btn-outline-success"
                                                         for="success-outlinedtest{{ $item->id }}">OK</label>
                                                 </td>
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
                                                         id="danger-outlinedtest{{ $item->id }}"
-                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off>
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off" required>
                                                     <label class="btn btn-outline-danger"
                                                         for="danger-outlinedtest{{ $item->id }}">NG</label>
                                                 </td>
@@ -387,7 +394,7 @@
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
                                                         id="success-outlinedtest{{ $item->id }}" autocomplete="off"
-                                                        checked onclick="submitCek('OK',{{ $item->id }})" >
+                                                        checked onclick="submitCek('OK',{{ $item->id }})" required>
                                                     <label class="btn btn-outline-success"
                                                         for="success-outlinedtest{{ $item->id }}">OK</label>
                                                 </td>
@@ -395,7 +402,7 @@
                                                         name="options-outlined{{ $item->id }}"
                                                         id="danger-outlinedtest{{ $item->id }}"
                                                         onclick="submitCek('NG',{{ $item->id }})" autocomplete="off"
-                                                        >
+                                                        required>
                                                     <label class="btn btn-outline-danger"
                                                         for="danger-outlinedtest{{ $item->id }}">NG</label>
                                                 </td>
@@ -403,7 +410,7 @@
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
                                                         id="success-outlinedtest{{ $item->id }}" autocomplete="off"
-                                                        onclick="submitCek('OK',{{ $item->id }})" >
+                                                        onclick="submitCek('OK',{{ $item->id }})" required>
                                                     <label class="btn btn-outline-success"
                                                         for="success-outlinedtest{{ $item->id }}">OK</label>
                                                 </td>
@@ -411,7 +418,7 @@
                                                         name="options-outlined{{ $item->id }}"
                                                         id="danger-outlinedtest{{ $item->id }}" checked
                                                         onclick="submitCek('NG',{{ $item->id }})" autocomplete="off"
-                                                        >
+                                                        required>
                                                     <label class="btn btn-outline-danger"
                                                         for="danger-outlinedtest{{ $item->id }}">NG</label>
                                                 </td>
@@ -687,14 +694,14 @@
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
                                                         id="success-outlined{{ $item->id }} " autocomplete="off"
-                                                        onclick="submitCek('OK',{{ $item->id }})">
+                                                        onclick="submitCek('OK',{{ $item->id }})" required>
                                                     <label class="btn btn-outline-success"
                                                         for="success-outlined{{ $item->id }} ">OK</label>
                                                 </td>
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
                                                         id="danger-outlined{{ $item->id }}"
-                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off">
+                                                        onclick="submitCek('NG',{{ $item->id }})" autocomplete="off" required>
                                                     <label class="btn btn-outline-danger"
                                                         for="danger-outlined{{ $item->id }}">NG</label>
                                                 </td>
@@ -702,7 +709,7 @@
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
                                                         id="success-outlined{{ $item->id }} " autocomplete="off"
-                                                        checked onclick="submitCek('OK',{{ $item->id }})">
+                                                        checked onclick="submitCek('OK',{{ $item->id }})" required>
                                                     <label class="btn btn-outline-success"
                                                         for="success-outlined{{ $item->id }} ">OK</label>
                                                 </td>
@@ -710,7 +717,7 @@
                                                         name="options-outlined{{ $item->id }}"
                                                         id="danger-outlined{{ $item->id }}"
                                                         onclick="submitCek('NG',{{ $item->id }})"
-                                                        autocomplete="off">
+                                                        autocomplete="off" required>
                                                     <label class="btn btn-outline-danger"
                                                         for="danger-outlined{{ $item->id }}">NG</label>
                                                 </td>
@@ -718,7 +725,7 @@
                                                 <td class="text-center"><input type="radio" class="btn-check"
                                                         name="options-outlined{{ $item->id }}"
                                                         id="success-outlined{{ $item->id }} " autocomplete="off"
-                                                        onclick="submitCek('OK',{{ $item->id }})">
+                                                        onclick="submitCek('OK',{{ $item->id }})" required>
                                                     <label class="btn btn-outline-success"
                                                         for="success-outlined{{ $item->id }} ">OK</label>
                                                 </td>
@@ -726,7 +733,7 @@
                                                         name="options-outlined{{ $item->id }}"
                                                         id="danger-outlined{{ $item->id }}" checked
                                                         onclick="submitCek('NG',{{ $item->id }})"
-                                                        autocomplete="off">
+                                                        autocomplete="off" required>
                                                     <label class="btn btn-outline-danger"
                                                         for="danger-outlined{{ $item->id }}">NG</label>
                                                 </td>
@@ -795,8 +802,8 @@
 
             var newSpesifikasi = parseFloat(spesifikasi);
             var newMax = parseFloat(max);
-            let batasAtas = (newSpesifikasi + newMax); // Subtract min from newSpesifikasi
-            let batasBawah = (newSpesifikasi - min); // Add max to newSpesifikasi
+            let batasAtas = Number((newSpesifikasi + newMax).toFixed(2)); // Subtract min from newSpesifikasi
+            let batasBawah = Number((newSpesifikasi - min).toFixed(2)); // Add max to newSpesifikasi
 
             var radioButton = document.getElementById('success-outlinedtest' + id);
             var wrongButton = document.getElementById('danger-outlinedtest' + id);
@@ -810,6 +817,8 @@
                 console.log('B')
                 submitCek('OK', id)
             }
+            console.log(batasAtas)
+            console.log(batasBawah)
             console.log(inputDimensi.value);
             // Set the checked attribute to true to select the radio button
         }

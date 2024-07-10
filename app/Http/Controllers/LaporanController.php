@@ -9,6 +9,7 @@ use App\Models\Laporan;
 use App\Models\Part;
 use App\Models\Supplier;
 use App\Models\dataPartIncoming;
+use App\Models\User;
 // use Carbon\Carbon;
 // use Barryvdh\DomPDF\Facade\Pdf;
 // use PDF;

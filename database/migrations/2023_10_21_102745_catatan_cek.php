@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('final_status', 10)->nullable();
             $table->string('value_dimensi', 10)->nullable();
             $table->date('tanggal_cek')->nullable();
+            $table->string('keputusan', 20)->nullable();
             $table->timestamps();
             $table->string('id_part');
             $table->foreign('id_part')->references('kode_part')->on('part')->onDelete('cascade');

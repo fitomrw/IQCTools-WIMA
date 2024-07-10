@@ -38,7 +38,8 @@
                                 {{ $lp->status == 0 ? 'Belum Verifikasi' : 'Sudah Verifikasi' }}
                             </label>
                         </td>
-                        <td class="text-center">{{ auth()->user()->name }}</td>
+                        {{-- @dd() --}}
+                        <td class="text-center">{{ $lp->pic->name }}</td>
                         <td class="text-center">
                             <div class="container-sm">
                                 <a class="btn btn-warning d-block mt-1" href="/kelola-LPP/edit/{{ $lp->id }}"

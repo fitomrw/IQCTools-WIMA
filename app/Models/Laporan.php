@@ -28,4 +28,9 @@ class Laporan extends Model
     {
         return $this->belongsTo(Supplier::class, 'supplier_id', 'id_supplier');
     }
+
+    public function pic()
+    {
+        return $this->belongsTo(User::class, 'pic_person', 'id');
+    }
 }

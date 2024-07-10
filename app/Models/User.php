@@ -43,4 +43,10 @@ class User extends Authenticatable
     ];
 
     public $timestamps = false;
+
+    public function pic()
+    {
+       return $this->hasMany(Laporan::class);
+    }
+
 }
